@@ -26,7 +26,7 @@ import sys
 import shutil
 
 from sage.env import (SAGE_LOCAL, cython_aliases,
-                      sage_include_directories)
+                      sage_include_directories, SAGE_SRC)
 from sage.misc.temporary_file import spyx_tmp, tmp_filename
 from sage.repl.user_globals import get_globals
 from sage.misc.sage_ostools import restore_cwd, redirection
@@ -58,7 +58,7 @@ def _standard_libs_libdirs_incdirs_aliases():
     if SAGE_LOCAL:
         standard_libdirs.append(os.path.join(SAGE_LOCAL, "lib"))
     standard_libdirs.extend(aliases["CBLAS_LIBDIR"] + aliases["NTL_LIBDIR"])
-    standard_incdirs = sage_include_directories() + aliases["CBLAS_INCDIR"] + aliases["NTL_INCDIR"]
+    standard_incdirs = sage_include_directories() + [SAGE_SRC] + aliases["CBLAS_INCDIR"] + aliases["NTL_INCDIR"]
     return standard_libs, standard_libdirs, standard_incdirs, aliases
 
 ################################################################
@@ -226,17 +226,6 @@ def cython(filename, verbose=0, compile_message=False,
         ....: from sage.misc.cachefunc cimport cache_key
         ....: ''')
 
-    In Cython 0.29.33 using `from PACKAGE cimport MODULE` is broken
-    when `PACKAGE` is a namespace package, see :issue:`35322`::
-
-        sage: cython('''
-        ....: from sage.misc cimport cachefunc
-        ....: ''')
-        Traceback (most recent call last):
-        ...
-        RuntimeError: Error compiling Cython file:
-        ...
-        ...: 'sage/misc.pxd' not found
     """
     if not filename.endswith('pyx'):
         print("Warning: file (={}) should have extension .pyx".format(filename), file=sys.stderr)
