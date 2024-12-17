@@ -106,21 +106,21 @@ AUTHORS:
 #                  https://www.gnu.org/licenses/
 # **********************************************************************
 
-from sage.symbolic.expression import Expression
-from sage.rings.infinity import Infinity
-from sage.calculus.desolvers import desolve_system_rk4
-from sage.calculus.desolvers import desolve_odeint
+from random import shuffle
+
+from sage.arith.srange import srange
+from sage.calculus.desolvers import desolve_odeint, desolve_system_rk4
+from sage.calculus.interpolation import Spline
+from sage.ext.fast_callable import fast_callable
 from sage.manifolds.chart import Chart
 from sage.manifolds.differentiable.curve import DifferentiableCurve
 from sage.manifolds.differentiable.tangent_vector import TangentVector
-from sage.calculus.interpolation import Spline
 from sage.misc.decorators import options
 from sage.misc.functional import numerical_approx
 from sage.misc.lazy_import import lazy_import
-from sage.arith.srange import srange
-from sage.ext.fast_callable import fast_callable
+from sage.rings.infinity import Infinity
+from sage.symbolic.expression import Expression
 from sage.symbolic.ring import SR
-from random import shuffle
 
 lazy_import('scipy.integrate', 'ode')
 
@@ -857,9 +857,9 @@ class IntegratedCurve(DifferentiableCurve):
              Dx3_0*t + x3_0)
         """
 
-        from sage.calculus.var import function
-        from sage.calculus.functional import diff
         from sage.calculus.desolvers import desolve_system
+        from sage.calculus.functional import diff
+        from sage.calculus.var import function
         from sage.symbolic.assumptions import assume, forget
         from sage.symbolic.ring import var
 
@@ -1066,7 +1066,7 @@ class IntegratedCurve(DifferentiableCurve):
         t_min = self.domain().lower_bound()
         t_max = self.domain().upper_bound()
 
-        eqns_num = [eq for eq in self._equations_rhs]
+        eqns_num = list(self._equations_rhs)
         # 'self._equations_rhs' needs not to be modified ever, because we
         # want to keep track of the most general form of the equations
         # defining self, since those may contain parameters (which, for
@@ -1293,7 +1293,7 @@ class IntegratedCurve(DifferentiableCurve):
                 # of the system to be provided
 
                 if T.jacobian is None:
-                    def jacobian(t,y):
+                    def jacobian(t, y):
                         jac = []
                         par = self._curve_parameter
                         for i in range(dim):
@@ -2559,8 +2559,8 @@ class IntegratedCurve(DifferentiableCurve):
                 t += dt
 
             if display_tangent:
-                from sage.plot.graphics import Graphics
                 from sage.plot.arrow import arrow2d
+                from sage.plot.graphics import Graphics
                 from sage.plot.plot3d.shapes import arrow3d
 
                 scale = kwds.pop('scale')
@@ -2746,8 +2746,8 @@ class IntegratedCurve(DifferentiableCurve):
                 t += dt
 
             if display_tangent:
-                from sage.plot.graphics import Graphics
                 from sage.plot.arrow import arrow2d
+                from sage.plot.graphics import Graphics
                 from sage.plot.plot3d.shapes import arrow3d
 
                 scale = kwds.pop('scale')
@@ -2863,6 +2863,7 @@ class IntegratedCurve(DifferentiableCurve):
                              ambient_coords, thickness=thickness,
                              aspect_ratio=aspect_ratio, color=color,
                              style=style, label_axes=label_axes)
+
 
 class IntegratedAutoparallelCurve(IntegratedCurve):
     r"""
@@ -3647,6 +3648,7 @@ class IntegratedAutoparallelCurve(IntegratedCurve):
             print(description)
 
         return [self._equations_rhs, v0, chart]
+
 
 class IntegratedGeodesic(IntegratedAutoparallelCurve):
     r"""

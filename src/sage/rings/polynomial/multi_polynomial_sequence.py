@@ -301,7 +301,7 @@ def PolynomialSequence(arg1, arg2=None, immutable=False, cr=False, cr_str=None):
     except ImportError:
         BooleanMonomialMonoid = ()
 
-    is_ring = lambda r: isinstance(r, MPolynomialRing_base) or isinstance(r, BooleanMonomialMonoid) or (isinstance(r, QuotientRing_nc) and isinstance(r.cover_ring(), MPolynomialRing_base))
+    is_ring = lambda r: isinstance(r, (MPolynomialRing_base, BooleanMonomialMonoid)) or (isinstance(r, QuotientRing_nc) and isinstance(r.cover_ring(), MPolynomialRing_base))
 
     if is_ring(arg1):
         ring, gens = arg1, arg2
@@ -376,6 +376,7 @@ def PolynomialSequence(arg1, arg2=None, immutable=False, cr=False, cr_str=None):
         return PolynomialSequence_gf2(parts, ring, immutable=immutable, cr=cr, cr_str=cr_str)
     elif K.degree() > 1:
         return PolynomialSequence_gf2e(parts, ring, immutable=immutable, cr=cr, cr_str=cr_str)
+
 
 class PolynomialSequence_generic(Sequence_generic):
     def __init__(self, parts, ring, immutable=False, cr=False, cr_str=None):
@@ -856,7 +857,7 @@ class PolynomialSequence_generic(Sequence_generic):
             sage: F = F.subs(s); F                                                      # needs sage.rings.polynomial.pbori
             Polynomial Sequence with 40 Polynomials in 16 Variables
         """
-        return PolynomialSequence(self._ring, [tuple([f.subs(*args,**kwargs) for f in r]) for r in self._parts])
+        return PolynomialSequence(self._ring, [tuple([f.subs(*args, **kwargs) for f in r]) for r in self._parts])
 
     def _singular_(self):
         """
@@ -1257,6 +1258,7 @@ class PolynomialSequence_generic(Sequence_generic):
         """
         return self.ideal().basis_is_groebner()
 
+
 class PolynomialSequence_gf2(PolynomialSequence_generic):
     r"""
     Polynomial Sequences over `\GF{2}`.
@@ -1484,7 +1486,8 @@ class PolynomialSequence_gf2(PolynomialSequence_generic):
             g.reduction_strategy.opt_red_tail = True
             return g
 
-    def solve(self, algorithm='polybori', n=1,  eliminate_linear_variables=True, verbose=False, **kwds):
+    def solve(self, algorithm='polybori', n=1,
+              eliminate_linear_variables=True, verbose=False, **kwds):
         r"""
         Find solutions of this boolean polynomial system.
 

@@ -19,13 +19,15 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # *****************************************************************************
+from sage.manifolds.utilities import (
+    simplify_chain_generic,
+    simplify_chain_generic_sympy,
+    simplify_chain_real,
+    simplify_chain_real_sympy,
+)
+from sage.misc.latex import latex
 from sage.structure.sage_object import SageObject
 from sage.symbolic.ring import SR
-from sage.manifolds.utilities import (simplify_chain_real,
-                                      simplify_chain_generic,
-                                      simplify_chain_real_sympy,
-                                      simplify_chain_generic_sympy,)
-from sage.misc.latex import latex
 
 try:
     import sympy
@@ -172,7 +174,7 @@ class CalculusMethod(SageObject):
     """
     _default = 'SR'  # default calculus method
     _methods = ('SR', 'sympy')  # implemented methods
-    _tranf = {'SR':  _Sympy_to_SR, 'sympy': _SR_to_Sympy}  # translators
+    _tranf = {'SR': _Sympy_to_SR, 'sympy': _SR_to_Sympy}  # translators
 
     def __init__(self, current=None, base_field_type='real'):
         r"""

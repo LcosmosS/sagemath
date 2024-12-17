@@ -535,7 +535,8 @@ The components on the basis are returned by the square bracket operator for
 # ******************************************************************************
 from __future__ import annotations
 
-from typing import Generator, Optional
+from typing import Optional
+from collections.abc import Generator
 
 from sage.categories.fields import Fields
 from sage.categories.homset import Hom
@@ -1301,7 +1302,7 @@ class FiniteRankFreeModule(ReflexiveModule_base, FiniteRankFreeModule_abstract):
         self._dual_exterior_powers = {}
         # Set of all modules (tensor powers, exterior powers)
         # that depend on self's bases:
-        self._all_modules = set([self])
+        self._all_modules = {self}
         # List of known bases on the free module:
         self._known_bases = []
         self._def_basis = None # default basis
@@ -2716,7 +2717,7 @@ class FiniteRankFreeModule(ReflexiveModule_base, FiniteRankFreeModule_abstract):
         """
         return self.dual_exterior_power(1)
 
-    def irange(self, start: Optional[int] = None) -> Generator[int, None, None]:
+    def irange(self, start: int | None = None) -> Generator[int, None, None]:
         r"""
         Single index generator, labelling the elements of a basis of ``self``.
 

@@ -27,6 +27,7 @@ from sage.matrix.constructor import matrix
 from sage.modules.free_module_element import vector
 from sage.modules.with_basis.subquotient import SubmoduleWithBasis, QuotientModuleWithBasis
 
+
 class Representation_abstract:
     """
     Abstract base class for representations of semigroups.
@@ -685,8 +686,8 @@ class Representation_abstract:
             5
         """
         if not is_closed and gens:
-            R = self.base_ring()
-            repr_mats = [self.representation_matrix(g) for g in self._semigroup.gens()]
+            repr_mats = [self.representation_matrix(g)
+                         for g in self._semigroup.gens()]
             amb_dim = self.dimension()
             SM = matrix([v._vector_() for v in gens])
             SM.echelonize()
@@ -1489,7 +1490,7 @@ class Representation_Tensor(Representation_abstract, CombinatorialFreeModule_Ten
         reps = sum((module._sets if isinstance(module, Representation_Tensor) else (module,) for module in reps), ())
         if all('FiniteDimensional' in M.category().axioms() for M in reps):
             options['category'] = options['category'].FiniteDimensional()
-        return super(Representation_Tensor, cls).__classcall__(cls, reps, **options)
+        return super().__classcall__(cls, reps, **options)
 
     def __init__(self, reps, **options):
         r"""
@@ -2892,7 +2893,6 @@ class SchurFunctorRepresentation(Subrepresentation):
             keys = list(V.basis().keys())
 
         ambient = tensor([V]*d)
-        I = ambient.indices()
         cla = SymmetricGroupAlgebra(R, SymmetricGroup(d)).young_symmetrizer(shape)
         mc = cla.monomial_coefficients(copy=False)
         gens = [ambient.sum_of_terms((tuple([k[i-1] for i in p.tuple()]), coeff)
