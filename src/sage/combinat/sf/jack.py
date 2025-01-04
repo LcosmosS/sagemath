@@ -31,6 +31,7 @@ REFERENCES:
 # ****************************************************************************
 
 from sage.categories.modules_with_basis import ModulesWithBasis
+from sage.combinat.sf.sf import SymmetricFunctions
 from sage.structure.unique_representation import UniqueRepresentation
 from sage.rings.integer import Integer
 from sage.rings.rational_field import QQ
@@ -912,8 +913,8 @@ class JackPolynomials_p(JackPolynomials_generic):
             return
         self._self_to_m_cache[n] = {}
         t = QQt.gen()
-        monomial = sage.combinat.sf.sf.SymmetricFunctions(QQt).monomial()
-        JP = sage.combinat.sf.sf.SymmetricFunctions(QQt).jack().P()
+        monomial = SymmetricFunctions(QQt).monomial()
+        JP = SymmetricFunctions(QQt).jack().P()
         JP._gram_schmidt(n, monomial, lambda p: part_scalar_jack(p, p, t),
                          self._self_to_m_cache[n], upper_triangular=True)
         JP._invert_morphism(n, QQt, self._self_to_m_cache,
