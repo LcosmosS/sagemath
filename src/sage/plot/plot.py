@@ -3106,7 +3106,7 @@ def list_plot(data, plotjoined=False, **kwargs):
         sage: d['ymin']
         100.0
     """
-    from sage.plot.all import point
+    from sage.plot.point import point
     try:
         if not data:
             return Graphics()

@@ -30,8 +30,8 @@ REFERENCES:
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
 
+from sage.categories.modules_with_basis import ModulesWithBasis
 from sage.structure.unique_representation import UniqueRepresentation
-import sage.categories.all
 from sage.rings.integer import Integer
 from sage.rings.rational_field import QQ
 from sage.arith.misc import gcd
@@ -525,13 +525,13 @@ class JackPolynomials_generic(sfa.SymmetricFunctionAlgebra_generic):
         # common category BasesByOrthotriangularity (shared with Jack, HL, orthotriang, Mcdo)
         if hasattr(self, "_m_cache"):
             # temporary until Hom(GradedHopfAlgebrasWithBasis work better)
-            category = sage.categories.all.ModulesWithBasis(self._sym.base_ring())
+            category = ModulesWithBasis(self._sym.base_ring())
             self._m = self._sym.monomial()
             self   .register_coercion(SetMorphism(Hom(self._m, self, category), self._m_to_self))
             self._m.register_coercion(SetMorphism(Hom(self, self._m, category), self._self_to_m))
         if hasattr(self, "_h_cache"):
             # temporary until Hom(GradedHopfAlgebrasWithBasis work better)
-            category = sage.categories.all.ModulesWithBasis(self._sym.base_ring())
+            category = ModulesWithBasis(self._sym.base_ring())
             self._h = self._sym.homogeneous()
             self   .register_coercion(SetMorphism(Hom(self._h, self, category), self._h_to_self))
             self._h.register_coercion(SetMorphism(Hom(self, self._h, category), self._self_to_h))
@@ -1080,7 +1080,7 @@ class JackPolynomials_j(JackPolynomials_generic):
         # Should be shared with _q (and possibly other bases in Macdo/HL) as BasesByRenormalization
         self._P = self._jack.P()
         # temporary until Hom(GradedHopfAlgebrasWithBasis) works better
-        category = sage.categories.all.ModulesWithBasis(self.base_ring())
+        category = ModulesWithBasis(self.base_ring())
         phi = self.module_morphism(diagonal=self.c1,
                                    codomain=self._P, category=category)
         # should use module_morphism(on_coeffs = ...) once it exists
@@ -1116,7 +1116,7 @@ class JackPolynomials_q(JackPolynomials_generic):
         # Should be shared with _j (and possibly other bases in Macdo/HL) as BasesByRenormalization
         self._P = self._jack.P()
         # temporary until Hom(GradedHopfAlgebrasWithBasis) works better
-        category = sage.categories.all.ModulesWithBasis(self.base_ring())
+        category = ModulesWithBasis(self.base_ring())
         phi = self._P.module_morphism(diagonal=self._P.scalar_jack_basis,
                                       codomain=self, category=category)
         self.register_coercion(self._normalize_morphism(category) * phi)
@@ -1348,7 +1348,7 @@ class SymmetricFunctionAlgebra_zonal(sfa.SymmetricFunctionAlgebra_generic):
         #self._self_to_m_cache = {} and we don't need to compute it separately for zonals
         sfa.SymmetricFunctionAlgebra_generic.__init__(self, self._sym,
                                                       prefix='Z', basis_name='zonal')
-        category = sage.categories.all.ModulesWithBasis(self._sym.base_ring())
+        category = ModulesWithBasis(self._sym.base_ring())
         self   .register_coercion(SetMorphism(Hom(self._P, self, category), self.sum_of_terms))
         self._P.register_coercion(SetMorphism(Hom(self, self._P, category), self._P.sum_of_terms))
 
