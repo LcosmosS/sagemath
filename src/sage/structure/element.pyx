@@ -817,9 +817,9 @@ cdef class Element(SageObject):
             ngens = parent.ngens()
         except (AttributeError, NotImplementedError, TypeError):
             return self
-        variables=[]
-        # use "gen" instead of "gens" as a ParentWithGens is not
-        # required to have the latter
+        variables = []
+
+        # using gen instead of gens
         for i in range(ngens):
             gen = parent.gen(i)
             if str(gen) in kwds:
@@ -4737,6 +4737,7 @@ def coerce_binop(method):
         TypeError: algorithm 1 not supported
     """
     @sage_wraps(method)
+    @cython.binding(True)
     def new_method(self, other, *args, **kwargs):
         if have_same_parent(self, other):
             return method(self, other, *args, **kwargs)
