@@ -275,7 +275,7 @@ class PolynomialRing_generic(Ring):
             and Category of commutative algebras over
               (finite enumerated fields and subquotients of monoids
                and quotients of semigroups)
-            and Category of infinite sets
+            and Category of infinite enumerated sets
 
         TESTS:
 
@@ -1051,7 +1051,7 @@ class PolynomialRing_generic(Ring):
             sage: [*R]
             [0]
             sage: R.<x> = QQ[]
-            sage: list(islice(iter(R), 10))
+            sage: list(islice(iter(R), 10))  # when this is implemented add Enumerated() to category(R)
             Traceback (most recent call last):
             ...
             NotImplementedError: iteration over infinite base ring not yet implemented

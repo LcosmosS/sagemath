@@ -892,6 +892,7 @@ def _multi_variate(base_ring, names, sparse=None, order='degrevlex', implementat
 from sage import categories
 from sage.categories.algebras import Algebras
 # Some fixed categories, in order to avoid the function call overhead
+_EnumeratedSets = categories.sets_cat.Sets().Enumerated()
 _FiniteSets = categories.sets_cat.Sets().Finite()
 _InfiniteSets = categories.sets_cat.Sets().Infinite()
 _EuclideanDomains = categories.euclidean_domains.EuclideanDomains()
@@ -938,12 +939,27 @@ def polynomial_default_category(base_ring_category, n_variables):
         True
         sage: QQ['s']['t'].category() is UniqueFactorizationDomains() & CommutativeAlgebras(QQ['s'].category()).WithBasis().Infinite()
         True
+
+    TESTS::
+
+        sage: category(GF(7)['x'])
+        Join of Category of euclidean domains
+         and Category of algebras with basis over
+          (finite enumerated fields and subquotients of monoids
+           and quotients of semigroups)
+        and Category of commutative algebras over
+          (finite enumerated fields and subquotients of monoids
+           and quotients of semigroups)
+        and Category of infinite enumerated sets
     """
     category = Algebras(base_ring_category).WithBasis()
 
     if n_variables:
         # here we assume the base ring to be nonzero
         category = category.Infinite()
+        if base_ring_category.is_subcategory(_FiniteSets) and n_variables == 1:
+            # base_ring_category.is_subcategory(_EnumeratedSets) suffices but this is not yet implemented
+            category = category.Enumerated()
     else:
         if base_ring_category.is_subcategory(_Fields):
             category = category & _Fields
