@@ -1097,9 +1097,14 @@ class PolynomialRing_generic(Ring):
             sage: R.<x> = Integers(1)[]
             sage: R.cardinality()
             1
+
+        TESTS::
+
+            sage: R.cardinality().parent()
+            Integer Ring
         """
         if self.base_ring().is_zero():
-            return 1
+            return ZZ.one()
         from sage.rings.infinity import Infinity
         return Infinity
 
