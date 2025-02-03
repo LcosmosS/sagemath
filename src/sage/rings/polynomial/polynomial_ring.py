@@ -288,7 +288,7 @@ class PolynomialRing_generic(Ring):
         Check that category for zero ring::
 
             sage: PolynomialRing(Zmod(1), 'x').category()
-            Category of finite commutative rings
+            Category of finite enumerated commutative rings
 
         Check ``is_finite`` inherited from category (:issue:`24432`)::
 
@@ -307,7 +307,7 @@ class PolynomialRing_generic(Ring):
         # We trust that, if category is given, it is useful and does not need to be joined
         # with the default category
         if base_ring.is_zero():
-            category = categories.rings.Rings().Commutative().Finite()
+            category = categories.rings.Rings().Commutative().Finite().Enumerated()
         else:
             defaultcat = polynomial_default_category(base_ring.category(), 1)
             category = check_default_category(defaultcat, category)
@@ -1082,31 +1082,6 @@ class PolynomialRing_generic(Ring):
                 v[n] = next(iters[n])
                 assert v[n] == zero
                 n += 1
-
-    def cardinality(self):
-        """
-        Return the cardinality of the polynomial ring.
-
-        OUTPUT: either an integer or ``+Infinity``
-
-        EXAMPLES::
-
-            sage: R.<x> = ZZ[]
-            sage: R.cardinality()
-            +Infinity
-            sage: R.<x> = Integers(1)[]
-            sage: R.cardinality()
-            1
-
-        TESTS::
-
-            sage: R.cardinality().parent()
-            Integer Ring
-        """
-        if self.base_ring().is_zero():
-            return ZZ.one()
-        from sage.rings.infinity import Infinity
-        return Infinity
 
     def _repr_(self):
         try:
