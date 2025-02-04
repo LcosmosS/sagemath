@@ -2519,34 +2519,34 @@ class LazyPowerSeriesRing(LazySeriesRing):
 
             sage: L = LazyPowerSeriesRing(ZZ, 'z')
             sage: L.some_elements()[:6]
-            [0,
-             1,
-             z + z^2 + z^3 + O(z^4),
-             z + 3*z^2 + 3*z^3 + z^4,
+            [0, 1, z + z^2 + z^3 + O(z^4),
              -12 - 8*z + z^2 + z^3,
-             1 + z - 2*z^2 - 7*z^3 - z^4 + 20*z^5 + 23*z^6 + O(z^7)]
+             1 + z - 2*z^2 - 7*z^3 - z^4 + 20*z^5 + 23*z^6 + O(z^7),
+             z + 4*z^2 + 9*z^3 + 16*z^4 + 25*z^5 + 36*z^6 + O(z^7)]
 
             sage: L = LazyPowerSeriesRing(GF(3)["q"], 'z')
             sage: L.some_elements()[:6]
-            [0, 1, z, z + z^4, z + z^2 + z^3, 1 + z + z^2 + 2*z^3 + 2*z^4 + 2*z^5 + O(z^6)]
+            [0, 1, z + q*z^2 + q*z^3 + q*z^4 + O(z^5),
+             z + z^2 + z^3,
+             1 + z + z^2 + 2*z^3 + 2*z^4 + 2*z^5 + O(z^6),
+             z + z^2 + z^4 + z^5 + O(z^7)]
 
             sage: L = LazyPowerSeriesRing(GF(3), 'q, t')
             sage: L.some_elements()[:6]
-            [0,
-             1,
-             q,
-             q + q^4,
+            [0, 1, q,
              q + q^2 + q^3,
-             1 + q + q^2 - q^3 - q^4 - q^5 - q^6 + O(q,t)^7]
+             1 + q + q^2 - q^3 - q^4 - q^5 - q^6 + O(q,t)^7,
+             1 + (q+t) + (q^2-q*t+t^2) + (q^3+t^3) + (q^4+q^3*t+q*t^3+t^4)
+             + (q^5-q^4*t+q^3*t^2+q^2*t^3-q*t^4+t^5) + (q^6-q^3*t^3+t^6) + O(q,t)^7]
         """
         z = self.gen(0)
         elts = [self.zero(), self.one(), self.an_element()]
         if self._arity == 1:
-            elts.extend([z*(z+1)**3, (z-3)*(2+z)**2, (1 - 2*z**3)/(1 - z + 3*z**2), self(lambda n: n**2)])
+            elts.extend([(z-3)*(2+z)**2, (1 - 2*z**3)/(1 - z + 3*z**2), self(lambda n: n**2)])
         else:
             PR = self._laurent_poly_ring
             sum_gens = PR.sum(PR.gens())
-            elts.extend([z*(z+1)**3, (z-3)*(2+z)**2, (1 - 2*z**3)/(1 - z + 3*z**2), self(lambda n: sum_gens**n)])
+            elts.extend([(z-3)*(2+z)**2, (1 - 2*z**3)/(1 - z + 3*z**2), self(lambda n: sum_gens**n)])
         return elts
 
     def taylor(self, f):
