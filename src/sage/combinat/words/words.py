@@ -332,7 +332,37 @@ class FiniteWords(AbstractLanguage):
         sage: W = FiniteWords('ab')
         sage: W
         Finite words over {'a', 'b'}
+
+    TESTS::
+
+        sage: FiniteWords('ab').is_finite()
+        False
+        sage: FiniteWords([]).is_finite()
+        True
     """
+
+    def __init__(self, alphabet=None, category=None):
+        if category is None:
+            category = Sets()
+        if alphabet:
+            category = category.Infinite()
+        else:
+            category = category.Finite()
+        super().__init__(alphabet, category)
+
+    def is_empty(self):
+        """
+        Return False, because the empty word is in the set.
+
+        TESTS::
+
+            sage: FiniteWords('ab').is_empty()
+            False
+            sage: FiniteWords([]).is_empty()
+            False
+        """
+        return False
+
     def cardinality(self):
         r"""
         Return the cardinality of this set.
