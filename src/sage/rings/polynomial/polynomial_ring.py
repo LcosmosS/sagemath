@@ -1073,6 +1073,7 @@ class PolynomialRing_generic(Ring):
             from sage.rings.semirings.non_negative_integer_semiring import NN
             from sage.sets.set import Set
             R_nonzero = Set(R) - Set([zero])
+
             def polynomials_with_degree(d):
                 """
                 Return the family of polynomials with degree exactly ``d``.
@@ -1080,6 +1081,7 @@ class PolynomialRing_generic(Ring):
                 nonlocal self, R, R_nonzero
                 return Family(cartesian_product([R] * d + [R_nonzero]),
                               lambda t: self([*t]), lazy=True)
+
             yield from DisjointUnionEnumeratedSets(Family(NN, polynomials_with_degree))
             assert False, "this should not be reached"
 
