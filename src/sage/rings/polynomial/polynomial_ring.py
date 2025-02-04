@@ -265,7 +265,7 @@ class PolynomialRing_generic(Ring):
               (Dedekind domains and euclidean domains
                and noetherian rings and infinite enumerated sets
                and metric spaces)
-             and Category of infinite sets
+             and Category of infinite enumerated sets
 
             sage: category(GF(7)['x'])
             Join of Category of euclidean domains
@@ -1051,22 +1051,38 @@ class PolynomialRing_generic(Ring):
             sage: [*R]
             [0]
             sage: R.<x> = QQ[]
-            sage: list(islice(iter(R), 10))  # when this is implemented add Enumerated() to category(R)
-            Traceback (most recent call last):
-            ...
-            NotImplementedError: iteration over infinite base ring not yet implemented
+            sage: l = list(islice(iter(R), 50)); l
+            [0, 1, -1, x, 1/2, x + 1, x^2, -1/2, -x, x^2 + 1, x^3, 2, x - 1, ...]
+            sage: len(set(l))
+            50
         """
-        # adapted from sage.modules.free_module.FreeModule_generic.__iter__
         R = self.base_ring()
-        if R.cardinality() == Infinity:
-            raise NotImplementedError("iteration over infinite base ring not yet implemented")
+        # adapted from sage.modules.free_module.FreeModule_generic.__iter__
         iters = []
-        zero = R.zero()
         v = []
         n = 0
         yield self.zero()
         if R.is_zero():
             return
+
+        zero = R.zero()
+        if R.cardinality() == Infinity:
+            from sage.categories.sets_cat import cartesian_product
+            from sage.sets.disjoint_union_enumerated_sets import DisjointUnionEnumeratedSets
+            from sage.sets.family import Family
+            from sage.rings.semirings.non_negative_integer_semiring import NN
+            from sage.sets.set import Set
+            R_nonzero = Set(R) - Set([zero])
+            def polynomials_with_degree(d):
+                """
+                Return the family of polynomials with degree exactly ``d``.
+                """
+                nonlocal self, R, R_nonzero
+                return Family(cartesian_product([R] * d + [R_nonzero]),
+                              lambda t: self([*t]), lazy=True)
+            yield from DisjointUnionEnumeratedSets(Family(NN, polynomials_with_degree))
+            assert False, "this should not be reached"
+
         while True:
             if n == len(iters):
                 iters.append(iter(R))
