@@ -1657,7 +1657,7 @@ class Category(UniqueRepresentation, SageObject):
             True
             sage: Algebras(QQ).parent_class is Algebras(ZZ).parent_class
             False
-            sage: Algebras(ZZ['t']).parent_class is Algebras(ZZ['t','x']).parent_class
+            sage: Algebras(ZZ['t']).parent_class is Algebras(ZZ['x']).parent_class
             True
 
         See :class:`CategoryWithParameters` for an abstract base class for
@@ -1702,7 +1702,7 @@ class Category(UniqueRepresentation, SageObject):
             True
             sage: Algebras(QQ).element_class is Algebras(ZZ).element_class
             False
-            sage: Algebras(ZZ['t']).element_class is Algebras(ZZ['t','x']).element_class
+            sage: Algebras(ZZ['t']).element_class is Algebras(ZZ['x']).element_class
             True
 
         These classes are constructed with ``__slots__ = ()``, so
