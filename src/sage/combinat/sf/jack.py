@@ -31,7 +31,6 @@ REFERENCES:
 # ****************************************************************************
 
 from sage.categories.modules_with_basis import ModulesWithBasis
-from sage.combinat.sf.sf import SymmetricFunctions
 from sage.structure.unique_representation import UniqueRepresentation
 from sage.rings.integer import Integer
 from sage.rings.rational_field import QQ
@@ -909,6 +908,8 @@ class JackPolynomials_p(JackPolynomials_generic):
              ([3],
               [([1, 1, 1], 3/(t^2 + 3/2*t + 1/2)), ([2, 1], 3/2/(t + 1/2)), ([3], 1)])]
         """
+        from sage.combinat.sf.sf import SymmetricFunctions
+
         if n in self._self_to_m_cache:
             return
         self._self_to_m_cache[n] = {}
