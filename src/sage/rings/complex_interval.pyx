@@ -53,6 +53,7 @@ heavily modified:
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
+from typing import TYPE_CHECKING
 
 from cpython.object cimport Py_LT, Py_LE, Py_EQ, Py_NE, Py_GT, Py_GE
 from cysignals.signals cimport sig_on, sig_off
@@ -73,6 +74,8 @@ from sage.rings.real_mpfr cimport RealNumber
 from sage.rings.convert.mpfi cimport mpfi_set_sage
 from sage.rings.infinity import infinity
 
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 def is_ComplexIntervalFieldElement(x):
     """
@@ -1002,7 +1005,7 @@ cdef class ComplexIntervalFieldElement(FieldElement):
         """
         raise TypeError
 
-    def _sage_input_(self, sib, coerce):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 

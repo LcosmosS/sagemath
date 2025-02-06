@@ -173,6 +173,8 @@ AUTHORS:
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
 
+from __future__ import annotations
+
 from sage.misc.lazy_import import lazy_import
 
 lazy_import('sage.rings.real_mpfi', 'RealIntervalFieldElement')
@@ -593,7 +595,7 @@ class SageInputBuilder:
         """
         return SIE_literal_stringrep(self, n)
 
-    def name(self, n):
+    def name(self, n) -> SageInputExpression:
         r"""
         Given a string representing a Python name,
         produces a :class:`SageInputExpression` for that name.

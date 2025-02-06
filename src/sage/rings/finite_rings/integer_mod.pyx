@@ -67,6 +67,7 @@ TESTS::
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
+from typing import TYPE_CHECKING
 
 from cysignals.signals cimport sig_on, sig_off, sig_check
 
@@ -115,6 +116,8 @@ from sage.structure.parent cimport Parent
 from sage.arith.misc import CRT as crt
 from sage.arith.functions import lcm
 
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 cdef Integer one_Z = Integer(1)
 
@@ -610,7 +613,7 @@ cdef class IntegerMod_abstract(FiniteRingElement):
 
     _fricas_init_ = _axiom_init_
 
-    def _sage_input_(self, sib, coerced):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when
         evaluated.

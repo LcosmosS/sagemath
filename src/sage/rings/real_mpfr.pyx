@@ -121,6 +121,7 @@ import math  # for log
 import operator
 import re
 import sys
+from typing import TYPE_CHECKING
 
 from cpython.object cimport Py_NE, Py_EQ
 from cysignals.signals cimport sig_on, sig_off
@@ -155,6 +156,9 @@ from sage.libs.mpmath.utils cimport mpfr_to_mpfval
 from sage.rings.integer cimport Integer
 from sage.rings.rational cimport Rational
 from sage.rings.real_double cimport RealDoubleElement
+
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 try:
     from cypari2 import Gen
@@ -595,7 +599,7 @@ cdef class RealField_class(sage.rings.abc.RealField):
         """
         return "\\Bold{R}"
 
-    def _sage_input_(self, sib, coerce):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when
         evaluated.
@@ -1685,7 +1689,7 @@ cdef class RealNumber(sage.structure.element.RingElement):
         """
         return self.str(10, e='*^')
 
-    def _sage_input_(self, sib, coerced):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 

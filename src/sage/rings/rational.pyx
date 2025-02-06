@@ -59,6 +59,7 @@ TESTS::
 cimport cython
 from cpython cimport *
 from cpython.object cimport Py_EQ, Py_NE
+from typing import TYPE_CHECKING
 
 from cysignals.signals cimport sig_on, sig_off
 
@@ -79,6 +80,8 @@ from sage.structure.element cimport Element
 from sage.structure.parent cimport Parent
 from sage.structure.richcmp cimport rich_to_bool_sgn
 
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 RealNumber_classes = ()
 
@@ -3838,7 +3841,7 @@ cdef class Rational(sage.structure.element.FieldElement):
         """
         return '%s/%s'%(self.numerator(), self.denominator())
 
-    def _sage_input_(self, sib, coerced):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 

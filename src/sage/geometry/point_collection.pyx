@@ -75,6 +75,7 @@ need to spend time and memory four times.
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
+from typing import TYPE_CHECKING
 
 from sage.structure.sage_object cimport SageObject
 from sage.structure.richcmp cimport richcmp_not_equal, richcmp
@@ -83,6 +84,8 @@ from sage.geometry.toric_lattice import ToricLattice
 from sage.matrix.constructor import matrix
 from sage.misc.latex import latex
 
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 def is_PointCollection(x):
     r"""
@@ -172,7 +175,7 @@ cdef class PointCollection(SageObject):
         self._points = tuple(points)
         self._module = self._points[0].parent() if module is None else module
 
-    def _sage_input_(self, sib, coerced):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Return Sage command to reconstruct ``self``.
 

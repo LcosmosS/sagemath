@@ -97,6 +97,7 @@ AUTHORS:
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
 
+from typing import TYPE_CHECKING
 from sage.structure.richcmp import richcmp, richcmp_method
 from sage.structure.parent import Parent
 from sage.structure.unique_representation import UniqueRepresentation
@@ -109,6 +110,8 @@ from sage.rings.infinity import infinity, minus_infinity
 from sage.misc.superseded import deprecated_function_alias
 from heapq import merge
 
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 @richcmp_method
 class InternalRealInterval(UniqueRepresentation, Parent):
@@ -2636,7 +2639,7 @@ class RealSet(UniqueRepresentation, Parent, Set_base,
         overlap_generator = RealSet._scan_to_intervals(scan, lambda i: i > 1)
         return next(overlap_generator, None) is None
 
-    def _sage_input_(self, sib, coerced):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         """
         Produce an expression which will reproduce this value when evaluated.
 

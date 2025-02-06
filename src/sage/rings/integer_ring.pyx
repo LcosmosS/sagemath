@@ -46,6 +46,7 @@ other types will also coerce to the integers, when it makes sense.
 from cpython.long cimport *
 from cpython.list cimport *
 from cpython.object cimport Py_NE
+from typing import TYPE_CHECKING
 
 from cysignals.signals cimport sig_check, sig_on, sig_off
 
@@ -69,6 +70,9 @@ from sage.misc.randstate cimport randstate, current_randstate, SAGE_RAND_MAX
 cimport sage.rings.integer as integer
 
 from sage.rings import ring
+
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 arith = None
 cdef void late_import() noexcept:
@@ -1526,7 +1530,7 @@ cdef class IntegerRing_class(CommutativeRing):
         sympy_init()
         return Integers
 
-    def _sage_input_(self, sib, coerced):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when
         evaluated.

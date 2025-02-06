@@ -121,6 +121,7 @@ AUTHORS:
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
 
+from typing import TYPE_CHECKING
 from sage.misc.lazy_import import lazy_import
 lazy_import('sage.combinat.posets.posets', 'FinitePoset')
 from sage.arith.misc import GCD as gcd
@@ -168,6 +169,9 @@ from subprocess import Popen, PIPE
 from warnings import warn
 from functools import reduce
 from io import IOBase, StringIO
+
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 
 class SetOfAllLatticePolytopesClass(Set_generic):
@@ -572,7 +576,7 @@ class LatticePolytopeClass(ConvexSet_compact, Hashable, sage.geometry.abc.Lattic
             self._ambient_facet_indices = tuple(ambient_facet_indices)
             self._vertices = ambient.vertices(self._ambient_vertex_indices)
 
-    def _sage_input_(self, sib, coerced):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         """
         Return Sage command to reconstruct ``self``.
 
@@ -4443,7 +4447,7 @@ class NefPartition(SageObject, Hashable):
             pass
         return result
 
-    def _sage_input_(self, sib, coerced):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         """
         Return Sage command to reconstruct ``self``.
 

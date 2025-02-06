@@ -53,6 +53,7 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
+from typing import TYPE_CHECKING
 
 cdef ZZ, QQ, RR, CC, RDF, CDF
 
@@ -129,6 +130,9 @@ from sage.categories.morphism cimport Morphism
 
 from sage.misc.superseded import deprecation_cython as deprecation, deprecated_function_alias
 from sage.misc.cachefunc import cached_method
+
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 cpdef is_Polynomial(f):
     """
@@ -3204,7 +3208,7 @@ cdef class Polynomial(CommutativePolynomial):
             return "0"
         return s[1:].lstrip().rstrip()
 
-    def _sage_input_(self, sib, coerced):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when
         evaluated.

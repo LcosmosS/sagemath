@@ -31,6 +31,7 @@ AUTHORS:
 # ****************************************************************************
 import re
 import weakref
+from typing import TYPE_CHECKING
 
 import sage.misc.misc
 
@@ -51,6 +52,9 @@ from sage.rings.real_mpfr cimport RealNumber
 
 from sage.libs.mpmath.utils cimport mpfr_to_mpfval
 from sage.rings.integer_ring import ZZ
+
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 cimport gmpy2
 gmpy2.import_gmpy2()
@@ -644,7 +648,7 @@ class ComplexField_class(sage.rings.abc.ComplexField):
         """
         return "\\Bold{C}"
 
-    def _sage_input_(self, sib, coerce):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 
@@ -1070,7 +1074,7 @@ cdef class ComplexNumber(sage.structure.element.FieldElement):
         else:
             return numpy_object_interface
 
-    def _sage_input_(self, sib, coerced):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 

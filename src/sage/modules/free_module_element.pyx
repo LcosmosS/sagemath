@@ -111,6 +111,7 @@ This is a test from :issue:`20211`::
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
+from typing import TYPE_CHECKING
 
 cimport cython
 from cpython.slice cimport PySlice_GetIndicesEx
@@ -133,6 +134,8 @@ from sage.arith.numerical_approx cimport digits_to_bits
 __one__ = smallInteger(1)
 __two__ = smallInteger(2)
 
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 def is_FreeModuleElement(x):
     """
@@ -1248,7 +1251,7 @@ cdef class FreeModuleElement(Vector):   # abstract base class
             return self
         return self.change_ring(R)
 
-    def _sage_input_(self, sib, coerce):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 

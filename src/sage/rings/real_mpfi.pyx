@@ -274,6 +274,7 @@ TESTS::
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
 
+from typing import TYPE_CHECKING
 from libc.string cimport strlen
 from cpython.mem cimport *
 from cpython.object cimport Py_EQ, Py_NE, Py_LT, Py_LE, Py_GT, Py_GE
@@ -309,6 +310,10 @@ from sage.cpython.string cimport char_to_str, bytes_to_str
 
 from sage.misc.superseded import deprecation
 import sage.rings.infinity
+
+if TYPE_CHECKING:
+    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
+
 
 # ****************************************************************************
 #
@@ -655,7 +660,7 @@ cdef class RealIntervalField_class(sage.rings.abc.RealIntervalField):
         """
         return "\\Bold{I} \\Bold{R}"
 
-    def _sage_input_(self, sib, coerce):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 
@@ -1392,7 +1397,7 @@ cdef class RealIntervalFieldElement(RingElement):
         """
         raise TypeError
 
-    def _sage_input_(self, sib, coerce):
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 
