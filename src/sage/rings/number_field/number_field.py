@@ -220,7 +220,6 @@ from sage.rings.number_field.number_field_element_quadratic import (
     is_sqrt_disc,
     Q_to_quadratic_field_element,
     Z_to_quadratic_field_element,
-    NumberFieldElement_quadratic,
     NumberFieldElement_gaussian,
     OrderElement_quadratic,
 )
@@ -228,7 +227,8 @@ from sage.rings.number_field.number_field_ideal import (
     NumberFieldIdeal,
     NumberFieldFractionalIdeal,
 )
-from sage.libs.pari.all import pari, pari_gen
+from sage.libs.pari import pari
+from cypari2.gen import Gen as pari_gen
 
 from sage.rings.rational_field import QQ
 from sage.rings.integer_ring import ZZ
