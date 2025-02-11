@@ -46,7 +46,6 @@ other types will also coerce to the integers, when it makes sense.
 from cpython.long cimport *
 from cpython.list cimport *
 from cpython.object cimport Py_NE
-from typing import TYPE_CHECKING
 
 from cysignals.signals cimport sig_check, sig_on, sig_off
 
@@ -66,13 +65,12 @@ from sage.structure.richcmp cimport rich_to_bool
 
 from sage.misc.misc_c import prod
 from sage.misc.randstate cimport randstate, current_randstate, SAGE_RAND_MAX
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 cimport sage.rings.integer as integer
 
 from sage.rings import ring
 
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 arith = None
 cdef void late_import() noexcept:

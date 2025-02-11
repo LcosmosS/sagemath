@@ -274,7 +274,6 @@ TESTS::
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
 
-from typing import TYPE_CHECKING
 from libc.string cimport strlen
 from cpython.mem cimport *
 from cpython.object cimport Py_EQ, Py_NE, Py_LT, Py_LE, Py_GT, Py_GE
@@ -309,11 +308,8 @@ import operator
 from sage.cpython.string cimport char_to_str, bytes_to_str
 
 from sage.misc.superseded import deprecation
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 import sage.rings.infinity
-
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
-
 
 # ****************************************************************************
 #

@@ -18,15 +18,12 @@ TESTS::
 # (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-from typing import TYPE_CHECKING
-
 from cpython.sequence cimport PySequence_Fast
 
 import sage.modules.free_module
 from sage.structure.coerce cimport coercion_model
 
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 cdef class Matrix(Matrix0):
     ###################################################

@@ -53,7 +53,6 @@ heavily modified:
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
-from typing import TYPE_CHECKING
 
 from cpython.object cimport Py_LT, Py_LE, Py_EQ, Py_NE, Py_GT, Py_GE
 from cysignals.signals cimport sig_on, sig_off
@@ -65,6 +64,7 @@ from sage.libs.flint.fmpz cimport *
 from sage.libs.mpfr cimport MPFR_RNDU
 from sage.arith.constants cimport LOG_TEN_TWO_PLUS_EPSILON
 
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 from sage.structure.element cimport FieldElement
 from sage.structure.parent cimport Parent
 from sage.rings.complex_mpfr cimport ComplexNumber
@@ -74,8 +74,6 @@ from sage.rings.real_mpfr cimport RealNumber
 from sage.rings.convert.mpfi cimport mpfi_set_sage
 from sage.rings.infinity import infinity
 
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 def is_ComplexIntervalFieldElement(x):
     """

@@ -121,7 +121,6 @@ import math  # for log
 import operator
 import re
 import sys
-from typing import TYPE_CHECKING
 
 from cpython.object cimport Py_NE, Py_EQ
 from cysignals.signals cimport sig_on, sig_off
@@ -143,6 +142,7 @@ from sage.libs.gmp.pylong cimport mpz_set_pylong
 from sage.libs.mpfr cimport *
 from sage.libs.mpmath.utils cimport mpfr_to_mpfval
 from sage.misc.randstate cimport randstate, current_randstate
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 from sage.structure.element cimport Element
 from sage.structure.parent cimport Parent
@@ -155,10 +155,7 @@ from sage.libs.mpmath.utils cimport mpfr_to_mpfval
 
 from sage.rings.integer cimport Integer
 from sage.rings.rational cimport Rational
-from sage.rings.real_double cimport RealDoubleElement
-
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
+from sage.rings.real_double cimport RealDoubleElementś
 
 try:
     from cypari2 import Gen

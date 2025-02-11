@@ -31,9 +31,9 @@ AUTHORS:
 # ****************************************************************************
 import re
 import weakref
-from typing import TYPE_CHECKING
 
 import sage.misc.misc
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 from sage.libs.mpfr cimport *
 
@@ -52,9 +52,6 @@ from sage.rings.real_mpfr cimport RealNumber
 
 from sage.libs.mpmath.utils cimport mpfr_to_mpfval
 from sage.rings.integer_ring import ZZ
-
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 cimport gmpy2
 gmpy2.import_gmpy2()

@@ -30,7 +30,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 #*****************************************************************************
-from typing import TYPE_CHECKING
 
 cimport cython
 from cysignals.signals cimport sig_check
@@ -40,11 +39,9 @@ from sage.categories.finite_fields import FiniteFields
 from sage.misc.persist import register_unpickle_override
 from sage.misc.cachefunc import cached_method
 from sage.misc.prandom import randrange
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 from sage.rings.integer cimport Integer
 import sage.rings.abc
-
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 # Copied from sage.misc.fast_methods, used in __hash__() below.
 cdef int SIZEOF_VOID_P_SHIFT = 8*sizeof(void *) - 4

@@ -67,7 +67,6 @@ TESTS::
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
-from typing import TYPE_CHECKING
 
 from cysignals.signals cimport sig_on, sig_off, sig_check
 
@@ -110,14 +109,13 @@ from sage.categories.morphism cimport Morphism
 from sage.categories.map cimport Map
 
 from sage.misc.persist import register_unpickle_override
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 from sage.structure.parent cimport Parent
 
 from sage.arith.misc import CRT as crt
 from sage.arith.functions import lcm
 
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 cdef Integer one_Z = Integer(1)
 

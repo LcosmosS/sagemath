@@ -40,7 +40,6 @@ Test NumPy conversions::
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
 
-from typing import TYPE_CHECKING
 cimport libc.math
 from libc.string cimport memcpy
 from cpython.object cimport *
@@ -61,13 +60,12 @@ from sage.rings.integer_ring import ZZ
 from sage.categories.morphism cimport Morphism
 from sage.structure.coerce cimport is_numpy_type
 from sage.misc.randstate cimport randstate, current_randstate
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 from sage.structure.richcmp cimport rich_to_bool
 from sage.arith.constants cimport *
 
 cimport gmpy2
 
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 new_gen_from_real_double_element = None
 

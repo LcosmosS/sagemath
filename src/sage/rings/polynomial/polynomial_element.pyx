@@ -53,7 +53,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
-from typing import TYPE_CHECKING
 
 cdef ZZ, QQ, RR, CC, RDF, CDF
 
@@ -128,11 +127,9 @@ from sage.misc.cachefunc import cached_function
 from sage.categories.map cimport Map
 from sage.categories.morphism cimport Morphism
 
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 from sage.misc.superseded import deprecation_cython as deprecation, deprecated_function_alias
 from sage.misc.cachefunc import cached_method
-
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 cpdef is_Polynomial(f):
     """

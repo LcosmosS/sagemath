@@ -144,7 +144,6 @@ AUTHORS:
 # creation and deletion are setup by the call to hook_fast_tp_functions
 
 cimport cython
-from typing import TYPE_CHECKING
 from libc.math cimport (ldexp, sqrt as sqrt_double, isnan)
 from libc.string cimport memcpy
 from libc.limits cimport LONG_MAX
@@ -186,8 +185,7 @@ from sage.structure.richcmp cimport rich_to_bool_sgn
 
 from sage.rings import integer_ring
 
-if TYPE_CHECKING:
-    from sage.misc.sage_input import SageInputBuilder, SageInputExpression
+from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
 cimport gmpy2
 gmpy2.import_gmpy2()
