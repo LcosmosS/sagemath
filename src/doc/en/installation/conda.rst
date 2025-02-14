@@ -9,48 +9,32 @@ SageMath can be installed on Linux and macOS via Conda from the
 Both the ``x86_64`` (Intel) architecture and the ``arm64``/``aarch64``
 architectures (including Apple Silicon, M1, M2, M3, M4) are supported.
 
-You will need a working Conda installation: either Miniforge (or Mambaforge),
-Miniconda or Anaconda. If you don't have one yet, we recommend installing
-`Miniforge <https://github.com/conda-forge/miniforge>`_ as
-follows. In a terminal,
+You will need a working Conda installation: either Miniforge, Miniconda or
+Anaconda. If you don't have one yet, we recommend installing `Miniforge
+<https://github.com/conda-forge/miniforge>`_ as follows. In a terminal,
 
 .. code-block:: shell
 
-   $ curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-   $ bash Miniforge3-$(uname)-$(uname -m).sh
+    $ curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+    $ bash Miniforge3-$(uname)-$(uname -m).sh
 
-* Miniforge (and Mambaforge) use conda-forge as the default channel.
-
-* If you are using Miniconda or Anaconda, set it up to use conda-forge:
+* Miniforge uses conda-forge as the default channel. However, if you are using
+  Miniconda or Anaconda, set it up to use conda-forge:
 
   * Add the conda-forge channel: ``conda config --add channels conda-forge``
 
   * Change channel priority to strict: ``conda config --set channel_priority strict``
-
-If you installed Miniforge (or Mambaforge), we recommend to use
-`mamba <https://mamba.readthedocs.io/en/latest/index.html>`_ in the following,
-which uses a faster dependency solver than ``conda``.
 
 .. _sec-installation-conda-binary:
 
 Installing all of SageMath from conda (not for development)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Create a new conda environment containing SageMath, either with ``mamba`` or ``conda``:
+Create a new conda environment containing SageMath:
 
-.. tab:: mamba
+.. code-block:: shell
 
-  .. code-block:: shell
-
-      $ mamba create -n sage sage python=X
-
-.. tab:: conda
-
-  .. code-block:: shell
-
-      $ conda create -n sage sage python=X
-
-where ``X`` is version of Python, e.g. ``3.9``.
+    $ conda create -n sage sage
 
 To use Sage from there,
 
@@ -73,51 +57,36 @@ environment for Sage development.
 
 Here we assume that you are using a git checkout.
 
-- Optionally, set the build parallelism for the Sage library. Use
-  whatever the meaningful value for your machine is - no more than
-  the number of cores::
+Create and activate a new conda environment with the dependencies of Sage and a
+few additional developer tools; if you are not on a Linux that runs an x86_64
+compatible CPU, replace ``linux`` accordingly:
 
-    $ export SAGE_NUM_THREADS=24
+.. code-block:: shell
 
-- Create and activate a new conda environment with the dependencies of Sage
-  and a few additional developer tools:
+    $ conda env create --file environment-3.12-linux.yml
+    $ conda activate sage-dev
 
-  .. tab:: mamba
+Bootstrap the source tree and build the Sage library:
 
-    .. code-block:: shell
-
-        $ mamba env create --file environment-3.11-linux.yml --name sage-dev
-        $ conda activate sage-dev
-
-  .. tab:: conda
-
-    .. code-block:: shell
-
-        $ conda env create --file environment-3.11-linux.yml --name sage-dev
-        $ conda activate sage-dev
-
-  Alternatively, you can use ``environment-3.11-linux.yml`` or
-  ``environment-optional-3.11-linux.yml``, which will only install standard
-  (and optional) packages without any additional developer tools.
-
-  A different Python version can be selected by replacing ``3.11`` by ``3.9``
-  or ``3.10`` in these commands.
-
-- Bootstrap the source tree and install the build prerequisites and the Sage library::
+.. code-block:: shell
 
     $ ./bootstrap
     $ pip install --no-build-isolation --config-settings editable_mode=compat -v -v --editable ./src
 
-  If you encounter any errors, try to install the ``sage-conf`` package first::
+If you encounter any errors, try to install the ``sage-conf`` package first:
+
+.. code-block:: shell
 
     $ pip install --no-build-isolation -v -v --editable ./pkgs/sage-conf_conda
 
-  and then run the last command again.
+and then run the last command again.
 
-- Verify that Sage has been installed::
+Verify that Sage has been installed:
+
+.. code-block:: shell
 
     $ sage -c 'print(version())'
-    SageMath version 10.2.beta4, Release Date: 2023-09-24
+    SageMath version 10.5, Release Date: 2024-12-04
 
 Note that ``make`` is not used at all. All dependencies
 (including all Python packages) are provided by conda.
@@ -131,18 +100,38 @@ library is installed in editable mode.  This means that when you only
 edit Python files, there is no need to rebuild the library; it
 suffices to restart Sage.
 
-After editing any Cython files, rebuild the Sage library using::
+After editing any Cython files, rebuild the Sage library using:
 
-  $ pip install --no-build-isolation --config-settings editable_mode=compat -v -v --editable src
+.. code-block:: shell
 
-In order to update the conda environment later, you can run::
+    $ pip install --no-build-isolation --config-settings editable_mode=compat -v -v --editable src
 
-  $ mamba env update --file environment-3.11-linux.yml --name sage-dev
+In order to update the conda environment later, you can run:
 
-To build the documentation, use::
+.. code-block:: shell
 
-  $ pip install --no-build-isolation -v -v --editable ./pkgs/sage-docbuild
-  $ sage --docbuild all html
+    $ conda env update --file environment-3.12-linux.yml
+
+If you want to use Jupyter notebooks, you need to install JupyterLab and the SageMath kernel:
+
+.. code-block:: shell
+
+    $ conda install jupyterlab
+    $ sage -c 'from sage.repl.ipython_kernel.install import SageKernelSpec; SageKernelSpec.update(prefix=sys.prefix)'
+
+To build the documentation, use:
+
+.. code-block:: shell
+
+    $ pip install --no-build-isolation -v -v --editable ./pkgs/sage-docbuild
+    $ sage --docbuild all html
+
+.. NOTE::
+
+   The build is running in parallel automatically by detecting the number of
+   execution threads on your CPU. If you want to override this choice
+   explicitly, you can set ``SAGE_NUM_THREADS``, e.g., by running ``export
+   SAGE_NUM_THREADS=24`` before invoking ``pip``.
 
 .. NOTE::
 
@@ -156,5 +145,5 @@ To build the documentation, use::
 
   You can update the conda lock files by running
   ``.github/workflows/conda-lock-update.py`` or by running
-  ``conda-lock --platform linux-64 --filename environment-3.11-linux.yml --lockfile environment-3.11-linux.lock``
+  ``conda-lock --platform linux-64 --filename environment-3.12-linux.yml --lockfile environment-3.12-linux.lock``
   manually.
