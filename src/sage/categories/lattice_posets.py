@@ -2,18 +2,23 @@
 r"""
 Lattice posets
 """
-#*****************************************************************************
+# ****************************************************************************
 #  Copyright (C) 2011 Nicolas M. Thiery <nthiery at users.sf.net>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
-#                  http://www.gnu.org/licenses/
-#******************************************************************************
+#                  https://www.gnu.org/licenses/
+# *****************************************************************************
 
-from sage.misc.cachefunc import cached_method
-from sage.misc.abstract_method import abstract_method
-from sage.misc.lazy_import import LazyImport
 from sage.categories.category import Category
+from sage.categories.category_with_axiom import CategoryWithAxiom, all_axioms
 from sage.categories.posets import Posets
+from sage.misc.abstract_method import abstract_method
+from sage.misc.cachefunc import cached_method
+from sage.misc.lazy_import import LazyImport
+
+
+all_axioms += ("Distributive", "SemiDistributive",
+               "CongruenceUniform", "Trim")
 
 
 class LatticePosets(Category):
@@ -87,3 +92,72 @@ class LatticePosets(Category):
                 sage: D.join( D(6), D(10) )                                             # needs sage.graphs sage.modules
                 30
             """
+
+    class SubcategoryMethods:
+        def Distributive(self):
+            '<documentation of the axiom Distributive>'
+            return self._with_axiom("Distributive")
+
+        def SemiDistributive(self):
+            '<documentation of the axiom SemiDistributive>'
+            return self._with_axiom("SemiDistributive")
+
+        def CongruenceUniform(self):
+            '<documentation of the axiom CongruenceUniform>'
+            return self._with_axiom("CongruenceUniform")
+
+        def Trim(self):
+            '<documentation of the axiom Trim>'
+            return self._with_axiom("Trim")
+
+    class Distributive(CategoryWithAxiom):
+        """
+        The category of distributive lattices.
+
+        EXAMPLES::
+
+            sage: LatticePosets().Distributive()
+            Category of distributive lattice posets
+        """
+        class ParentMethods:
+            def is_distributive(self):
+                return True
+
+    class SemiDistributive(CategoryWithAxiom):
+        """
+        The category of semidistributive lattices.
+
+        EXAMPLES::
+
+            sage: LatticePosets().SemiDistributive()
+            Category of semi distributive lattice posets
+        """
+        class ParentMethods:
+            def is_semidistributive(self):
+                return True
+
+    class CongruenceUniform(CategoryWithAxiom):
+        """
+        The category of congruence uniform lattices.
+
+        EXAMPLES::
+
+            sage: LatticePosets().CongruenceUniform()
+            Category of congruence uniform lattice posets
+        """
+        class ParentMethods:
+            def is_congruence_uniform(self):
+                return True
+
+    class Trim(CategoryWithAxiom):
+        """
+        The category of trim uniform lattices.
+
+        EXAMPLES::
+
+            sage: LatticePosets().Trim()
+            Category of trim lattice posets
+        """
+        class ParentMethods:
+            def is_trim(self):
+                return True

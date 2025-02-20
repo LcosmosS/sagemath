@@ -47,6 +47,7 @@ are also available directly using the catalogue of posets, as follows::
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
 from __future__ import annotations
+from sage.categories.lattice_posets import LatticePosets
 from sage.combinat.posets.lattices import LatticePoset, MeetSemilattice
 
 
@@ -262,7 +263,9 @@ def TamariLattice(n, m=1):
 
     - [BMFPR2011]_
     """
-    return GeneralizedTamariLattice(m * n + 1, n, m)
+    T = GeneralizedTamariLattice(m * n + 1, n, m)
+    T._refine_category_(LatticePosets().SemiDistributive())
+    return T
 
 
 # a variation : the Dexter meet-semilattices
