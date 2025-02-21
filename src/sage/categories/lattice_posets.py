@@ -148,6 +148,20 @@ class LatticePosets(Category):
             sage: LatticePosets().Distributive()
             Category of distributive lattice posets
         """
+        @cached_method
+        def extra_super_categories(self):
+            r"""
+            Return a list of the extra super categories of ``self``.
+
+            This encode implications between properties.
+
+            EXAMPLES::
+
+                sage: LatticePosets().Distributive().super_categories()
+                [Category of posets]
+            """
+            return [LatticePosets().Semidistributive()]
+
         class ParentMethods:
             def is_distributive(self):
                 return True
@@ -161,6 +175,20 @@ class LatticePosets(Category):
             sage: LatticePosets().Semidistributive()
             Category of semidistributive lattice posets
         """
+        @cached_method
+        def extra_super_categories(self):
+            r"""
+            Return a list of the extra super categories of ``self``.
+
+            This encode implications between properties.
+
+            EXAMPLES::
+
+                sage: LatticePosets().Semidistributive().super_categories()
+                [Category of posets]
+            """
+            return [LatticePosets().CongruenceUniform()]
+
         class ParentMethods:
             def is_semidistributive(self):
                 return True

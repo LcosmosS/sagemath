@@ -264,7 +264,7 @@ def TamariLattice(n, m=1):
     - [BMFPR2011]_
     """
     T = GeneralizedTamariLattice(m * n + 1, n, m)
-    T._refine_category_(LatticePosets().SemiDistributive())
+    T._refine_category_(LatticePosets().Semidistributive())
     return T
 
 
