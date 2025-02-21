@@ -95,7 +95,14 @@ class LatticePosets(Category):
 
     class SubcategoryMethods:
         def Distributive(self):
-            '<documentation of the axiom Distributive>'
+            r"""
+            A lattice `(L, \vee, \wedge)` is distributive if meet
+            distributes over join: `x \wedge (y \vee z) = (x \wedge y)
+            \vee (x \wedge z)` for every `x,y,z \in L`.
+
+            From duality in lattices it follows that then also join
+            distributes over meet.
+            """
             return self._with_axiom("Distributive")
 
         def SemiDistributive(self):
@@ -103,11 +110,20 @@ class LatticePosets(Category):
             return self._with_axiom("SemiDistributive")
 
         def CongruenceUniform(self):
-            '<documentation of the axiom CongruenceUniform>'
+            r"""
+            A lattice `(L, \vee, \wedge)` is congruence uniform if it
+            can be constructed by a sequence of interval doublings
+            starting with the lattice with one element.
+            """
             return self._with_axiom("CongruenceUniform")
 
         def Trim(self):
-            '<documentation of the axiom Trim>'
+            r"""
+            A lattice `(L, \vee, \wedge)` is trim if it is extremal
+            and left modular.
+
+            This notion is defined in [Thom2006]_.
+            """
             return self._with_axiom("Trim")
 
     class Distributive(CategoryWithAxiom):
