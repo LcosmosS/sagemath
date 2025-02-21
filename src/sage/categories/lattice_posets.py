@@ -17,7 +17,7 @@ from sage.misc.cachefunc import cached_method
 from sage.misc.lazy_import import LazyImport
 
 
-all_axioms += ("Distributive", "SemiDistributive",
+all_axioms += ("Distributive", "Semidistributive",
                "CongruenceUniform", "Trim")
 
 
@@ -57,7 +57,8 @@ class LatticePosets(Category):
         """
         return [Posets()]
 
-    Finite = LazyImport('sage.categories.finite_lattice_posets', 'FiniteLatticePosets')
+    Finite = LazyImport('sage.categories.finite_lattice_posets',
+                        'FiniteLatticePosets')
 
     class ParentMethods:
 
@@ -100,14 +101,26 @@ class LatticePosets(Category):
             distributes over join: `x \wedge (y \vee z) = (x \wedge y)
             \vee (x \wedge z)` for every `x,y,z \in L`.
 
-            From duality in lattices it follows that then also join
+            From duality in lattices, it follows that then also join
             distributes over meet.
             """
             return self._with_axiom("Distributive")
 
-        def SemiDistributive(self):
-            '<documentation of the axiom SemiDistributive>'
-            return self._with_axiom("SemiDistributive")
+        def Semidistributive(self):
+            r"""
+            A lattice `(L, \vee, \wedge)` is semidistributive if
+            it is both join-semidistributive and meet-semidistributive.
+
+            A lattice is join-semidistributive if
+            for all elements `e, x, y` in the lattice we have
+
+            .. MATH::
+
+                e \vee x = e \vee y \implies e \vee x = e \vee (x \wedge y)
+
+            Meet-semidistributivity is the dual property.
+            """
+            return self._with_axiom("Semidistributive")
 
         def CongruenceUniform(self):
             r"""
@@ -139,14 +152,14 @@ class LatticePosets(Category):
             def is_distributive(self):
                 return True
 
-    class SemiDistributive(CategoryWithAxiom):
+    class Semidistributive(CategoryWithAxiom):
         """
         The category of semidistributive lattices.
 
         EXAMPLES::
 
-            sage: LatticePosets().SemiDistributive()
-            Category of semi distributive lattice posets
+            sage: LatticePosets().Semidistributive()
+            Category of semidistributive lattice posets
         """
         class ParentMethods:
             def is_semidistributive(self):
