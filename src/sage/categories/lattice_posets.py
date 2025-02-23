@@ -149,7 +149,7 @@ class LatticePosets(Category):
             Category of distributive lattice posets
         """
         @cached_method
-        def extra_super_categories(self):
+        def super_categories(self):
             r"""
             Return a list of the extra super categories of ``self``.
 
@@ -158,7 +158,7 @@ class LatticePosets(Category):
             EXAMPLES::
 
                 sage: LatticePosets().Distributive().super_categories()
-                [Category of posets]
+                [Category of semidistributive lattice posets]
             """
             return [LatticePosets().Semidistributive()]
 
@@ -176,7 +176,7 @@ class LatticePosets(Category):
             Category of semidistributive lattice posets
         """
         @cached_method
-        def extra_super_categories(self):
+        def super_categories(self):
             r"""
             Return a list of the extra super categories of ``self``.
 
@@ -185,9 +185,9 @@ class LatticePosets(Category):
             EXAMPLES::
 
                 sage: LatticePosets().Semidistributive().super_categories()
-                [Category of posets]
+                [Category of lattice posets]
             """
-            return [LatticePosets().CongruenceUniform()]
+            return [LatticePosets()]
 
         class ParentMethods:
             def is_semidistributive(self):
@@ -202,6 +202,20 @@ class LatticePosets(Category):
             sage: LatticePosets().CongruenceUniform()
             Category of congruence uniform lattice posets
         """
+        @cached_method
+        def super_categories(self):
+            r"""
+            Return a list of the extra super categories of ``self``.
+
+            This encode implications between properties.
+
+            EXAMPLES::
+
+                sage: LatticePosets().CongruenceUniform().super_categories()
+                [Category of semidistributive lattice posets]
+            """
+            return [LatticePosets().Semidistributive()]
+
         class ParentMethods:
             def is_congruence_uniform(self):
                 return True
