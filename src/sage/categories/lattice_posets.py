@@ -18,7 +18,7 @@ from sage.misc.lazy_import import LazyImport
 
 
 all_axioms += ("Distributive", "Semidistributive",
-               "CongruenceUniform", "Trim")
+               "CongruenceUniform", "Trim", "Stone", "Extremal")
 
 
 class LatticePosets(Category):
@@ -95,6 +95,12 @@ class LatticePosets(Category):
             """
 
     class SubcategoryMethods:
+        def Stone(self):
+            r"""
+            A lattice `(L, \vee, \wedge)` is stone if ???
+            """
+            return self._with_axiom("Stone")
+
         def Distributive(self):
             r"""
             A lattice `(L, \vee, \wedge)` is distributive if meet
@@ -105,6 +111,14 @@ class LatticePosets(Category):
             distributes over meet.
             """
             return self._with_axiom("Distributive")
+
+        def CongruenceUniform(self):
+            r"""
+            A lattice `(L, \vee, \wedge)` is congruence uniform if it
+            can be constructed by a sequence of interval doublings
+            starting with the lattice with one element.
+            """
+            return self._with_axiom("CongruenceUniform")
 
         def Semidistributive(self):
             r"""
@@ -122,14 +136,6 @@ class LatticePosets(Category):
             """
             return self._with_axiom("Semidistributive")
 
-        def CongruenceUniform(self):
-            r"""
-            A lattice `(L, \vee, \wedge)` is congruence uniform if it
-            can be constructed by a sequence of interval doublings
-            starting with the lattice with one element.
-            """
-            return self._with_axiom("CongruenceUniform")
-
         def Trim(self):
             r"""
             A lattice `(L, \vee, \wedge)` is trim if it is extremal
@@ -138,6 +144,39 @@ class LatticePosets(Category):
             This notion is defined in [Thom2006]_.
             """
             return self._with_axiom("Trim")
+
+        def Extremal(self):
+            r"""
+            A lattice `(L, \vee, \wedge)` is extremal if ???
+            """
+            return self._with_axiom("Extremal")
+
+    class Stone(CategoryWithAxiom):
+        """
+        The category of stone lattices.
+
+        EXAMPLES::
+
+            sage: LatticePosets().Stone()
+            Category of stone lattice posets
+        """
+        @cached_method
+        def super_categories(self):
+            r"""
+            Return a list of the extra super categories of ``self``.
+
+            This encode implications between properties.
+
+            EXAMPLES::
+
+                sage: LatticePosets().Stone().super_categories()
+                [Category of distributive lattice posets]
+            """
+            return [LatticePosets().Distributive()]
+
+        class ParentMethods:
+            def is_stone(self):
+                return True
 
     class Distributive(CategoryWithAxiom):
         """
@@ -158,39 +197,14 @@ class LatticePosets(Category):
             EXAMPLES::
 
                 sage: LatticePosets().Distributive().super_categories()
-                [Category of semidistributive lattice posets]
+                [Category of congruence uniform lattice posets,
+                 Category of trim lattice posets]
             """
-            return [LatticePosets().Semidistributive()]
+            return [LatticePosets().CongruenceUniform(),
+                    LatticePosets().Trim()]
 
         class ParentMethods:
             def is_distributive(self):
-                return True
-
-    class Semidistributive(CategoryWithAxiom):
-        """
-        The category of semidistributive lattices.
-
-        EXAMPLES::
-
-            sage: LatticePosets().Semidistributive()
-            Category of semidistributive lattice posets
-        """
-        @cached_method
-        def super_categories(self):
-            r"""
-            Return a list of the extra super categories of ``self``.
-
-            This encode implications between properties.
-
-            EXAMPLES::
-
-                sage: LatticePosets().Semidistributive().super_categories()
-                [Category of lattice posets]
-            """
-            return [LatticePosets()]
-
-        class ParentMethods:
-            def is_semidistributive(self):
                 return True
 
     class CongruenceUniform(CategoryWithAxiom):
@@ -220,6 +234,23 @@ class LatticePosets(Category):
             def is_congruence_uniform(self):
                 return True
 
+    class Semidistributive(CategoryWithAxiom):
+        """
+        The category of semidistributive lattices.
+
+        EXAMPLES::
+
+            sage: LatticePosets().Semidistributive()
+            Category of semidistributive lattice posets
+
+
+            sage: LatticePosets().Semidistributive().super_categories()
+            [Category of lattice posets]
+        """
+        class ParentMethods:
+            def is_semidistributive(self):
+                return True
+
     class Trim(CategoryWithAxiom):
         """
         The category of trim uniform lattices.
@@ -231,4 +262,17 @@ class LatticePosets(Category):
         """
         class ParentMethods:
             def is_trim(self):
+                return True
+
+    class Extremal(CategoryWithAxiom):
+        """
+        The category of extremal uniform lattices.
+
+        EXAMPLES::
+
+            sage: LatticePosets().Extremal()
+            Category of extremal lattice posets
+        """
+        class ParentMethods:
+            def is_extremal(self):
                 return True
