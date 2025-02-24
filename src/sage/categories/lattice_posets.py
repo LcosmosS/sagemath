@@ -163,7 +163,7 @@ class LatticePosets(Category):
         @cached_method
         def super_categories(self):
             r"""
-            Return a list of the extra super categories of ``self``.
+            Return a list of the super categories of ``self``.
 
             This encode implications between properties.
 
@@ -190,7 +190,7 @@ class LatticePosets(Category):
         @cached_method
         def super_categories(self):
             r"""
-            Return a list of the extra super categories of ``self``.
+            Return a list of the super categories of ``self``.
 
             This encode implications between properties.
 
@@ -219,7 +219,7 @@ class LatticePosets(Category):
         @cached_method
         def super_categories(self):
             r"""
-            Return a list of the extra super categories of ``self``.
+            Return a list of the super categories of ``self``.
 
             This encode implications between properties.
 
