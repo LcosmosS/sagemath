@@ -1658,6 +1658,7 @@ TESTS:
 
 import importlib
 import re
+
 from sage.misc.cachefunc import cached_method, cached_function
 from sage.misc.lazy_attribute import lazy_class_attribute
 from sage.misc.lazy_import import LazyImport
@@ -1678,7 +1679,7 @@ all_axioms += ("Flying", "Blue",
                "Differentiable", "Smooth", "Analytic", "AlmostComplex",
                "FinitelyGeneratedAsMagma",
                "WellGenerated",
-               "Facade", "Finite", "Infinite","Enumerated",
+               "Facade", "Finite", "Infinite", "Enumerated",
                "Complete",
                "Nilpotent",
                "FiniteDimensional", "FinitelyPresented", "Connected",
@@ -1692,7 +1693,8 @@ all_axioms += ("Flying", "Blue",
                "Endset",
                "Pointed",
                "Stratified",
-              )
+               "Stone", "CongruenceUniform", "Semidistributive", "Trim", "Extremal",
+               )
 
 
 def uncamelcase(s, separator=" "):
