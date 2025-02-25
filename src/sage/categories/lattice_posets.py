@@ -97,7 +97,10 @@ class LatticePosets(Category):
     class SubcategoryMethods:
         def Stone(self):
             r"""
-            A lattice `(L, \vee, \wedge)` is stone if ???
+            A Stone lattice `(L, \vee, \wedge)` is a pseudo-complemented
+            distributive lattice such that `a^* \vee a^{**} = 1`.
+
+            See :wikipedia:`Stone algebra`.
             """
             return self._with_axiom("Stone")
 
@@ -109,6 +112,8 @@ class LatticePosets(Category):
 
             From duality in lattices, it follows that then also join
             distributes over meet.
+
+            See :wikipedia:`Distributive lattice`.
             """
             return self._with_axiom("Distributive")
 
@@ -153,7 +158,7 @@ class LatticePosets(Category):
 
     class Stone(CategoryWithAxiom):
         """
-        The category of stone lattices.
+        The category of Stone lattices.
 
         EXAMPLES::
 
