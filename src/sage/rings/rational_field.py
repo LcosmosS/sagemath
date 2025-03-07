@@ -68,6 +68,7 @@ from sage.structure.sequence import Sequence
 if TYPE_CHECKING:
     from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
+
 class RationalField(Singleton, number_field_base.NumberField):
     r"""
     The class ``RationalField`` represents the field `\QQ` of rational numbers.

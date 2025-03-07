@@ -239,6 +239,7 @@ if TYPE_CHECKING:
 
 _obj = {}
 
+
 class _uniq:
     def __new__(cls, *args):
         """

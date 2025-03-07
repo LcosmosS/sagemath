@@ -185,6 +185,7 @@ import sage.interfaces.abc
 if TYPE_CHECKING:
     from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
+
 def is_PolynomialRing(x):
     """
     Return ``True`` if ``x`` is a *univariate* polynomial ring (and not a

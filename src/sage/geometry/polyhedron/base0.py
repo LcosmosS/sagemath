@@ -39,6 +39,7 @@ import sage.geometry.abc
 if TYPE_CHECKING:
     from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
+
 class Polyhedron_base0(Element, sage.geometry.abc.Polyhedron):
     """
     Initialization and basic access for polyhedra.

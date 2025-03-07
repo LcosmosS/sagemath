@@ -633,6 +633,7 @@ from sage.structure.sage_object import SageObject
 if TYPE_CHECKING:
     from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
+
 class AlgebraicField_common(sage.rings.abc.AlgebraicField_common):
     r"""
     Common base class for the classes :class:`~AlgebraicRealField` and

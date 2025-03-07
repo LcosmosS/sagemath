@@ -113,6 +113,7 @@ from heapq import merge
 if TYPE_CHECKING:
     from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
+
 @richcmp_method
 class InternalRealInterval(UniqueRepresentation, Parent):
     """

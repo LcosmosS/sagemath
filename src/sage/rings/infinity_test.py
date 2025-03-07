@@ -63,6 +63,7 @@ def test_comparison_number_field():
     element = 1 + sqrt3
     assert not (minus_infinity < element < infinity)
 
+
 @pytest.mark.parametrize("element", generate_elements(SR))
 def test_comparison_symbolic_ring(element):
     """

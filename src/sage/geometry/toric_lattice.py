@@ -166,6 +166,7 @@ from sage.structure.factory import UniqueFactory
 if TYPE_CHECKING:
     from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
+
 def is_ToricLattice(x):
     r"""
     Check if ``x`` is a toric lattice.
