@@ -70,6 +70,7 @@ from __future__ import annotations
 import os
 import shutil
 from pathlib import Path
+from tempfile import TemporaryFile
 
 from sage.env import SAGE_SHARE, SAGE_LOCAL, SAGE_VENV
 
@@ -912,7 +913,6 @@ class CythonFeature(Feature):
             sage: empty.is_present()                                                    # needs sage.misc.cython
             FeatureTestResult('empty', True)
         """
-        from sage.misc.temporary_file import tmp_filename
         try:
             # Available since https://setuptools.pypa.io/en/latest/history.html#v59-0-0
             from setuptools.errors import CCompilerError
@@ -921,14 +921,14 @@ class CythonFeature(Feature):
                 from distutils.errors import CCompilerError
             except ImportError:
                 CCompilerError = ()
-        with open(tmp_filename(ext='.pyx'), 'w') as pyx:
-            pyx.write(self.test_code)
         try:
             from sage.misc.cython import cython_import
         except ImportError:
             return FeatureTestResult(self, False, reason="sage.misc.cython is not available")
         try:
-            cython_import(pyx.name, verbose=-1)
+            with TemporaryFile(suffix='.pyx') as pyx:
+                pyx.write(self.test_code)
+                cython_import(pyx.name, verbose=-1)
         except CCompilerError:
             return FeatureTestResult(self, False, reason="Failed to compile test code.")
         except ImportError:
