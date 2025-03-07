@@ -85,6 +85,7 @@ from sage.misc.latex import latex
 
 from sage.misc.sage_input import SageInputBuilder, SageInputExpression
 
+
 def is_PointCollection(x):
     r"""
     Check if ``x`` is a :class:`point collection <PointCollection>`.
