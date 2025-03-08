@@ -144,6 +144,7 @@ Or you can create a homomorphism from one lattice to any other::
 #
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
+from __future__ import annotations
 
 from typing import TYPE_CHECKING
 from sage.geometry.toric_lattice_element import ToricLatticeElement

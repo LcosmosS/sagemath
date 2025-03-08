@@ -579,6 +579,7 @@ AUTHOR:
 - Carl Witty (2007-01-27): initial version
 - Carl Witty (2007-10-29): massive rewrite to support complex as well as real numbers
 """
+from __future__ import annotations
 
 import itertools
 import operator
@@ -3966,7 +3967,7 @@ class AlgebraicNumber_base(sage.structure.element.FieldElement):
             {call: {getattr: {atomic:QQbar}.polynomial_root}({call: {getattr: {atomic:AA}.common_polynomial}({binop:- {binop:** {gen:x {constr_parent: {subscr: {atomic:QQbar}[{atomic:'x'}]} with gens: ('x',)}} {atomic:2}} {atomic:7}})}, {call: {atomic:CIF}({call: {atomic:RIF}({call: {atomic:RR}({atomic:2.6457513110645903})}, {call: {atomic:RR}({atomic:2.6457513110645907})})}, {call: {atomic:RIF}({call: {atomic:RR}({atomic:0})})})})}
         """
         (v, complicated) = \
-            self._descr.handle_sage_input(sib, coerce, self.parent() is QQbar)
+            self._descr.handle_sage_input(sib, coerced, self.parent() is QQbar)
         if complicated or True:
             sib.id_cache(self, v, 'v')
         return v

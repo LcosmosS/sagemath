@@ -152,7 +152,7 @@ old pickles to work).
 # (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 # *****************************************************************************
-
+from __future__ import annotations
 
 import pickletools
 import re

@@ -201,6 +201,7 @@ REFERENCES:
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
+from __future__ import annotations
 
 from collections.abc import Hashable, Iterable, Container
 from copy import copy

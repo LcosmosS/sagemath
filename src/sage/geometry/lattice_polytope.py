@@ -120,6 +120,8 @@ AUTHORS:
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
+from __future__ import annotations
+
 from collections.abc import Hashable
 from copyreg import constructor as copyreg_constructor
 import os

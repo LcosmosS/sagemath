@@ -96,6 +96,7 @@ AUTHORS:
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
+from __future__ import annotations
 
 from typing import TYPE_CHECKING
 from sage.structure.richcmp import richcmp, richcmp_method
