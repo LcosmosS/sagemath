@@ -174,7 +174,7 @@ cdef class PointCollection(SageObject):
         self._points = tuple(points)
         self._module = self._points[0].parent() if module is None else module
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Return Sage command to reconstruct ``self``.
 

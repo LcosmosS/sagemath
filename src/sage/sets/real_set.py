@@ -98,7 +98,7 @@ AUTHORS:
 # ****************************************************************************
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 from sage.structure.richcmp import richcmp, richcmp_method
 from sage.structure.parent import Parent
 from sage.structure.unique_representation import UniqueRepresentation
@@ -2641,7 +2641,7 @@ class RealSet(UniqueRepresentation, Parent, Set_base,
         overlap_generator = RealSet._scan_to_intervals(scan, lambda i: i > 1)
         return next(overlap_generator, None) is None
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         """
         Produce an expression which will reproduce this value when evaluated.
 

@@ -174,6 +174,7 @@ AUTHORS:
 # ****************************************************************************
 
 from __future__ import annotations
+from typing import Literal
 
 from sage.misc.lazy_import import lazy_import
 
@@ -345,7 +346,7 @@ class SageInputBuilder:
         self._next_local = 1
         self._locals = {}
 
-    def __call__(self, x, coerced=False):
+    def __call__(self, x, coerced: bool | Literal[2] = False):
         r"""
         Try to convert an arbitrary value ``x`` into a
         :class:`SageInputExpression` (an SIE).
@@ -463,6 +464,7 @@ class SageInputBuilder:
             return x
 
         if hasattr(x, '_sage_input_'):
+            #print(coerced, type(coerced))
             return x._sage_input_(self, coerced)
 
         if x is None:

@@ -159,7 +159,7 @@ import re
 import sys
 import types
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 import zlib as comp
 import bz2 as comp_other
 
@@ -362,7 +362,7 @@ class PickleObject:
         self.expression = expression
         self.immutable = False
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Extracts the expression from a PickleObject, and sets the immutable
         flag.

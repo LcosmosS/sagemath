@@ -36,7 +36,7 @@ heavily modified:
 # ****************************************************************************
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 import weakref
 
 import sage.rings.abc
@@ -299,7 +299,7 @@ class ComplexIntervalField_class(sage.rings.abc.ComplexIntervalField):
         """
         return "ComplexField(%s : Bits := true)" % self.prec()
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 

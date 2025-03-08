@@ -6300,7 +6300,7 @@ cdef class Integer(sage.structure.element.EuclideanDomainElement):
             return 'StringToInteger("%s",16)' % self.str(16)
         return str(self)
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when
         evaluated.

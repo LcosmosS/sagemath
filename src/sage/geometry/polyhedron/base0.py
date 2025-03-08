@@ -31,7 +31,7 @@ Base class for polyhedra: Initialization and access to Vrepresentation and Hrepr
 # ****************************************************************************
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 from sage.misc.cachefunc import cached_method
 from sage.misc.abstract_method import abstract_method
 from sage.structure.element import Element
@@ -301,7 +301,7 @@ class Polyhedron_base0(Element, sage.geometry.abc.Polyhedron):
         """
         self.parent().recycle(self)
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         """
         Return Sage command to reconstruct ``self``.
 

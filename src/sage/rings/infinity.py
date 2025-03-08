@@ -551,7 +551,7 @@ class AnInfinity:
         else:
             return abs(self)
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         """
         Produce an expression which will reproduce this value when evaluated.
 

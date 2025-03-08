@@ -237,7 +237,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Container
 from copy import copy
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 from warnings import warn
 
 import sage.geometry.abc
@@ -1222,7 +1222,7 @@ class RationalPolyhedralFan(IntegralRayCollection, Callable, Container):
         if virtual_rays is not None:
             self._virtual_rays = PointCollection(virtual_rays, self.lattice())
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         """
         Return Sage command to reconstruct ``self``.
 

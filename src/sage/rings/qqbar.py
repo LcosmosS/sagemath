@@ -583,7 +583,7 @@ from __future__ import annotations
 
 import itertools
 import operator
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import sage.rings.abc
 import sage.rings.number_field.number_field_base
@@ -1205,7 +1205,7 @@ class AlgebraicRealField(Singleton, AlgebraicField_common, sage.rings.abc.Algebr
         """
         return "\\mathbf{A}"
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 
@@ -1713,7 +1713,7 @@ class AlgebraicField(Singleton, AlgebraicField_common, sage.rings.abc.AlgebraicF
         """
         return "\\overline{\\QQ}"
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 
@@ -3919,7 +3919,7 @@ class AlgebraicNumber_base(sage.structure.element.FieldElement):
                     return latex(radical)
         return repr(self).replace('*I', r' \sqrt{-1}')
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 
@@ -6983,7 +6983,7 @@ class AlgebraicPolynomialTracker(SageObject):
         """
         return (AlgebraicPolynomialTracker, (self._poly, ))
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 

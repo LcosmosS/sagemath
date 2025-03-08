@@ -205,7 +205,7 @@ from __future__ import annotations
 
 from collections.abc import Hashable, Iterable, Container
 from copy import copy
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 from warnings import warn
 
 from sage.misc.lazy_import import lazy_import
@@ -1504,7 +1504,7 @@ class ConvexRationalPolyhedralCone(IntegralRayCollection, Container, ConvexSet_c
         if PPL is not None:
             self._PPL_C_Polyhedron = PPL
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         """
         Return Sage command to reconstruct ``self``.
 

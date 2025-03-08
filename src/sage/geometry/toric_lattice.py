@@ -146,7 +146,7 @@ Or you can create a homomorphism from one lattice to any other::
 # ****************************************************************************
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 from sage.geometry.toric_lattice_element import ToricLatticeElement
 from sage.misc.lazy_import import lazy_import
 lazy_import('sage.geometry.toric_plotter', 'ToricPlotter')
@@ -902,7 +902,7 @@ class ToricLattice_ambient(ToricLattice_generic, FreeModule_ambient_pid):
         self._latex_name = latex_name
         self._latex_dual_name = latex_dual_name
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Return Sage command to reconstruct ``self``.
 

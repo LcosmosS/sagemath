@@ -656,7 +656,7 @@ cdef class RealIntervalField_class(sage.rings.abc.RealIntervalField):
         """
         return "\\Bold{I} \\Bold{R}"
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 
@@ -1393,7 +1393,7 @@ cdef class RealIntervalFieldElement(RingElement):
         """
         raise TypeError
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 

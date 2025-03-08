@@ -1249,7 +1249,7 @@ cdef class FreeModuleElement(Vector):   # abstract base class
             return self
         return self.change_ring(R)
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 

@@ -1528,7 +1528,7 @@ cdef class IntegerRing_class(CommutativeRing):
         sympy_init()
         return Integers
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when
         evaluated.

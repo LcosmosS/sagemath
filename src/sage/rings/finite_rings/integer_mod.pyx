@@ -612,7 +612,7 @@ cdef class IntegerMod_abstract(FiniteRingElement):
 
     _fricas_init_ = _axiom_init_
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when
         evaluated.

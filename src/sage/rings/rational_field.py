@@ -54,7 +54,7 @@ AUTHORS:
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 from sage.rings.integer import Integer
 from sage.rings.rational import Rational
 
@@ -1599,7 +1599,7 @@ class RationalField(Singleton, number_field_base.NumberField):
         sympy_init()
         return Rationals
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when evaluated.
 

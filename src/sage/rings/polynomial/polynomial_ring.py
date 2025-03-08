@@ -140,7 +140,7 @@ Check that :issue:`5562` has been fixed::
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from sage.misc.superseded import deprecation
 from sage.structure.element import Element
@@ -962,7 +962,7 @@ class PolynomialRing_generic(Ring):
             base_ring = self.base_ring()._gap_init_()
         return 'PolynomialRing(%s, ["%s"])' % (base_ring, self.variable_name())
 
-    def _sage_input_(self, sib: SageInputBuilder, coerced: bool) -> SageInputExpression:
+    def _sage_input_(self, sib: SageInputBuilder, coerced: bool | Literal[2]) -> SageInputExpression:
         r"""
         Produce an expression which will reproduce this value when
         evaluated.
