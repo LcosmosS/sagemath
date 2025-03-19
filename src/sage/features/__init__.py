@@ -70,9 +70,9 @@ from __future__ import annotations
 import os
 import shutil
 from pathlib import Path
-from tempfile import TemporaryFile
+from tempfile import NamedTemporaryFile
 
-from sage.env import SAGE_SHARE, SAGE_LOCAL, SAGE_VENV
+from sage.env import SAGE_LOCAL, SAGE_SHARE, SAGE_VENV
 
 
 class TrivialClasscallMetaClass(type):
@@ -566,10 +566,14 @@ def package_systems():
         [Feature('homebrew'), Feature('sage_spkg'), Feature('pip')]
     """
     # The current implementation never returns more than one system.
-    from subprocess import run, CalledProcessError
+    from subprocess import CalledProcessError, run
     global _cache_package_systems
     if _cache_package_systems is None:
-        from .pkg_systems import PackageSystem, SagePackageSystem, PipPackageSystem
+        from sage.features.pkg_systems import (
+            PackageSystem,
+            PipPackageSystem,
+            SagePackageSystem,
+        )
         _cache_package_systems = []
         # Try to use scripts from SAGE_ROOT (or an installation of sage_bootstrap)
         # to obtain system package advice.
@@ -926,8 +930,9 @@ class CythonFeature(Feature):
         except ImportError:
             return FeatureTestResult(self, False, reason="sage.misc.cython is not available")
         try:
-            with TemporaryFile(suffix='.pyx') as pyx:
+            with NamedTemporaryFile(mode='w', suffix='.pyx') as pyx:
                 pyx.write(self.test_code)
+                pyx.seek(0)
                 cython_import(pyx.name, verbose=-1)
         except CCompilerError:
             return FeatureTestResult(self, False, reason="Failed to compile test code.")
