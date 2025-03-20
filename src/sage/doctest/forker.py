@@ -2193,7 +2193,7 @@ class DocTestDispatcher(SageObject):
             sage: DC.reporter = DR
             sage: DC.dispatcher = DD
             sage: DC.timer = Timer().start()
-            sage: DD.dispatch()
+            sage: DD.dispatch()  # long time (20s)
             sage -t .../sage/modules/free_module_homspace.py
                 [... tests, ...s wall]
             sage -t .../sage/rings/big_oh.py
