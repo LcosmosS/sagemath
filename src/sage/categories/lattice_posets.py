@@ -159,7 +159,7 @@ class LatticePosets(Category):
         EXAMPLES::
 
             sage: LatticePosets().Stone()
-            Category of stone lattice posets
+            Category of stone congruence uniform semidistributive trim lattice posets
         """
         @cached_method
         def super_categories(self):
@@ -171,7 +171,7 @@ class LatticePosets(Category):
             EXAMPLES::
 
                 sage: LatticePosets().Stone().super_categories()
-                [Category of distributive lattice posets]
+                [Category of distributive congruence uniform semidistributive trim lattice posets]
             """
             return [LatticePosets().Distributive()]
 
@@ -186,7 +186,7 @@ class LatticePosets(Category):
         EXAMPLES::
 
             sage: LatticePosets().Distributive()
-            Category of distributive lattice posets
+            Category of distributive congruence uniform semidistributive trim lattice posets
         """
         @cached_method
         def super_categories(self):
@@ -198,7 +198,7 @@ class LatticePosets(Category):
             EXAMPLES::
 
                 sage: LatticePosets().Distributive().super_categories()
-                [Category of congruence uniform lattice posets,
+                [Category of congruence uniform semidistributive lattice posets,
                  Category of trim lattice posets]
             """
             return [LatticePosets().CongruenceUniform(),
@@ -215,7 +215,7 @@ class LatticePosets(Category):
         EXAMPLES::
 
             sage: LatticePosets().CongruenceUniform()
-            Category of congruence uniform lattice posets
+            Category of congruence uniform semidistributive lattice posets
         """
         @cached_method
         def super_categories(self):
