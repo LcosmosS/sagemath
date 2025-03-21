@@ -1687,13 +1687,15 @@ all_axioms += ("Flying", "Blue",
                "WithBasis",
                "Irreducible",
                "Supercommutative", "Supercocommutative",
-               "Commutative", "Cocommutative", "Associative", "Inverse", "Unital", "Division", "NoZeroDivisors", "Cellular",
+               "Commutative", "Cocommutative", "Associative",
+               "Inverse", "Unital", "Division", "NoZeroDivisors", "Cellular",
                "AdditiveCommutative", "AdditiveAssociative", "AdditiveInverse", "AdditiveUnital",
                "Distributive",
                "Endset",
                "Pointed",
                "Stratified",
-               "Stone", "CongruenceUniform", "Semidistributive", "Trim", "Extremal",
+               "Stone", "CongruenceUniform", "Semidistributive",
+               "Trim", "Extremal",
                )
 
 

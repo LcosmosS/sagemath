@@ -10,15 +10,11 @@ Lattice posets
 # *****************************************************************************
 
 from sage.categories.category import Category
-from sage.categories.category_with_axiom import CategoryWithAxiom, all_axioms
+from sage.categories.category_with_axiom import CategoryWithAxiom
 from sage.categories.posets import Posets
 from sage.misc.abstract_method import abstract_method
 from sage.misc.cachefunc import cached_method
 from sage.misc.lazy_import import LazyImport
-
-
-all_axioms += ("Distributive", "Semidistributive",
-               "CongruenceUniform", "Trim", "Stone", "Extremal")
 
 
 class LatticePosets(Category):
