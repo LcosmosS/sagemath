@@ -335,13 +335,32 @@ class FiniteWords(AbstractLanguage):
 
     TESTS::
 
-        sage: FiniteWords('ab').is_finite()
-        False
-        sage: FiniteWords([]).is_finite()
-        True
+        sage: TestSuite(FiniteWords('ab')).run()
+        sage: TestSuite(FiniteWords([])).run()
+        sage: TestSuite(FiniteWords(['a'])).run()
     """
 
     def __init__(self, alphabet=None, category=None):
+        """
+        INPUT:
+
+        - ``alphabet`` -- the underlying alphabet
+        - ``category`` -- the suggested category of the set
+          (normally should be automatically determined)
+
+        TESTS::
+
+            sage: FiniteWords('ab').is_finite()
+            False
+            sage: FiniteWords('ab').category()
+            Category of infinite sets
+            sage: FiniteWords([]).is_finite()
+            True
+            sage: FiniteWords([]).category()
+            Category of finite sets
+            sage: FiniteWords([], Sets()).category()
+            Category of finite sets
+        """
         if category is None:
             category = Sets()
         if alphabet:
@@ -352,7 +371,7 @@ class FiniteWords(AbstractLanguage):
 
     def is_empty(self):
         """
-        Return False, because the empty word is in the set.
+        Return ``False``, because the empty word is in the set.
 
         TESTS::
 
@@ -909,6 +928,8 @@ class FiniteWords(AbstractLanguage):
         except (TypeError, ValueError, AttributeError, NotImplementedError):
             return self([])
 
+        if len(some_letters) == 0:
+            return self([])
         if len(some_letters) == 1:
             return self([some_letters[0]] * 3)
 
