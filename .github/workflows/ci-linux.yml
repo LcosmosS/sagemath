@@ -1,63 +1,151 @@
 name: CI Linux
 
-## This GitHub Actions workflow runs SAGE_ROOT/tox.ini with selected environments,
-## whenever a tag is pushed.
-##
-## It builds and checks some sage spkgs as defined in TARGETS.
-##
-## A job succeeds if there is no error.
-##
-## The build is run with "make V=0", so the build logs of individual packages are suppressed.
-##
-## At the end, all package build logs that contain an error are printed out.
-##
-## After all jobs have finished (or are canceled) and a short delay,
-## tar files of all logs are made available as "build artifacts".
-
-#on: [push, pull_request]
-
 on:
   push:
     tags:
       - '*'
+  # TODO: Remove this before merging
+  pull_request:
   workflow_dispatch:
     # Allow to run manually
 
-env:
-  TARGETS_PRE: all-sage-local
-  TARGETS: build doc-html
-  TARGETS_OPTIONAL: ptest
-
-permissions:
-  packages: write
-
 jobs:
-  minimal:
-    if: ${{ success() || failure() }}
-    uses: ./.github/workflows/docker.yml
-    with:
-      # Build from scratch
-      free_disk_space: true
-      docker_targets: "with-system-packages configured with-targets-pre with-targets with-targets-optional"
-      # FIXME: duplicated from env.TARGETS
-      targets_pre: all-sage-local
-      targets: build doc-html
-      targets_optional: ptest
-      tox_system_factors: >-
-          ["ubuntu-jammy"]
-      tox_packages_factors: >-
-          ["minimal"]
-      docker_push_repository: ghcr.io/${{ github.repository }}/
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        container:
+          #- ubuntu:trusty # git checkout fails (glibc)
+          #- ubuntu:xenial # git checkout fails (glibc)
+          #- ubuntu:bionic # git checkout fails (glibc)
+          #- ubuntu:focal # TODO: Cannot find gap although installed
+          #- ubuntu:jammy # TODO: Cannot find flint (only v.2.8.4)
+          #- ubuntu:lunar # TODO: Some syntax error in the if statement below
+          #- ubuntu:mantic # TODO: Some syntax error in the if statement below
+          - ubuntu:noble
+          - ubuntu:oracular
+          - ubuntu:plucky
+          #- debian:buster # gmp is not available
+          #- debian:bullseye # TODO: outdated singular
+          #- debian:bookworm # flint is not available
+          #- debian:trixie # libbrial-dev is not available (has been removed?)
+          - debian:sid
+          - debian:experimental
+          #- linuxmintd/mint20.1-amd64 # TODO: Cannot find gap although installed
+          #- linuxmintd/mint20.2-amd64 # TODO: Cannot find gap although installed
+          #- linuxmintd/mint20.3-amd64 # TODO: Cannot find gap although installed
+          #- linuxmintd/mint21-amd64 # Flint is not available (only v.2.8.4)
+          #- linuxmintd/mint21.1-amd64 # Flint is not available (only v.2.8.4)
+          #- linuxmintd/mint21.2-amd64 # Flint is not available (only v.2.8.4)
+          #- fedora:30 # gmp is not available
+          #- fedora:31 # gmp is not available
+          #- fedora:32 # gmp is not available
+          #- fedora:33 # TODO: outdated singular
+          #- fedora:34 # Flint is not available
+          #- fedora:35 # Flint is not available
+          #- fedora:36 # Flint is not available
+          #- fedora:37 # Flint is not available
+          #- fedora:38 # Flint is not available
+          #- fedora:39 # Flint is not available (only v.2.9)
+          - fedora:40
+          #- centos:centos7 # git checkout fails (glibc)
+          #- quay.io/centos/centos:stream8 # problem with mirror list
+          #- quay.io/centos/centos:stream9 # TODO (cypari): Figure out how to install pari
+          #- almalinux:8 # gmp is not available (only v6.1.2)
+          #- almalinux:9 # TODO (cypari): Figure out how to install pari
+          #- sheerluck/sage-on-gentoo-stage4: TODO: dependency (python?) installation takes ages
+          - archlinux
+          #- opensuse/leap:15.3 # TODO: Preinstall git in image
+          #- opensuse/leap:15.4 # TODO: Preinstall git in image
+          #- opensuse/leap:15.5 # TODO: Preinstall git in image
+          #- opensuse/tumbleweed # TODO (cypari): gphelp is broken?
+          #- i386/ubuntu:bionic # TODO: Preinstall node in image
+          #- i386/debian:bullseye # TODO: Preinstall node in image
+    container:
+      image: ${{ matrix.container }}
 
-  standard:
-    uses: ./.github/workflows/docker.yml
-    with:
-      free_disk_space: true
-      # Build from scratch
-      docker_targets: "with-system-packages configured with-targets-pre with-targets with-targets-optional"
-      targets_pre: all-sage-local
-      targets: build doc-html
-      targets_optional: ptest
-      tox_packages_factors: >-
-          ["standard"]
-      docker_push_repository: ghcr.io/${{ github.repository }}/
+    env:
+      # For debian compatibility
+      PIP_BREAK_SYSTEM_PACKAGES: 1
+
+    steps:
+      - name: Checkout code
+        # cannot use v4 yet because of https://github.com/actions/checkout/issues/1487
+        uses: actions/checkout@v3
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5.1.0
+
+      # We cannot use the setup python action because it doesn't support all containers
+      # https://github.com/actions/setup-python/issues/527
+      - name: Set up Python
+        run: |
+          uv python install
+          uv venv
+          . .venv/bin/activate
+          echo PATH=$PATH >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: |
+          if [[ "${{ matrix.container }}" = "ubuntu:lunar" || "${{ matrix.container }}" = "ubuntu:mantic" ]]; then
+            # For EOL Ubuntu we need to use old-releases.ubuntu.com
+            sed -i -e 's/archive.ubuntu.com\|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
+          fi
+          SYSTEM=$(build/bin/sage-guess-package-system)
+          eval $(build/bin/sage-print-system-package-command $SYSTEM update)
+          eval $(build/bin/sage-print-system-package-command $SYSTEM --yes --ignore-missing install $(build/bin/sage-get-system-packages $SYSTEM $(uv run --no-project build/bin/sage-package list :standard:)))
+
+          # Needed to download and install fplll and lrcalc below
+          eval $(build/bin/sage-print-system-package-command $SYSTEM --yes --ignore-missing install git wget)
+
+          # Needed for primecountpy
+          eval $(build/bin/sage-print-system-package-command $SYSTEM --yes --ignore-missing install $(build/bin/sage-get-system-packages $SYSTEM primecount))
+
+          # Arch Linux docker image does not install info files, so remove the entry to Maxima's help files from pacman
+          # see https://github.com/sagemath/sage/pull/36391 for details
+          if [ $SYSTEM = 'archlinux' ]; then
+            sed -i '/^NoExtract/d' /etc/pacman.conf;
+          fi
+
+          # Needed for lrcalc
+          uv pip install --upgrade setuptools wheel
+          if [ ${{ matrix.container }} = "ubuntu:jammy" ] || [ ${{ matrix.container }} = "ubuntu:lunar" ] || [ ${{ matrix.container }} = "ubuntu:mantic" ] || [ ${{ matrix.container }} = "debian:bookworm" ] || [ ${{ matrix.container }} = "debian:sid" ] || [ ${{ matrix.container }} = "debian:experimental" ] || [ ${{ matrix.container }} = "linuxmintd/mint21-amd64" ] || [ ${{ matrix.container }} = "linuxmintd/mint21.1-amd64" ] || [ ${{ matrix.container }} = "linuxmintd/mint21.2-amd64" ] || [ ${{ matrix.container }} = "fedora:34" ] || [ ${{ matrix.container }} = "fedora:35" ] || [ ${{ matrix.container }} = "fedora:38" ]; then
+            wget math.rutgers.edu/~asbuch/lrcalc/lrcalc-2.1.tar.gz \
+            && tar zxvf lrcalc-2.1.tar.gz \
+            && cd lrcalc-2.1 \
+            && ./configure \
+            && make \
+            && make install
+          fi
+
+          # Needed for fpylll
+          if [ ${{ matrix.container }} = "ubuntu:jammy" ] || [ ${{ matrix.container }} = "linuxmintd/mint21-amd64" ] || [ ${{ matrix.container }} = "linuxmintd/mint21.1-amd64" ] || [ ${{ matrix.container }} = "linuxmintd/mint21.2-amd64" ] || [ ${{ matrix.container }} = "fedora:34" ] || [ ${{ matrix.container }} = "fedora:35" ] || [ ${{ matrix.container }} = "fedora:36" ] || [ ${{ matrix.container }} = "fedora:37" ]; then
+            FPLLL_VERSION=5.4.5
+            wget https://github.com/fplll/fplll/releases/download/${FPLLL_VERSION}/fplll-${FPLLL_VERSION}.tar.gz \
+            && tar -xf fplll-${FPLLL_VERSION}.tar.gz \
+            && cd fplll-${FPLLL_VERSION} \
+            && ./configure \
+            && make \
+            && make install
+          fi
+        env:
+          PARI_VERSION: pari-2.15.4
+
+      - name: Build
+        run: |
+          uv sync --frozen --no-install-project --group test
+          # Disable build isolation following the advice of https://mesonbuild.com/meson-python/how-to-guides/editable-installs.html#build-dependencies
+          # Build manually using plain meson instead of using pip because of issues with subprojects
+          # https://github.com/mesonbuild/meson-python/issues/598
+          # We have to install build dependencies due to https://github.com/astral-sh/uv/issues/10301
+          # uv pip install meson-python cypari2>=2.1.1 cysignals>=1.11.2 cython>=3.0,!=3.0.3 gmpy2~=2.1.b999 memory_allocator numpy>=1.19 jinja2
+          uv pip install . -v
+          # meson setup builddir -Dpython.install_env=auto
+          # meson compile -C builddir --verbose
+          # meson install -C builddir --no-rebuild 
+
+      - name: Test
+        run: |
+          uv run ./sage -t --all -p4 || true
+        

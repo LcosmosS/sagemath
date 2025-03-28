@@ -22,7 +22,6 @@ AUTHORS:
 import builtins
 import os
 import re
-import sys
 import shutil
 import webbrowser
 from pathlib import Path
@@ -50,17 +49,28 @@ def _standard_libs_libdirs_incdirs_aliases():
          {...})
     """
     aliases = cython_aliases()
-    standard_libs = [
-        'mpfr', 'gmp', 'gmpxx', 'pari', 'm',
-        'ec', 'gsl',
-    ] + aliases["CBLAS_LIBRARIES"] + [
-        'ntl']
+    standard_libs = (
+        [
+            "mpfr",
+            "gmp",
+            "gmpxx",
+            "pari",
+            "m",
+            "ec",
+            "gsl",
+        ]
+        + aliases["CBLAS_LIBRARIES"]
+        + ["ntl"]
+    )
     standard_libdirs = []
     if SAGE_LOCAL:
         standard_libdirs.append(os.path.join(SAGE_LOCAL, "lib"))
     standard_libdirs.extend(aliases["CBLAS_LIBDIR"] + aliases["NTL_LIBDIR"])
-    standard_incdirs = sage_include_directories(use_sources=True) + aliases["CBLAS_INCDIR"] + aliases["NTL_INCDIR"]
+    standard_incdirs = (
+        sage_include_directories(use_sources=True) + aliases["CBLAS_INCDIR"] + aliases["NTL_INCDIR"]
+    )
     return standard_libs, standard_libdirs, standard_incdirs, aliases
+
 
 ################################################################
 # If the user attaches a .spyx file and changes it, we have
@@ -304,12 +314,13 @@ def cython(filename, verbose=0, compile_message=False,
         # Find the name.
         if use_cache:
             from importlib.machinery import EXTENSION_SUFFIXES
+
             for f in os.listdir(target_dir):
                 for suffix in EXTENSION_SUFFIXES:
                     if f.endswith(suffix):
                         # use the first matching extension
                         prev_file = os.path.join(target_dir, f)
-                        prev_name = f[:-len(suffix)]
+                        prev_name = f[: -len(suffix)]
                         break
                 else:
                     # no match, try next file
@@ -336,7 +347,7 @@ def cython(filename, verbose=0, compile_message=False,
         global sequence_number
         if base not in sequence_number:
             sequence_number[base] = 0
-        name = '%s_%s' % (base, sequence_number[base])
+        name = "%s_%s" % (base, sequence_number[base])
 
         # increment the sequence number so will use a different one next time.
         sequence_number[base] += 1
@@ -351,13 +362,15 @@ def cython(filename, verbose=0, compile_message=False,
 
     # Add current working directory to includes. This is needed because
     # we cythonize from a different directory. See Issue #24764.
-    standard_libs, standard_libdirs, standard_includes, aliases = _standard_libs_libdirs_incdirs_aliases()
+    standard_libs, standard_libdirs, standard_includes, aliases = (
+        _standard_libs_libdirs_incdirs_aliases()
+    )
     includes = [os.getcwd()] + standard_includes
 
     # Now do the actual build, directly calling Cython and distutils
+    import Cython.Compiler.Options
     from Cython.Build import cythonize
     from Cython.Compiler.Errors import CompileError
-    import Cython.Compiler.Options
 
     try:
         from setuptools.dist import Distribution
@@ -365,27 +378,30 @@ def cython(filename, verbose=0, compile_message=False,
     except ImportError:
         # Fall back to distutils (stdlib); note that it is deprecated
         # in Python 3.10, 3.11; https://www.python.org/dev/peps/pep-0632/
-        from distutils.dist import Distribution
         from distutils.core import Extension
+        from distutils.dist import Distribution
 
     from distutils.log import set_verbosity
+
     set_verbosity(verbose)
 
     Cython.Compiler.Options.annotate = annotate
     Cython.Compiler.Options.embed_pos_in_docstring = True
     Cython.Compiler.Options.pre_import = "sage.all" if sage_namespace else None
 
-    extra_compile_args = ['-w']  # no warnings
+    extra_compile_args = ["-w"]  # no warnings
     extra_link_args = []
 
-    ext = Extension(name,
-                    sources=[pyxfile],
-                    extra_compile_args=extra_compile_args,
-                    extra_link_args=extra_link_args,
-                    libraries=standard_libs,
-                    library_dirs=standard_libdirs)
+    ext = Extension(
+        name,
+        sources=[pyxfile],
+        extra_compile_args=extra_compile_args,
+        extra_link_args=extra_link_args,
+        libraries=standard_libs,
+        library_dirs=standard_libdirs,
+    )
 
-    directives = {'language_level': 3, 'cdivision': True}
+    directives = {"language_level": 3, "cdivision": True}
 
     try:
         # Change directories to target_dir so that Cython produces the correct
@@ -393,14 +409,17 @@ def cython(filename, verbose=0, compile_message=False,
         with restore_cwd(target_dir):
             try:
                 from sage.misc.package_dir import cython_namespace_package_support
+
                 with cython_namespace_package_support():
-                    ext, = cythonize([ext],
-                                     aliases=aliases,
-                                     include_path=includes,
-                                     compiler_directives=directives,
-                                     quiet=(verbose <= 0),
-                                     errors_to_stderr=False,
-                                     use_listing_file=True)
+                    (ext,) = cythonize(
+                        [ext],
+                        aliases=aliases,
+                        include_path=includes,
+                        compiler_directives=directives,
+                        quiet=(verbose <= 0),
+                        errors_to_stderr=False,
+                        use_listing_file=True,
+                    )
             finally:
                 # Read the "listing file" which is the file containing
                 # warning and error messages generated by Cython.
@@ -423,11 +442,15 @@ def cython(filename, verbose=0, compile_message=False,
         sys.stderr.flush()
 
     if create_local_c_file:
-        shutil.copy(os.path.join(target_dir, ext.sources[0]),
-                    os.curdir)
+        shutil.copy(os.path.join(target_dir, ext.sources[0]), os.curdir)
         if annotate:
             shutil.copy(os.path.join(target_dir, name + ".html"),
                         os.curdir)
+
+    if view_annotate:
+        if not annotate:
+            raise ValueError("cannot view annotated file without creating it")
+        view_annotate_callback(os.path.join(target_dir, name + ".html"))
 
     if view_annotate:
         if not annotate:
@@ -457,7 +480,7 @@ def cython(filename, verbose=0, compile_message=False,
 
     try:
         # Capture errors from distutils and its child processes
-        with open(os.path.join(target_dir, name + ".err"), 'w+') as errfile:
+        with open(os.path.join(target_dir, name + ".err"), "w+") as errfile:
             try:
                 # Redirect stderr to errfile.  We use the file descriptor
                 # number "2" instead of "sys.stderr" because we really
@@ -480,6 +503,7 @@ def cython(filename, verbose=0, compile_message=False,
     if create_local_so_file:
         # Copy module to current directory
         from importlib.machinery import EXTENSION_SUFFIXES
+
         for ext in EXTENSION_SUFFIXES:
             path = os.path.join(target_dir, name + ext)
             if os.path.exists(path):
@@ -542,7 +566,7 @@ def cython_lambda(vars, expr, verbose=0, **kwds):
     if isinstance(vars, str):
         v = vars
     else:
-        v = ', '.join('%s %s' % (typ, var) for typ, var in vars)
+        v = ", ".join("%s %s" % (typ, var) for typ, var in vars)
 
     s = """
 cdef class _s:
@@ -565,13 +589,13 @@ def f(%s):
     """ % (v, expr)
     if verbose > 0:
         print(s)
-    tmpfile = tmp_filename(ext='.pyx')
-    with open(tmpfile, 'w') as f:
+    tmpfile = tmp_filename(ext=".pyx")
+    with open(tmpfile, "w") as f:
         f.write(s)
 
     d = {}
     cython_import_all(tmpfile, d, verbose=verbose, **kwds)
-    return d['f']
+    return d["f"]
 
 
 ################################################################
@@ -600,6 +624,7 @@ def cython_import(filename, **kwds):
         return builtins.__import__(name)
     except ModuleNotFoundError:
         import importlib
+
         importlib.invalidate_caches()
         return builtins.__import__(name)
     finally:
@@ -626,7 +651,7 @@ def cython_import_all(filename, globals, **kwds):
     """
     m = cython_import(filename, **kwds)
     for k, x in m.__dict__.items():
-        if k[0] != '_':
+        if k[0] != "_":
             globals[k] = x
 
 
@@ -648,14 +673,14 @@ def sanitize(f):
         sage: sanitize('123/def-hij/file.py')
         '_123_def_hij_file_py'
     """
-    s = ''
+    s = ""
     if f[0].isdigit():
-        s += '_'
+        s += "_"
     for a in f:
         if a.isalnum():
             s += a
         else:
-            s += '_'
+            s += "_"
     return s
 
 
@@ -702,8 +727,8 @@ def compile_and_load(code, **kwds):
         sage: module.evaluate_at_power_of_gen(x^3 + x - 7, 5)  # long time
         x^15 + x^5 - 7
     """
-    tmpfile = tmp_filename(ext='.pyx')
-    with open(tmpfile, 'w') as f:
+    tmpfile = tmp_filename(ext=".pyx")
+    with open(tmpfile, "w") as f:
         f.write(code)
     return cython_import(tmpfile, **kwds)
 
@@ -735,7 +760,7 @@ def cython_compile(code, **kwds):
         Need to create a clever caching system so code only gets
         compiled once.
     """
-    tmpfile = tmp_filename(ext='.pyx')
-    with open(tmpfile, 'w') as f:
+    tmpfile = tmp_filename(ext=".pyx")
+    with open(tmpfile, "w") as f:
         f.write(code)
     return cython_import_all(tmpfile, get_globals(), **kwds)
