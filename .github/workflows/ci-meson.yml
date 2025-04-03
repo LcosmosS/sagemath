@@ -123,7 +123,8 @@ jobs:
           # If editable then deleting the directory will cause sage to detect rebuild, which will cause ninja to fail
           # so we don't delete the directory in this case
           ${{ matrix.editable && 'true' || 'rm -R ./src/sage_setup/' }}
-          ./sage -t --${{ matrix.tests }} -p4 --format github
+          pip install coverage pytest-xdist pytest-github-actions-annotate-failures pytest-isolate
+          pytest --doctest-ignore-import-errors --doctest -rfEs -s src
 
       - name: Check that all modules can be imported
         shell: bash -l {0}

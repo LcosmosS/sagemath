@@ -111,7 +111,7 @@ class SageDoctestModule(DoctestModule):
                             "sage.libs.coxeter3.coxeter",
                         ):
                             pytest.skip(
-                                f"unable to import module { self.path } due to missing feature { exception.name }"
+                                f"unable to import module {self.path} due to missing feature {exception.name}"
                             )
                     raise
         # Uses internal doctest module parsing mechanism.
@@ -133,12 +133,12 @@ class SageDoctestModule(DoctestModule):
                     )
         except FeatureNotPresentError as exception:
             pytest.skip(
-                f"unable to import module { self.path } due to missing feature { exception.feature.name }"
+                f"unable to import module {self.path} due to missing feature {exception.feature.name}"
             )
         except ModuleNotFoundError as exception:
             # TODO: Remove this once all optional things are using Features
             pytest.skip(
-                f"unable to import module { self.path } due to missing module { exception.name }"
+                f"unable to import module {self.path} due to missing feature {exception.name}"
             )
 
 
@@ -165,21 +165,28 @@ def pytest_collect_file(
 
     See `pytest documentation <https://docs.pytest.org/en/latest/reference/reference.html#std-hook-pytest_collect_file>`_.
     """
-    if (
-        file_path.parent.name == "combinat"
-        or file_path.parent.parent.name == "combinat"
-    ):
+    if file_path.parent.name in {
+        "combinat",
+        "algebras",
+        "calculus",
+    } or file_path.parent.parent.name in {"combinat", "algebras", "calculus"}:
         # Crashes CI for some reason
         return IgnoreCollector.from_parent(parent)
     if file_path.suffix == ".pyx":
-        # We don't allow pytests to be defined in Cython files.
-        # Normally, Cython files are filtered out already by pytest and we only
-        # hit this here if someone explicitly runs `pytest some_file.pyx`.
-        return IgnoreCollector.from_parent(parent)
+        if parent.config.option.doctest:
+            return SageDoctestModule.from_parent(parent, path=file_path)
+        else:
+            # We don't allow pytests to be defined in Cython files.
+            # Normally, Cython files are filtered out already by pytest and we only
+            # hit this here if someone explicitly runs `pytest some_file.pyx`.
+            return IgnoreCollector.from_parent(parent)
     elif file_path.suffix == ".py":
         if parent.config.option.doctest:
-            if file_path.name == "__main__.py" or file_path.name == "setup.py":
+            if file_path.name in {"__main__.py", "setup.py"}:
                 # We don't allow tests to be defined in __main__.py/setup.py files (because their import will fail).
+                return IgnoreCollector.from_parent(parent)
+            if file_path.name == "all.py":
+                # all.py do not contain tests and may fail when imported twice / in the wrong order
                 return IgnoreCollector.from_parent(parent)
             if (
                 (
