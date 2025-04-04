@@ -1691,7 +1691,7 @@ def mma_free_limit(expression, v, a, dir=None):
         sage: mma_free_limit(f, x, 5) # optional - internet
         x |--> 5*t
 
-    Test with callable function resulting in constant (should return constant callable):
+    Test with callable function resulting in constant (should return constant callable)::
         sage: g(x) = x^2 + 1
         sage: mma_free_limit(g, x, 2) # optional - internet
         x |--> 5
