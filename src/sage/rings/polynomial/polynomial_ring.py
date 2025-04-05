@@ -153,6 +153,7 @@ from sage.categories.rings import Rings
 from sage.rings.ring import Ring, CommutativeRing
 from sage.structure.element import RingElement
 import sage.rings.rational_field as rational_field
+from sage.rings.infinity import Infinity
 from sage.rings.rational_field import QQ
 from sage.rings.integer_ring import ZZ
 from sage.rings.integer import Integer
@@ -263,7 +264,7 @@ class PolynomialRing_generic(Ring):
               (Dedekind domains and euclidean domains
                and noetherian rings and infinite enumerated sets
                and metric spaces)
-             and Category of infinite sets
+             and Category of infinite enumerated sets
 
             sage: category(GF(7)['x'])
             Join of Category of euclidean domains
@@ -273,7 +274,7 @@ class PolynomialRing_generic(Ring):
             and Category of commutative algebras over
               (finite enumerated fields and subquotients of monoids
                and quotients of semigroups)
-            and Category of infinite sets
+            and Category of infinite enumerated sets
 
         TESTS:
 
@@ -286,7 +287,7 @@ class PolynomialRing_generic(Ring):
         Check that category for zero ring::
 
             sage: PolynomialRing(Zmod(1), 'x').category()
-            Category of finite commutative rings
+            Category of finite enumerated commutative rings
 
         Check ``is_finite`` inherited from category (:issue:`24432`)::
 
@@ -305,7 +306,7 @@ class PolynomialRing_generic(Ring):
         # We trust that, if category is given, it is useful and does not need to be joined
         # with the default category
         if base_ring.is_zero():
-            category = categories.rings.Rings().Commutative().Finite()
+            category = categories.rings.Rings().Commutative().Finite().Enumerated()
         else:
             defaultcat = polynomial_default_category(base_ring.category(), 1)
             category = check_default_category(defaultcat, category)
@@ -1049,6 +1050,83 @@ class PolynomialRing_generic(Ring):
             pass
         h = self._cached_hash = hash((self.base_ring(),self.variable_name()))
         return h
+
+    def __iter__(self):
+        r"""
+        Return iterator over the elements of this polynomial ring.
+
+        EXAMPLES::
+
+            sage: from itertools import islice
+            sage: R.<x> = GF(3)[]
+            sage: list(islice(iter(R), 10))
+            [0, 1, 2, x, x + 1, x + 2, 2*x, 2*x + 1, 2*x + 2, x^2]
+
+        TESTS::
+
+            sage: R.<x> = Integers(1)[]
+            sage: [*R]
+            [0]
+            sage: R.<x> = QQ[]
+            sage: l = list(islice(iter(R), 50)); l
+            [0, 1, -1, x, 1/2, x + 1, x^2, -1/2, -x, x^2 + 1, x^3, 2, x - 1, ...]
+            sage: len(set(l))
+            50
+        """
+        R = self.base_ring()
+        # adapted from sage.modules.free_module.FreeModule_generic.__iter__
+        iters = []
+        v = []
+        n = 0
+        yield self.zero()
+        if R.is_zero():
+            return
+
+        zero = R.zero()
+        if R.cardinality() == Infinity:
+            from sage.categories.sets_cat import cartesian_product
+            from sage.sets.disjoint_union_enumerated_sets import DisjointUnionEnumeratedSets
+            from sage.sets.family import Family
+            from sage.rings.semirings.non_negative_integer_semiring import NN
+            from sage.sets.set import Set
+            R_nonzero = Set(R) - Set([zero])
+
+            def polynomials_with_degree(d):
+                """
+                Return the family of polynomials with degree exactly ``d``.
+                """
+                nonlocal self, R, R_nonzero
+                return Family(cartesian_product([R] * d + [R_nonzero]),
+                              lambda t: self([*t]), lazy=True)
+
+            yield from DisjointUnionEnumeratedSets(Family(NN, polynomials_with_degree))
+            assert False, "this should not be reached"
+
+        while True:
+            if n == len(iters):
+                iters.append(iter(R))
+                v.append(next(iters[n]))
+                assert v[n] == zero, ("first element of iteration must be zero otherwise result "
+                                      "of this and free module __iter__ will be incorrect")
+            try:
+                v[n] = next(iters[n])
+                yield self(v)
+                n = 0
+            except StopIteration:
+                iters[n] = iter(R)
+                v[n] = next(iters[n])
+                assert v[n] == zero
+                n += 1
+
+    def _an_element_(self):
+        """
+        Return an arbitrary element of this polynomial ring.
+
+        Strictly speaking this is not necessary because it is already provided by the category
+        framework, but before :issue:`39399` this returns the generator, we keep the behavior
+        because it is more convenient.
+        """
+        return self.gen()
 
     def _repr_(self):
         try:
