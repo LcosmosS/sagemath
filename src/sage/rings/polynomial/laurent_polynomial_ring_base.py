@@ -62,8 +62,12 @@ class LaurentPolynomialRing_generic(CommutativeRing, Parent):
         self._R = R
         names = R.variable_names()
         self._one_element = self.element_class(self, R.one())
+        category = R.category()
+        if "Enumerated" in category.axioms():
+            # this ring should also be countable, but __iter__ is not yet implemented
+            category = category._without_axiom("Enumerated")
         CommutativeRing.__init__(self, R.base_ring(), names=names,
-                                 category=R.category())
+                                 category=category)
         ernames = []
         for n in names:
             ernames.append(n)
