@@ -250,34 +250,58 @@ def calculate_voronoi_cell(basis, radius=None, verbose=False):
         sage: V = calculate_voronoi_cell(matrix([[1, 0], [0, 1]]))
         sage: V.volume()
         1
+
+    TESTS:
+
+    Verify that :issue:`39507` is fixed::
+
+        sage: from sage.modules.free_module_integer import IntegerLattice
+        sage: v = vector(ZZ, [1,1,1,-1])
+        sage: L = IntegerLattice([v])
+        sage: print(v in L)
+        True
+        sage: print(L.closest_vector(v))
+        (1, 1, 1, -1)
     """
     dim = basis.dimensions()
+    # LLL-reduce for efficiency.
+    basis = basis.LLL()
+    if radius is None:
+        from sage.rings.real_double import RDF
+        tranposedRDFMatrix = (basis.transpose()).change_ring(RDF)
+        Q, R = tranposedRDFMatrix.QR()
+        radius = 0
+        for i in range(dim[0]):
+            radius += R[i][i] * R[i][i]
     artificial_length = None
     if dim[0] < dim[1]:
         # introduce "artificial" basis points (representing infinity)
         def approx_norm(v):
             r, r1 = (v.inner_product(v)).sqrtrem()
             return r + (r1 > 0)
-        artificial_length = max(approx_norm(v) for v in basis) * 2
-        additional_vectors = identity_matrix(dim[1]) * artificial_length
+        from sage.rings.rational_field import QQ
+        additional_vectors = (QQ**dim[1]).subspace(basis).complement().basis()
+        for v in additional_vectors:
+            v *= v.denominator()
+        additional_vectors = matrix(additional_vectors)
+        from sage.rings.rational_field import ZZ
+        additional_vectors = additional_vectors.change_ring(ZZ)
+        additional_vectors = additional_vectors.LLL()
+        artificial_length = ceil((radius / min(approx_norm(v) for v in additional_vectors)) * 1.1)
+        additional_vectors *= artificial_length
         basis = basis.stack(additional_vectors)
-        # LLL-reduce to get quadratic matrix
-        basis = basis.LLL()
         basis = matrix([v for v in basis if v])
         dim = basis.dimensions()
     if dim[0] != dim[1]:
         raise ValueError("invalid matrix")
     basis = basis / 2
+    radius = radius / 4
 
     ieqs = []
     for v in basis:
         ieqs.append(plane_inequality(v))
         ieqs.append(plane_inequality(-v))
     Q = Polyhedron(ieqs=ieqs)
-
-    # twice the length of longest vertex in Q is a safe choice
-    if radius is None:
-        radius = 2 * max(v.inner_product(v) for v in basis)
 
     V = diamond_cut(Q, basis, radius, verbose=verbose)
 
