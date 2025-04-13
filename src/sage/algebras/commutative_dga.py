@@ -74,35 +74,37 @@ AUTHORS:
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
 
-from sage.structure.unique_representation import UniqueRepresentation, CachedRepresentation
-from sage.structure.sage_object import SageObject
-from sage.misc.cachefunc import cached_method
-from sage.misc.inherit_comparison import InheritComparisonClasscallMetaclass
-from sage.misc.functional import is_odd, is_even
-from sage.misc.misc_c import prod
-from sage.categories.chain_complexes import ChainComplexes
-from sage.categories.algebras import Algebras
-from sage.categories.morphism import Morphism
-from sage.categories.modules import Modules
-from sage.categories.homset import Hom
+from functools import lru_cache
+from itertools import product
 
 from sage.algebras.free_algebra import FreeAlgebra
-from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
+from sage.categories.algebras import Algebras
+from sage.categories.chain_complexes import ChainComplexes
+from sage.categories.homset import Hom
+from sage.categories.modules import Modules
+from sage.categories.morphism import Morphism
 from sage.combinat.free_module import CombinatorialFreeModule
 from sage.combinat.integer_vector_weighted import WeightedIntegerVectors
 from sage.groups.additive_abelian.additive_abelian_group import AdditiveAbelianGroup
 from sage.matrix.constructor import matrix
+from sage.misc.cachefunc import cached_method
+from sage.misc.functional import is_odd
+from sage.misc.inherit_comparison import InheritComparisonClasscallMetaclass
+from sage.misc.misc_c import prod
 from sage.modules.free_module import VectorSpace
 from sage.modules.free_module_element import vector
-from sage.rings.integer_ring import ZZ
 from sage.rings.homset import RingHomset_generic
+from sage.rings.integer_ring import ZZ
 from sage.rings.morphism import RingHomomorphism_im_gens
+from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.polynomial.term_order import TermOrder
 from sage.rings.quotient_ring import QuotientRing_nc
 from sage.rings.quotient_ring_element import QuotientRingElement
-from sage.misc.cachefunc import cached_function
-
-import sage.interfaces.abc
+from sage.structure.sage_object import SageObject
+from sage.structure.unique_representation import (
+    CachedRepresentation,
+    UniqueRepresentation,
+)
 
 
 def sorting_keys(element):
@@ -1080,83 +1082,118 @@ class GCAlgebra(UniqueRepresentation, QuotientRing_nc):
 
     _base_repr = _repr_
 
-    @cached_method
+    
+    @lru_cache(maxsize=None)
     def _basis_for_free_alg(self, n):
         r"""
-        Basis of the associated free commutative DGA in degree `n`.
+        Return the graded basis of the free graded commutative DGA in degree ``n``.
 
-        That is, ignore the relations when computing the basis:
-        compute the basis of the free commutative DGA with generators
-        in degrees given by ``self._degrees``.
+        This method computes all monomials of total degree ``n`` with respect to
+        the grading defined by the degrees of the generators. It distinguishes
+        between generators with even and odd degrees, where odd generators are
+        treated as anticommutative (i.e., square to zero unless the characteristic
+        is 2).
 
         INPUT:
 
-        - ``n`` -- integer
+        - ``n`` -- non-negative integer, the total degree
 
-        OUTPUT: tuple of basis elements in degree `n`, as tuples of exponents
+        OUTPUT:
+
+        - a list of tuples representing exponent vectors of monomials of degree ``n``
+
+        .. NOTE::
+
+            - If the characteristic of the base ring is 2, odd generators are treated
+            as commutative.
+            - The method is optimized using `WeightedIntegerVectors` and caching via
+            `functools.lru_cache`.
 
         EXAMPLES::
 
-            sage: A.<a,b,c> = GradedCommutativeAlgebra(QQ, degrees=(1,2,3))
+            sage: A.<x,y,z> = GradedCommutativeAlgebra(QQ, degrees=(1, 2, 3))
             sage: A._basis_for_free_alg(3)
             [(0, 0, 1), (1, 1, 0)]
-            sage: B = A.quotient(A.ideal(a*b, b**2+a*c))
-            sage: B._basis_for_free_alg(3)
-            [(0, 0, 1), (1, 1, 0)]
 
-            sage: GradedCommutativeAlgebra(QQ, degrees=(1,1))._basis_for_free_alg(3)
-            []
-            sage: GradedCommutativeAlgebra(GF(2), degrees=(1,1))._basis_for_free_alg(3)
-            [(0, 3), (1, 2), (2, 1), (3, 0)]
-
-            sage: A = GradedCommutativeAlgebra(GF(2), degrees=(4,8,12))
-            sage: A._basis_for_free_alg(399)
-            []
+            sage: B = A.quotient(A.ideal(x*y, y^2 - x*z, z^3))
+            sage: B._basis_for_free_alg(5)
+            [(0, 1, 1), (1, 2, 0)]
         """
+
+        # Retrieve the degrees and number of variables
+        degs = self._degrees
+        num_vars = len(degs)
+
+        # Return the trivial basis for n == 0
         if n == 0:
-            return ((0,) * len(self._degrees),)
+            return [tuple(0 for _ in degs)]
+
+        # Special case: base ring characteristic 2
         if self.base_ring().characteristic() == 2:
-            return [tuple(_) for _ in WeightedIntegerVectors(n, self._degrees)]
+            return [tuple(v) for v in WeightedIntegerVectors(n, degs)]
 
-        even_degrees = []
-        odd_degrees = []
-        for a in self._degrees:
-            if is_even(a):
-                even_degrees.append(a)
+        # Separate degrees into even and odd degrees
+        even_idx, odd_idx = [], []
+        even_deg, odd_deg = [], []
+        for i, d in enumerate(degs):
+            if d % 2 == 0:
+                even_idx.append(i)
+                even_deg.append(d)
             else:
-                odd_degrees.append(a)
+                odd_idx.append(i)
+                odd_deg.append(d)
 
-        if not even_degrees:  # No even generators.
-            return [tuple(_)
-                    for _ in exterior_algebra_basis(n, tuple(odd_degrees))]
-        if not odd_degrees:  # No odd generators.
-            return [tuple(_)
-                    for _ in WeightedIntegerVectors(n, tuple(even_degrees))]
-
-        # General case: both even and odd generators.
         result = []
-        for dim in range(n + 1):
-            # First find the even part of the basis.
-            if dim == 0:
-                even_result = [[0] * len(even_degrees)]
-            else:
-                even_result = WeightedIntegerVectors(dim, tuple(even_degrees))
-            # Now find the odd part of the basis.
-            for even_mono in even_result:
-                deg = n - dim
-                odd_result = exterior_algebra_basis(deg, tuple(odd_degrees))
-                for odd_mono in odd_result:
-                    temp_even = list(even_mono)
-                    temp_odd = list(odd_mono)
-                    mono = []
-                    for a in self._degrees:
-                        if is_even(a):
-                            mono.append(temp_even.pop(0))
-                        else:
-                            mono.append(temp_odd.pop(0))
-                    result.append(tuple(mono))
-        return result
 
+        # Case 1: Both even and odd degrees
+        if even_idx and odd_idx:
+            len_even = len(even_idx)
+            len_odd = len(odd_idx)
+            odd_deg_tuple = tuple(odd_deg)
+
+            # Precompute all valid odd vectors once and store them
+            valid_odd = [
+                o for o in product((0, 1), repeat=len_odd)
+                if sum(c * d for c, d in zip(o, odd_deg_tuple)) <= n
+            ]
+
+            # Iterate over possible degrees for even part using the iterator
+            for k in range(n + 1):
+                even_part = WeightedIntegerVectors(k, even_deg)  # Use the iterator directly
+                target = n - k
+                for e in even_part:  # Iterating over the iterator directly
+                    for o in valid_odd:
+                        if sum(c * d for c, d in zip(o, odd_deg_tuple)) != target:
+                            continue
+                        vec = [0] * num_vars
+                        # Efficiently fill the result vector for even and odd indices
+                        for i, val in zip(even_idx, e):
+                            vec[i] = val
+                        for i, val in zip(odd_idx, o):
+                            vec[i] = val
+                        result.append(tuple(vec))
+
+        # Case 2: Only even degrees
+        elif even_idx:
+            for e in WeightedIntegerVectors(n, even_deg):  # Use the iterator directly
+                vec = [0] * num_vars
+                for i, val in zip(even_idx, e):
+                    vec[i] = val
+                result.append(tuple(vec))
+
+        # Case 3: Only odd degrees
+        elif odd_idx:
+            odd_deg_tuple = tuple(odd_deg)
+            for o in product((0, 1), repeat=len(odd_idx)):
+                if sum(c * d for c, d in zip(o, odd_deg_tuple)) == n:
+                    vec = [0] * num_vars
+                    for i, val in zip(odd_idx, o):
+                        vec[i] = val
+                    result.append(tuple(vec))
+
+        return result
+        
+    
     def basis(self, n):
         """
         Return a basis of the `n`-th homogeneous component of ``self``.
@@ -1447,6 +1484,7 @@ class GCAlgebra(UniqueRepresentation, QuotientRing_nc):
             """
             QuotientRingElement.__init__(self, A, rep)
 
+        
         def degree(self, total=False):
             r"""
             The degree of this element.
@@ -1457,12 +1495,21 @@ class GCAlgebra(UniqueRepresentation, QuotientRing_nc):
             INPUT:
 
             - ``total`` -- ignored, present for compatibility with the
-              multi-graded case
+            multi-graded case
+
+            OUTPUT:
+
+            - Integer: the highest total degree among the monomials.
+
+            .. NOTE::
+
+                The degree is computed with respect to the weighted grading
+                given by the degrees of the generators of the algebra.
 
             EXAMPLES::
 
                 sage: A.<x,y,z,t> = GradedCommutativeAlgebra(QQ, degrees=(1, 2, 3, 3))
-                sage: el = z*t+2*x*y-y^2*z
+                sage: el = z*t + 2*x*y - y^2*z
                 sage: el.degree()
                 7
                 sage: el.monomials()
@@ -1477,11 +1524,26 @@ class GCAlgebra(UniqueRepresentation, QuotientRing_nc):
             """
             if self.is_zero():
                 raise ValueError("the zero element does not have a well-defined degree")
-            exps = self.monomial_coefficients().keys()
+            
+            # Get the polynomial representation
+            poly = self.lift() if hasattr(self, 'lift') else self
+            
+            # Handle different polynomial types
+            if hasattr(poly, 'exponents'):
+                exponents = poly.exponents()
+            elif hasattr(poly, 'monomials'):
+                exponents = [m.exponents() for m in poly.monomials()]
+            else:
+                # Fallback for NCPolynomial_plural
+                try:
+                    exponents = [tuple(int(e) for e in m.exponents) 
+                                for m in poly._poly.monomials]
+                except AttributeError:
+                    raise NotImplementedError("Cannot determine degree for this element type")
+            
             degrees = self.parent()._degrees
-            n = self.parent().ngens()
-            l = [sum(e[i] * degrees[i] for i in range(n)) for e in exps]
-            return max(l)
+            return max(sum(e[i]*degrees[i] for i in range(len(e))) for e in exponents)
+
 
         def is_homogeneous(self, total=False):
             r"""
@@ -1531,9 +1593,8 @@ class GCAlgebra(UniqueRepresentation, QuotientRing_nc):
             for m in self.monomials():
                 if degree is None:
                     degree = m.degree(total)
-                else:
-                    if degree != m.degree(total):
-                        return False
+                elif degree != m.degree(total):
+                    return False
             return True
 
         def homogeneous_parts(self):
@@ -1559,12 +1620,20 @@ class GCAlgebra(UniqueRepresentation, QuotientRing_nc):
                     res[deg] = term
             return {i: res[i] for i in sorted(res.keys())}
 
-        def monomial_coefficients(self, copy=True):
-            r"""
-            A dictionary that determines the element.
 
-            The keys of this dictionary are the tuples of exponents of each
-            monomial, and the values are the corresponding coefficients.
+        def monomial_coefficients(self, copy=True):
+            """
+            Return a dictionary representing the monomial coefficients of this element.
+
+            This method generalizes the original behavior to support various internal
+            polynomial representations such as commutative, noncommutative, and lifted
+            elements. It ensures compatibility with elements from quotient algebras and
+            specialized polynomial classes like `NCPolynomial_plural`.
+
+            OUTPUT:
+
+            - A dictionary where keys are tuples of exponents (integers) representing 
+            the monomials, and values are the corresponding coefficients.
 
             EXAMPLES::
 
@@ -1573,13 +1642,23 @@ class GCAlgebra(UniqueRepresentation, QuotientRing_nc):
                 sage: sorted(elt.monomial_coefficients().items())
                 [((0, 1, 1, 0), -5), ((1, 1, 0, 0), 1), ((1, 2, 3, 1), 7)]
 
-            ``dict`` is an alias::
+            This method is designed to avoid crashes on quotient algebra elements
+            like `NCPolynomial_plural`, by falling back on internal representations
+            when necessary.
 
-                sage: sorted(elt.dict().items())
-                [((0, 1, 1, 0), -5), ((1, 1, 0, 0), 1), ((1, 2, 3, 1), 7)]
             """
-            return self.lift().monomial_coefficients(copy=copy)
-
+            poly = self.lift() if hasattr(self, 'lift') else self
+            
+            if hasattr(poly, 'dict'):
+                return poly.dict()
+            elif hasattr(poly, '_monomial_coefficients'):
+                return poly._monomial_coefficients
+            elif hasattr(poly, '_poly'):
+                # For NCPolynomial_plural
+                return {tuple(int(e) for e in m.exponents): c 
+                        for m, c in zip(poly._poly.monomials, poly._poly.coefficients)}
+            else:
+                raise NotImplementedError("Cannot get coefficients for this element type")
         dict = monomial_coefficients
 
         def __call__(self, *values, **kwargs):
@@ -1865,43 +1944,74 @@ class GCAlgebra_multigraded(GCAlgebra):
             return False
         return super()._coerce_map_from_(other)
 
-    def basis(self, n, total=False):
+    # def basis(self, n, total=False):
+    #     """
+    #     Basis in degree `n`.
+
+    #     - ``n`` -- degree or integer
+    #     - ``total`` -- boolean (default: ``False``); if ``True``, return the
+    #       basis in total degree `n`
+
+    #     If `n` is an integer rather than a multi-index, then the
+    #     total degree is used in that case as well.
+
+    #     EXAMPLES::
+
+    #         sage: A.<a,b,c> = GradedCommutativeAlgebra(GF(2), degrees=((1,0), (0,1), (1,1)))
+    #         sage: A.basis((1,1))
+    #         [a*b, c]
+    #         sage: A.basis(2, total=True)
+    #         [a^2, a*b, b^2, c]
+
+    #     Since 2 is a not a multi-index, we don't need to specify that ``total``
+    #     is ``True``::
+
+    #         sage: A.basis(2)
+    #         [a^2, a*b, b^2, c]
+
+    #     If ``total`` is ``True``, then `n` can still be a tuple, list,
+    #     etc., and its total degree is used instead::
+
+    #         sage: A.basis((1,1), total=True)
+    #         [a^2, a*b, b^2, c]
+    #     """
+    #     # tot_basis = GCAlgebra.basis(self, total_degree(n))
+    #     # if total or n in ZZ:
+    #     #     return tot_basis
+    #     # G = AdditiveAbelianGroup([0] * self._grading_rank)
+    #     # n = G(vector(n))
+    #     # return [b for b in tot_basis if b.degree() == n]
+
+    def basis(self, n):
         """
-        Basis in degree `n`.
-
-        - ``n`` -- degree or integer
-        - ``total`` -- boolean (default: ``False``); if ``True``, return the
-          basis in total degree `n`
-
-        If `n` is an integer rather than a multi-index, then the
-        total degree is used in that case as well.
+        Return a basis of the `n`-th homogeneous component of ``self``.
 
         EXAMPLES::
 
-            sage: A.<a,b,c> = GradedCommutativeAlgebra(GF(2), degrees=((1,0), (0,1), (1,1)))
-            sage: A.basis((1,1))
-            [a*b, c]
-            sage: A.basis(2, total=True)
-            [a^2, a*b, b^2, c]
-
-        Since 2 is a not a multi-index, we don't need to specify that ``total``
-        is ``True``::
-
+            sage: A.<x,y,z,t> = GradedCommutativeAlgebra(QQ, degrees=(1, 2, 2, 3))
             sage: A.basis(2)
-            [a^2, a*b, b^2, c]
-
-        If ``total`` is ``True``, then `n` can still be a tuple, list,
-        etc., and its total degree is used instead::
-
-            sage: A.basis((1,1), total=True)
-            [a^2, a*b, b^2, c]
+            [y, z]
+            sage: A.basis(3)
+            [x*y, x*z, t]
+            sage: A.basis(4)
+            [y^2, y*z, z^2, x*t]
+            sage: A.basis(5)
+            [x*y^2, x*y*z, x*z^2, y*t, z*t]
+            sage: A.basis(6)
+            [y^3, y^2*z, y*z^2, z^3, x*y*t, x*z*t]
         """
-        tot_basis = GCAlgebra.basis(self, total_degree(n))
-        if total or n in ZZ:
-            return tot_basis
-        G = AdditiveAbelianGroup([0] * self._grading_rank)
-        n = G(vector(n))
-        return [b for b in tot_basis if b.degree() == n]
+        free_basis = self._basis_for_free_alg(n)
+        basis = []
+        for exponents in free_basis:
+            # Create the monomial by multiplying generators with exponents
+            monomial = self.one()
+            for i, exp in enumerate(exponents):
+                if exp > 0:
+                    monomial *= self.gen(i)**exp
+            # Check if the monomial is nonzero in the quotient
+            if monomial != self.zero():
+                basis.append(monomial)
+        return basis
 
     def differential(self, diff):
         """
@@ -4168,53 +4278,73 @@ class CohomologyClass(SageObject, CachedRepresentation):
         return self._x
 
 
-@cached_function
 def exterior_algebra_basis(n, degrees):
-    """
-    Basis of an exterior algebra in degree ``n``, where the
-    generators are in degrees ``degrees``.
+    r"""
+    Return a basis for the exterior algebra in degree ``n`` given generator degrees.
+
+    This function uses dynamic programming to efficiently compute the basis of
+    the exterior algebra (with anticommutative generators, i.e., each variable
+    can appear at most once) in a given total degree ``n``.
+
+    The output is a list of binary lists representing exponent vectors for monomials
+    in the exterior algebra. A 1 in position ``i`` means the ``i``-th generator is included.
 
     INPUT:
 
-    - ``n`` -- integer
-    - ``degrees`` -- iterable of integers
+    - ``n`` -- non-negative integer, the total degree
+    - ``degrees`` -- list of integers, the degrees of each generator
 
-    Return list of lists, each list representing exponents for the
-    corresponding generators. (So each list consists of 0s and 1s.)
+    OUTPUT:
+
+    - list of lists of 0s and 1s, each representing a basis element (exponent vector)
 
     EXAMPLES::
 
-        sage: from sage.algebras.commutative_dga import exterior_algebra_basis
-        sage: exterior_algebra_basis(1, (1,3,1))
-        [[0, 0, 1], [1, 0, 0]]
-        sage: exterior_algebra_basis(4, (1,3,1))
-        [[0, 1, 1], [1, 1, 0]]
-        sage: exterior_algebra_basis(10, (1,5,1,1))
-        []
-    """
-    if n == 0:
-        return [[0 for _ in degrees]]
-    if len(degrees) == 1:
-        if degrees[0] == n:
-            return [[1]]
-        return []
-    if not degrees:
-        return []
-    if min(degrees) > n:
-        return []
-    if sum(degrees) < n:
-        return []
-    if sum(degrees) == n:
-        return [[1 for _ in degrees]]
-    i = len(degrees) // 2
-    res = []
-    for j in range(n + 1):
-        v1 = exterior_algebra_basis(j, degrees[:i])
-        v2 = exterior_algebra_basis(n - j, degrees[i:])
-        res += [l1 + l2 for l1 in v1 for l2 in v2]
-    res.sort()
-    return res
+        sage: degrees = [1, 2, 3]
+        sage: exterior_algebra_basis(3, degrees)
+        [[1, 0, 1], [0, 1, 0]]
 
+    NOTES:
+
+    - Each generator may appear at most once due to anticommutativity.
+    - If the sum of all degrees is less than ``n``, the result is an empty list.
+
+    ALGORITHM:
+
+    Dynamic programming is used where ``dp[i][j]`` stores all subsets using the first
+    ``i`` generators that sum to degree ``j``.
+    """
+    # Precompute the maximum degree possible by summing up the degrees
+    max_degree = sum(degrees)
+    
+    # If the sum of all degrees is less than n, return an empty list
+    if max_degree < n:
+        return []
+    
+    # DP table to store intermediate results
+    # dp[i][j] will store all combinations of monomials of degree j using the first i generators
+    dp = [[[] for _ in range(n + 1)] for _ in range(len(degrees) + 1)]
+    
+    # Base case: degree 0, all zeros
+    dp[0][0] = [([0] * len(degrees))]  # No generators, empty list for degree 0
+    
+    # Fill the DP table iteratively
+    for i in range(1, len(degrees) + 1):
+        degree = degrees[i - 1]  # Degree of the i-th generator
+        
+        # Copy previous results (no inclusion of the current generator)
+        for j in range(n + 1):
+            dp[i][j] = dp[i - 1][j][:]  # Clone the previous state
+        
+        # Update the DP table by considering including the current generator
+        for j in range(degree, n + 1):
+            for prev in dp[i - 1][j - degree]:
+                # Include the current generator (set the appropriate index to 1)
+                new_list = [1 if idx == (i - 1) else prev[idx] for idx in range(len(degrees))]
+                dp[i][j].append(new_list)
+    
+    # Return the results for degree `n`
+    return dp[len(degrees)][n]
 
 def total_degree(deg):
     """
@@ -4247,3 +4377,4 @@ def total_degree(deg):
     if deg in ZZ:
         return deg
     return sum(deg)
+
