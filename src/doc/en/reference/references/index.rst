@@ -3272,6 +3272,10 @@ REFERENCES:
 .. [Haj2000] \M. Hajiaghayi, *Consecutive Ones Property*, 2000.
              http://www-math.mit.edu/~hajiagha/pp11.ps
 
+.. [HAM1985] Hoffman, Alan J., Anthonius Wilhelmus Johannes Kolen, and Michel Sakarovitch.
+             Totally-balanced and greedy matrices.
+             SIAM Journal on Algebraic Discrete Methods 6.4 (1985): 721-730.
+
 .. [Han2016] \G.-N. Han, *Hankel continued fraction and its applications*,
              Adv. in Math., 303, 2016, pp. 295-321.
 
@@ -3963,6 +3967,10 @@ REFERENCES:
 .. [KK2003] T. Kivinen and M. Kojo. *More Modular Exponential (MODP)
             Diffie-Hellman groups for Internet Key Exchange (IKE)*, in RFC 3526.
             Available at https://www.rfc-editor.org/rfc/rfc3526
+
+.. [KKD1995] Ton Kloks, and Dieter Kratsch. "Computing a perfect edge without vertex
+            elimination ordering of a chordal bipartite graph."
+            Information Processing Letters 55.1 (1995): 11-16.
 
 .. [KKMMNN1992] S-J. Kang, M. Kashiwara, K. C. Misra, T. Miwa, T. Nakashima,
                 and A. Nakayashiki. *Affine crystals and vertex models*.
@@ -4694,6 +4702,9 @@ REFERENCES:
 .. [LT2018] Zhiqiang Li, Shaobin Tan.
             *Verma modules for rank two Heisenberg-Virasoro algebra*.
             Preprint, (2018). :arxiv:`1807.07735`.
+
+.. [Lub1987] Lubiw, Anna. Doubly Lexical Orderings of Matrices.
+             SIAM Journal on Computing 16.5 (1987): 854-879.
 
 .. [Lut2002] Frank H. Lutz, Császár's Torus, Electronic Geometry Model
              No. 2001.02.069
