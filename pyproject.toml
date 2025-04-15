@@ -179,6 +179,9 @@ lint = [
   "flake8-rst-docstrings",
 ]
 dev = [
+  "tqdm",
+  "pygithub",
+  "meson",
   "conda-lock",
   "grayskull",
   "toml",
