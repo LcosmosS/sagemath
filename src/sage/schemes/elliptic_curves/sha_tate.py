@@ -426,9 +426,9 @@ class Sha(SageObject):
             try:
                 Sha = Integer(Sha)
             except ValueError:
-                raise RuntimeError("There is a bug in an, since the computed conjectural order of Sha is %s, which is not an integer." % Sha)
+                raise RuntimeError(f"There is a bug in an, since the computed conjectural order of Sha is {Sha}, which is not an integer.")
             if not arith.is_square(Sha):
-                raise RuntimeError("There is a bug in an, since the computed conjectural order of Sha is %s, which is not a square." % Sha)
+                raise RuntimeError(f"There is a bug in an, since the computed conjectural order of Sha is {Sha}, which is not a square.")
             E.__an = Sha
             self.__an = Sha
             return Sha
@@ -448,9 +448,9 @@ class Sha(SageObject):
             try:
                 Sha = Integer(Sha)
             except ValueError:
-                raise RuntimeError("There is a bug in an, since the computed conjectural order of Sha is %s, which is not an integer." % Sha)
+                raise RuntimeError(f"There is a bug in an, since the computed conjectural order of Sha is {Sha}, which is not an integer.")
             if not arith.is_square(Sha):
-                raise RuntimeError("There is a bug in an, since the computed conjectural order of Sha is %s, which is not a square." % Sha)
+                raise RuntimeError(f"There is a bug in an, since the computed conjectural order of Sha is {Sha}, which is not a square.")
             E.__an = Sha
             self.__an = Sha
             return Sha
@@ -635,7 +635,7 @@ class Sha(SageObject):
                 while bounds[r] <= v:
                     n += 1
                     bounds = lp._prec_bounds(n, r + 1)
-                verbose("set precision to %s" % n)
+                verbose(f"set precision to {n}")
             else:
                 n = max(2, prec)
 
@@ -647,7 +647,7 @@ class Sha(SageObject):
                     not_yet_enough_prec = False
                 else:
                     n += 1
-                    verbose("increased precision to %s" % n)
+                    verbose(f"increased precision to {n}")
 
             shan = lstar / bsdp
 
@@ -660,7 +660,7 @@ class Sha(SageObject):
             bsdp = tam / tors / lg**r * reg
             # note this is an element in Q_p^2
 
-            verbose("the algebraic leading terms : %s" % bsdp)
+            verbose(f"the algebraic leading terms : {bsdp}")
 
             v = [bsdp[0].valuation(), bsdp[1].valuation()]
 
@@ -674,12 +674,12 @@ class Sha(SageObject):
             while not_yet_enough_prec:
                 lps = lp.Dp_valued_series(n, quadratic_twist=D, prec=r + 1)
                 lstar = [lps[0][r], lps[1][r]]
-                verbose("the leading terms : %s" % lstar)
+                verbose(f"the leading terms : {lstar}")
                 if (lstar[0] != 0 or lstar[1] != 0) or (prec != 0):
                     not_yet_enough_prec = False
                 else:
                     n += 1
-                    verbose("increased precision to %s" % n)
+                    verbose(f"increased precision to {n}")
 
             verbose("...putting things together")
             if bsdp[0] != 0:
@@ -987,9 +987,9 @@ class Sha(SageObject):
                 D -= 1
 
         if not E.satisfies_heegner_hypothesis(D):
-            raise ArithmeticError("Discriminant (=%s) must be a fundamental discriminant that satisfies the Heegner hypothesis." % D)
+            raise ArithmeticError(f"Discriminant (={D}) must be a fundamental discriminant that satisfies the Heegner hypothesis.")
         if D == -3 or D == -4:
-            raise ArithmeticError("Discriminant (=%s) must not be -3 or -4." % D)
+            raise ArithmeticError(f"Discriminant (={D}) must not be -3 or -4.")
         eps = E.root_number()
         L1_vanishes = E.lseries().L1_vanishes()
         if eps == 1 and L1_vanishes:
@@ -1011,7 +1011,7 @@ class Sha(SageObject):
             if tries >= 6:
                 raise RuntimeError("Too many precision increases in bound_kolyvagin")
             if eps == 1:   # E has even rank
-                verbose("Conductor of twist = %s" % F.conductor())
+                verbose(f"Conductor of twist = {F.conductor()}")
                 LF1, err_F = F.lseries().deriv_at1(k_F)
                 LE1, err_E = E.lseries().at1(k_E)
                 err_F = max(err_F, MIN_ERR)
@@ -1036,12 +1036,12 @@ class Sha(SageObject):
 
                 I = RIF(alpha) * RIF(LE1-err_E, LE1+err_E) * RIF(LF1-err_F, LF1+err_F) / RIF(hZ)
 
-            verbose('interval = %s' % I)
+            verbose(f'interval = {I}')
             t, n = I.is_int()
             if t:
                 break
             elif I.absolute_diameter() < 1:
-                raise RuntimeError("Problem in bound_kolyvagin; square of index is not an integer -- D={}, I={}.".format(D, I))
+                raise RuntimeError(f"Problem in bound_kolyvagin; square of index is not an integer -- D={D}, I={I}.")
             verbose("Doubling bounds")
             k_E *= 2
             k_F *= 2
@@ -1054,7 +1054,7 @@ class Sha(SageObject):
         for p, e in n.factor():
             if p > 2:
                 if e % 2:
-                    raise RuntimeError("Problem in bound_kolyvagin; square of index is not a perfect square!  D={}, I={}, n={}, e={}.".format(D, I, n, e))
+                    raise RuntimeError(f"Problem in bound_kolyvagin; square of index is not a perfect square!  D={D}, I={I}, n={n}, e={e}.")
                 B.append(p)
             else:
                 n >>= e  # replace n by its odd part

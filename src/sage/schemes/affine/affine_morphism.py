@@ -188,11 +188,11 @@ class SchemeMorphism_polynomial_affine_space(SchemeMorphism_polynomial):
         """
         if check:
             if not isinstance(polys, (list, tuple)):
-                raise TypeError("polys (=%s) must be a list or tuple" % polys)
+                raise TypeError(f"polys (={polys}) must be a list or tuple")
             source_ring = parent.domain().ambient_space().coordinate_ring()
             target = parent.codomain().ambient_space()
             if len(polys) != target.ngens():
-                raise ValueError("there must be %s polynomials" % target.ngens())
+                raise ValueError(f"there must be {target.ngens()} polynomials")
             try:
                 polys = [source_ring(poly) for poly in polys]
             except TypeError:  # maybe given quotient ring elements
@@ -204,12 +204,12 @@ class SchemeMorphism_polynomial_affine_space(SchemeMorphism_polynomial):
                     source_field = source_ring.base_ring().fraction_field()
                     try:
                         if not all(p.base_ring().fraction_field() == source_field for p in polys):
-                            raise TypeError("polys (=%s) must be rational functions in %s" % (polys, source_ring))
+                            raise TypeError(f"polys (={polys}) must be rational functions in {source_ring}")
                         K = FractionField(source_ring)
                         polys = [K(p) for p in polys]
                         # polys = [source_ring(poly.numerator())/source_ring(poly.denominator()) for poly in polys]
                     except TypeError:  # can't seem to coerce
-                        raise TypeError("polys (=%s) must be rational functions in %s" % (polys, source_ring))
+                        raise TypeError(f"polys (={polys}) must be rational functions in {source_ring}")
             check = False
 
         SchemeMorphism_polynomial.__init__(self, parent, polys, check)
@@ -259,7 +259,7 @@ class SchemeMorphism_polynomial_affine_space(SchemeMorphism_polynomial):
                 try:
                     x = self.domain()(x)
                 except (TypeError, NotImplementedError):
-                    raise TypeError("%s fails to convert into the map's domain %s, but a `pushforward` method is not properly implemented" % (x, self.domain()))
+                    raise TypeError(f"{x} fails to convert into the map's domain {self.domain()}, but a `pushforward` method is not properly implemented")
 
         R = x.domain().coordinate_ring()
         if R is self.base_ring():

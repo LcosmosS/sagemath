@@ -1572,7 +1572,7 @@ class EllipticCurvePoint_field(EllipticCurvePoint,
         """
         p = Integer(p)
         if not p.is_prime():
-            raise ValueError("p (=%s) should be prime." % p)
+            raise ValueError(f"p (={p}) should be prime.")
 
         if self.is_zero():
             raise ValueError("self must not be 0.")
@@ -1744,15 +1744,15 @@ class EllipticCurvePoint_field(EllipticCurvePoint,
 
         if check:
             if value <= 0:
-                raise ValueError('Value %s illegal for point order' % value)
+                raise ValueError(f'Value {value} illegal for point order')
             E = self.curve()
             q = E.base_ring().cardinality()
             if q < oo:
                 _, hi = Hasse_bounds(q)
                 if value > hi:
-                    raise ValueError('Value %s illegal: outside max Hasse bound' % value)
+                    raise ValueError(f'Value {value} illegal: outside max Hasse bound')
             if value * self != E(0):
-                raise ValueError('Value %s illegal: %s * %s is not the identity' % (value, value, self))
+                raise ValueError(f'Value {value} illegal: {value} * {self} is not the identity')
             if hasattr(self, '_order') and self._order != value:  # already known
                 raise ValueError(f'value {value} contradicts previously cached order {self._order}')
 
@@ -2381,7 +2381,7 @@ class EllipticCurvePoint_field(EllipticCurvePoint,
             elif d == k:
                 q = K.base_ring().order()
             else:
-                raise ValueError("Unexpected field degree: set keyword argument q equal to the size of the base field (big field is GF(q^%s))." % k)
+                raise ValueError(f"Unexpected field degree: set keyword argument q equal to the size of the base field (big field is GF(q^{k})).")
         # The user has supplied q, so we check here that it's a sensible value
         elif Mod(q, n)**k != 1:
             raise ValueError("n does not divide (q^k - 1) for the supplied value of q")
@@ -2585,21 +2585,21 @@ class EllipticCurvePoint_field(EllipticCurvePoint,
             if d == k:
                 q = K.base_ring().order()
             else:
-                raise ValueError("Unexpected field degree: set keyword argument q equal to the size of the base field (big field is GF(q^%s))." % k)
+                raise ValueError(f"Unexpected field degree: set keyword argument q equal to the size of the base field (big field is GF(q^{k})).")
 
         # check order of P
         if n*P != O:
-            raise ValueError('This point %s is not of order n=%s' % (P, n))
+            raise ValueError(f'This point {P} is not of order n={n}')
 
         # check for P in kernel pi - 1:
         piP = E(P[0]**q, P[1]**q)
         if piP - P != O:
-            raise ValueError('This point %s is not in Ker(pi - 1)' % P)
+            raise ValueError(f'This point {P} is not in Ker(pi - 1)')
 
         # check for Q in kernel pi - q:
         piQ = E(Q[0]**q, Q[1]**q)
         if piQ - q*Q != O:
-            raise ValueError('Point %s not in Ker(pi - q)' % Q)
+            raise ValueError(f'Point {Q} not in Ker(pi - q)')
 
         T = t-1
         ret = Q._miller_(P, T)
@@ -4267,7 +4267,7 @@ class EllipticCurvePoint_finite_field(EllipticCurvePoint_field):
         """
         E = self.curve()._magma_init_(magma)
         x, y = self.xy()
-        return "%s![%s,%s]" % (E, x, y)
+        return f"{E}![{x},{y}]"
 
     def _acted_upon_(self, other, side):
         r"""

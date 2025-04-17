@@ -225,7 +225,7 @@ class EllipticCurveTorsionSubgroup(groups.AdditiveAbelianGroupWrapper):
             sage: T = EK.torsion_subgroup(); T._repr_()                                 # needs sage.rings.number_field
             'Torsion Subgroup isomorphic to Z/5 associated to the Elliptic Curve defined by y^2 + y = x^3 + (-1)*x^2 + (-10)*x + (-20) over Number Field in i with defining polynomial x^2 + 1'
         """
-        return "Torsion Subgroup isomorphic to %s associated to the %s" % (self.short_name(), self.__E)
+        return f"Torsion Subgroup isomorphic to {self.short_name()} associated to the {self.__E}"
 
     def __richcmp__(self, other, op):
         r"""

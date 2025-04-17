@@ -140,8 +140,7 @@ class ProductProjectiveSpaces_point_ring(SchemeMorphism_point):
             sage: P._repr_()
             '(1 : 2 : 3 , 4 : 5 : 6)'
         """
-        return '(%s)' % (" , ".join((" : ".join(repr(f) for f in Q))
-                                    for Q in self._points))
+        return f"({' , '.join(' : '.join(repr(f) for f in Q) for Q in self._points)})"
 
     def _richcmp_(self, right, op):
         r"""
@@ -376,9 +375,9 @@ class ProductProjectiveSpaces_point_ring(SchemeMorphism_point):
             (10 : 20 , 15 : 4 , 2 : 6)
         """
         if not isinstance(t, (tuple, list)):
-            raise TypeError("%s must be a list or tuple" % t)
+            raise TypeError(f"{t} must be a list or tuple")
         if len(t) != self.codomain().ambient_space().num_components():
-            raise TypeError("%s must have same number of components as %r" % (t, self))
+            raise TypeError(f"{t} must have same number of components as {self!r}")
         for i in range(self.codomain().ambient_space().num_components()):
             self[i].scale_by(t[i])
 

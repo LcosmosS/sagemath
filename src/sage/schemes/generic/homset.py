@@ -305,8 +305,8 @@ class SchemeHomset_generic(HomsetWithBase):
               Defn: Structure map
         """
         s = 'Set of morphisms'
-        s += '\n  From: %s' % self.domain()
-        s += '\n  To:   %s' % self.codomain()
+        s += f'\n  From: {self.domain()}'
+        s += f'\n  To:   {self.codomain()}'
         return s
 
     def natural_map(self):

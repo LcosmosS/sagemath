@@ -468,7 +468,7 @@ class ModularSymbolSage(ModularSymbol):
             self._scaling = 1
             self._e = self._modsym.dual_eigenvector()
         else :
-            raise ValueError("no normalization %s known for modular symbols" % normalize)
+            raise ValueError(f"no normalization {normalize} known for modular symbols")
 
     def _find_scaling_L_ratio(self):
         r"""
@@ -553,7 +553,7 @@ class ModularSymbolSage(ModularSymbol):
             if at0 != 0 :
                 l1 = self.__lalg__(1)
                 if at0 != l1:
-                    verbose('scale modular symbols by %s' % (l1/at0))
+                    verbose(f'scale modular symbols by {l1 / at0}')
                     self._scaling = l1/at0
             else :
                 # if [0] = 0, we can still hope to scale it correctly by considering twists of E
@@ -574,7 +574,7 @@ class ModularSymbolSage(ModularSymbol):
                 else :
                     l1 = self.__lalg__(D)
                     if at0 != l1:
-                        verbose('scale modular symbols by %s found at D=%s ' % (l1/at0,D), level=2)
+                        verbose(f'scale modular symbols by {l1 / at0} found at D={D} ', level=2)
                         self._scaling = l1/at0
 
         else : # that is when sign = -1
@@ -593,7 +593,7 @@ class ModularSymbolSage(ModularSymbol):
             else :
                 l1 = self.__lalg__(D)
                 if at0 != l1:
-                    verbose('scale modular symbols by %s' % (l1/at0))
+                    verbose(f'scale modular symbols by {l1 / at0}')
                     self._scaling = l1/at0
 
     def __lalg__(self, D):
@@ -637,7 +637,7 @@ class ModularSymbolSage(ModularSymbol):
 
         # see padic_lseries.pAdicLeries._quotient_of_periods_to_twist
         # for the explanation of the second factor
-        verbose('real approximation is %s' % q)
+        verbose(f'real approximation is {q}')
         return lv / 8 * QQ(q.round())
 
     def _find_scaling_period(self):
@@ -699,7 +699,7 @@ class ModularSymbolSage(ModularSymbol):
                 if E.real_components() == 1:
                     q /= 2
             q = QQ((q * 200).round()) / 200
-            verbose('scale modular symbols by %s' % q)
+            verbose(f'scale modular symbols by {q}')
             self._scaling = q
         c = self(0)  #  required, to change base point from oo to 0
         if c < 0:

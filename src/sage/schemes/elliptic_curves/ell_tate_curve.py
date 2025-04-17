@@ -92,9 +92,9 @@ class TateCurve(SageObject):
              defined by y^2 + x*y + y = x^3 - 33*x + 68 over Rational Field
         """
         if not p.is_prime():
-            raise ValueError("p (=%s) must be a prime" % p)
+            raise ValueError(f"p (={p}) must be a prime")
         if E.j_invariant().valuation(p) >= 0:
-            raise ValueError("the elliptic curve must have multiplicative reduction at %s" % p)
+            raise ValueError(f"the elliptic curve must have multiplicative reduction at {p}")
         self._p = ZZ(p)
         self._E = E
         self._q = self.parameter()
@@ -129,7 +129,7 @@ class TateCurve(SageObject):
             sage: eq._repr_()
             '2-adic Tate curve associated to the Elliptic Curve defined by y^2 + x*y + y = x^3 - 33*x + 68 over Rational Field'
         """
-        return "%s-adic Tate curve associated to the %s" % (self._p, self._E)
+        return f"{self._p}-adic Tate curve associated to the {self._E}"
 
     def original_curve(self):
         r"""

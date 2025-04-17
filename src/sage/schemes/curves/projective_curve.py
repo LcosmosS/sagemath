@@ -213,7 +213,7 @@ class ProjectiveCurve(Curve_generic, AlgebraicScheme_subscheme_projective):
             True
         """
         if not isinstance(A, ProjectiveSpace_ring):
-            raise TypeError("A (=%s) must be a projective space" % A)
+            raise TypeError(f"A (={A}) must be a projective space")
 
         Curve_generic.__init__(self, A, X, category=category)
 
@@ -417,11 +417,11 @@ class ProjectiveCurve(Curve_generic, AlgebraicScheme_subscheme_projective):
             raise TypeError("this curve must be defined over a field")
         if PS is not None:
             if not isinstance(PS, ProjectiveSpace_ring):
-                raise TypeError("(=%s) must be a projective space" % PS)
+                raise TypeError(f"(={PS}) must be a projective space")
             if PS.dimension_relative() != n - 1:
-                raise TypeError("(=%s) must have dimension (=%s)" % (PS, n - 1))
+                raise TypeError(f"(={PS}) must have dimension (={n - 1})")
             if PS.base_ring() != PP.base_ring():
-                raise TypeError("(=%s) must be defined over the same base field as this curve" % PS)
+                raise TypeError(f"(={PS}) must be defined over the same base field as this curve")
         if P is None:
             # find a point not on the curve if not given
             if self.base_ring().characteristic() == 0:
@@ -460,11 +460,11 @@ class ProjectiveCurve(Curve_generic, AlgebraicScheme_subscheme_projective):
             except TypeError:
                 pass
             if Q is not None:
-                raise TypeError("(=%s) must be a point not on this curve" % P)
+                raise TypeError(f"(={P}) must be a point not on this curve")
             try:
                 Q = self.ambient_space()(P)
             except TypeError:
-                raise TypeError("(=%s) must be a point in the ambient space of this curve" % P)
+                raise TypeError(f"(={P}) must be a point in the ambient space of this curve")
         # in order to create the change of coordinates map, need to find a coordinate of Q that is nonzero
         j = 0
         while Q[j] == 0:
@@ -726,7 +726,7 @@ class ProjectivePlaneCurve(ProjectiveCurve):
         cmd = 'matrix c = coeffs ('+str(ft)+',t)'
         S.eval(cmd)
         N = int(S.eval('size(c)'))
-        b = ','.join("c[{},1]".format(i) for i in range(2, N//2 - 4))
+        b = ','.join(f"c[{i},1]" for i in range(2, N//2 - 4))
         cmd = 'ideal I = ' + b
         S.eval(cmd)
         c = S.eval('slimgb(I)')
@@ -978,7 +978,7 @@ class ProjectivePlaneCurve(ProjectiveCurve):
         try:
             P = self(P)
         except TypeError:
-            raise TypeError("(=%s) is not a point on (=%s)" % (P, self))
+            raise TypeError(f"(={P}) is not a point on (={self})")
 
         # Find an affine chart of the ambient space of self that contains P
         i = 0
@@ -1046,7 +1046,7 @@ class ProjectivePlaneCurve(ProjectiveCurve):
         """
         r = self.multiplicity(P)
         if r < 2:
-            raise TypeError("(=%s) is not a singular point of (=%s)" % (P, self))
+            raise TypeError(f"(={P}) is not a singular point of (={self})")
 
         # Find an affine chart of the ambient space of self that contains P
         i = 0
@@ -1211,7 +1211,7 @@ class ProjectivePlaneCurve(ProjectiveCurve):
         try:
             Q = self(Q)
         except TypeError:
-            raise TypeError("(=%s) must be a point on this curve" % Q)
+            raise TypeError(f"(={Q}) must be a point on this curve")
         r = self.multiplicity(Q)
         d = self.degree()
         # first move Q to (0 : 0 : 1), (1 : 0 : 0), or (0 : 1 : 0)
@@ -1568,7 +1568,7 @@ class ProjectivePlaneCurve(ProjectiveCurve):
             True
         """
         if not self.intersects_at(C, P):
-            raise TypeError("(=%s) must be a point in the intersection of (=%s) and this curve" % (P, C))
+            raise TypeError(f"(={P}) must be a point in the intersection of (={C}) and this curve")
         if self.is_singular(P) or C.is_singular(P):
             return False
 
@@ -1712,7 +1712,7 @@ class ProjectiveCurve_field(ProjectiveCurve, AlgebraicScheme_subscheme_projectiv
                 T = C.tangent_line(q)
                 return T.projective_closure(i, self.ambient_space())
 
-        raise TypeError("{} does not define a point in the projective space".format(p))
+        raise TypeError(f"{p} does not define a point in the projective space")
 
 
 class ProjectivePlaneCurve_field(ProjectivePlaneCurve, ProjectiveCurve_field):

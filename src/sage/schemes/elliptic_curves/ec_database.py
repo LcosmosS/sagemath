@@ -150,7 +150,7 @@ class EllipticCurves:
             # NOTE: only change this bound below after checking/fixing
             # the Cremona labels in the elliptic_curves package!
             if N <= 400000:
-                label = '%s%s%s' % (N, iso, num)
+                label = f'{N}{iso}{num}'
             else:
                 label = None
 

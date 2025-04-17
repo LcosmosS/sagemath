@@ -465,8 +465,7 @@ def ToricVariety(fan,
             raise ValueError('you must not specify both coordinate_names and names')
         coordinate_names = names
     if base_ring not in _Fields:
-        raise TypeError("need a field to construct a toric variety; got %s"
-                        % base_ring)
+        raise TypeError(f"need a field to construct a toric variety; got {base_ring}")
     return ToricVariety_field(fan, coordinate_names, coordinate_indices,
                               base_ring)
 
@@ -909,7 +908,7 @@ class ToricVariety_field(AmbientSpace):
         """
         if coordinates is None:
             coordinates = self.gens()
-        return "[%s]" % (" : ".join(str(coord) for coord in coordinates))
+        return f"[{' : '.join(str(coord) for coord in coordinates)}]"
 
     def _validate(self, polynomials):
         """
@@ -947,7 +946,7 @@ class ToricVariety_field(AmbientSpace):
         """
         for p in polynomials:
             if not self.is_homogeneous(p):
-                raise ValueError("%s is not homogeneous on %s" % (p, self))
+                raise ValueError(f"{p} is not homogeneous on {self}")
         return polynomials
 
     def affine_patch(self, i):
@@ -1057,8 +1056,7 @@ class ToricVariety_field(AmbientSpace):
         if self.base_ring() == F:
             return self
         elif F not in _Fields:
-            raise TypeError("need a field to construct a toric variety; got %s"
-                            % F)
+            raise TypeError(f"need a field to construct a toric variety; got {F}")
         else:
             return ToricVariety(self.fan(), self.variable_names(),
                                 base_field=F)
@@ -1537,7 +1535,7 @@ class ToricVariety_field(AmbientSpace):
         if "ray_label" not in options:
             gens = self.coordinate_ring().gens()
             if self.fan().lattice().degree() <= 2:
-                options["ray_label"] = ["$%s$" % latex(z) for z in gens]
+                options["ray_label"] = [f"${latex(z)}$" for z in gens]
             else:
                 options["ray_label"] = [str(z) for z in gens]
         return self.fan().plot(**options)

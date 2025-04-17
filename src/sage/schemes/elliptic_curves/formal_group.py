@@ -78,7 +78,7 @@ class EllipticCurveFormalGroup(SageObject):
             sage: F._repr_()
             'Formal Group associated to the Elliptic Curve defined by y^2 + y = x^3 + x^2 over Rational Field'
         """
-        return "Formal Group associated to the %s" % self.__E
+        return f"Formal Group associated to the {self.__E}"
 
     def curve(self):
         r"""

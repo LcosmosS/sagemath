@@ -110,9 +110,9 @@ def hilbert_class_polynomial(D, algorithm=None):
 
     D = Integer(D)
     if D >= 0:
-        raise ValueError("D (=%s) must be negative" % D)
+        raise ValueError(f"D (={D}) must be negative")
     if (D % 4) not in [0, 1]:
-        raise ValueError("D (=%s) must be a discriminant" % D)
+        raise ValueError(f"D (={D}) must be a discriminant")
 
     if algorithm == "arb":
         import sage.libs.arb.arith
@@ -121,11 +121,11 @@ def hilbert_class_polynomial(D, algorithm=None):
     if algorithm == "magma":
         from sage.interfaces.magma import magma
         magma.eval("R<x> := PolynomialRing(IntegerRing())")
-        f = str(magma.eval("HilbertClassPolynomial(%s)" % D))
+        f = str(magma.eval(f"HilbertClassPolynomial({D})"))
         return IntegerRing()['x'](f)
 
     if algorithm != "sage":
-        raise ValueError("%s is not a valid algorithm" % algorithm)
+        raise ValueError(f"{algorithm} is not a valid algorithm")
 
     from sage.quadratic_forms.binary_qf import BinaryQF_reduced_representatives
     from sage.rings.real_mpfr import RR
@@ -323,9 +323,9 @@ def OrderClassNumber(D0, h0, f):
         True
     """
     if not D0.is_fundamental_discriminant():
-        raise ValueError("{} is not a fundamental discriminant".format(D0))
+        raise ValueError(f"{D0} is not a fundamental discriminant")
     if f <= 0:
-        raise ValueError("{} is not a positive integer".format(f))
+        raise ValueError(f"{f} is not a positive integer")
     if f == 1:
         return h0
     ps = f.prime_divisors()
@@ -651,7 +651,7 @@ def largest_fundamental_disc_with_class_number(h):
         B, c = watkins_table[h]
         return (Integer(B), Integer(c))
     except KeyError:
-        raise NotImplementedError("largest fundamental discriminant not available for class number %s" % h)
+        raise NotImplementedError(f"largest fundamental discriminant not available for class number {h}")
 
 
 def largest_disc_with_class_number(h):
@@ -713,7 +713,7 @@ def largest_disc_with_class_number(h):
         B, c = klaise_table[h]
         return (Integer(B), Integer(c))
     except KeyError:
-        raise NotImplementedError("largest discriminant not available for class number %s" % h)
+        raise NotImplementedError(f"largest discriminant not available for class number {h}")
 
 # This dict has class numbers h as keys, the value at h is a complete
 # list of pairs (D0,f) such that D=D0*f**2 has class number h.  We
@@ -1018,7 +1018,7 @@ def is_cm_j_invariant(j, algorithm='CremonaSutherland', method=None):
         return (False, None)
 
     if algorithm not in ['reduction', 'new']:
-        raise ValueError("Invalid algorithm {} in is_cm_j_invariant".format(algorithm))
+        raise ValueError(f"Invalid algorithm {algorithm} in is_cm_j_invariant")
 
     # Now we use the reduction algorithm
 

@@ -132,7 +132,7 @@ class Scheme(Parent):
             category = default_category
         else:
             assert category.is_subcategory(default_category), \
-                "%s is not a subcategory of %s" % (category, default_category)
+                f"{category} is not a subcategory of {default_category}"
 
         Parent.__init__(self, self.base_ring(), category=category)
 
@@ -851,13 +851,13 @@ class AffineScheme(UniqueRepresentation, Scheme):
             <class 'sage.schemes.generic.scheme.AffineScheme_with_category'>
         """
         if R not in CommutativeRings():
-            raise TypeError("R (={}) must be a commutative ring".format(R))
+            raise TypeError(f"R (={R}) must be a commutative ring")
         self.__R = R
         if S is not None:
             if S not in CommutativeRings():
-                raise TypeError("S (={}) must be a commutative ring".format(S))
+                raise TypeError(f"S (={S}) must be a commutative ring")
             if not R.has_coerce_map_from(S):
-                raise ValueError("There must be a natural map S --> R, but S = {} and R = {}".format(S, R))
+                raise ValueError(f"There must be a natural map S --> R, but S = {S} and R = {R}")
         Scheme.__init__(self, S, category=category)
 
     def __setstate__(self, state):
@@ -893,7 +893,7 @@ class AffineScheme(UniqueRepresentation, Scheme):
             sage: Spec(PolynomialRing(QQ, 3, 'x'))._repr_()
             'Spectrum of Multivariate Polynomial Ring in x0, x1, x2 over Rational Field'
         """
-        return "Spectrum of {}".format(self.__R)
+        return f"Spectrum of {self.__R}"
 
     def _latex_(self):
         r"""
@@ -909,7 +909,7 @@ class AffineScheme(UniqueRepresentation, Scheme):
             sage: S._latex_()
             '\\mathrm{Spec}(\\Bold{Z}[x_{0}, x_{1}])'
         """
-        return "\\mathrm{{Spec}}({})".format(self.__R._latex_())
+        return f"\\mathrm{{Spec}}({self.__R._latex_()})"
 
     def __call__(self, *args):
         """
@@ -996,7 +996,7 @@ class AffineScheme(UniqueRepresentation, Scheme):
             # This arises from self._morphism() not being implemented.
             # We must convert it into a TypeError to keep the coercion
             # system working.
-            raise TypeError('cannot call %s with arguments %s' % (self, args))
+            raise TypeError(f'cannot call {self} with arguments {args}')
 
     Element = SchemeTopologicalPoint_prime_ideal
 
@@ -1017,7 +1017,7 @@ class AffineScheme(UniqueRepresentation, Scheme):
                 return self.element_class(self, x.prime_ideal())
         elif isinstance(x, Ideal_generic) and x.ring() is self.coordinate_ring():
             return self.element_class(self, x)
-        raise TypeError('cannot convert %s to a topological point of %s' % (x, self))
+        raise TypeError(f'cannot convert {x} to a topological point of {self}')
 
     def _an_element_(self):
         r"""

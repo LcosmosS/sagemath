@@ -102,7 +102,7 @@ class UnionOfIntervals:
             ValueError: endpoints must be given in order
         """
         if len(endpoints) % 2:
-            raise ValueError("an even number of endpoints must be given (got %s)" % len(endpoints))
+            raise ValueError(f"an even number of endpoints must be given (got {len(endpoints)})")
         if endpoints != sorted(endpoints):
             raise ValueError("endpoints must be given in order")
         self._endpoints = endpoints
@@ -466,7 +466,7 @@ class UnionOfIntervals:
             sage: A = UnionOfIntervals([1,3,5,7]); A
             ([1, 3] U [5, 7])
         """
-        return "(%s)" % " U ".join(str(list(I)) for I in self.intervals())
+        return f"({' U '.join(str(list(I)) for I in self.intervals())})"
 
 
 def nonneg_region(f):
@@ -825,7 +825,7 @@ class EllipticCurveCanonicalHeight:
             EllipticCurveCanonicalHeight object associated to
              Elliptic Curve defined by y^2 = x^3 + 1 over Rational Field
         """
-        return "EllipticCurveCanonicalHeight object associated to %s" % self.E
+        return f"EllipticCurveCanonicalHeight object associated to {self.E}"
 
     def curve(self):
         r"""
@@ -1847,7 +1847,7 @@ class EllipticCurveCanonicalHeight:
         for n in ZZ.range(1, N + 1):
             b = self.B(n, mu)
             if verbose:
-                print("B_%s(%s) = %s" % (n, mu, b))
+                print(f"B_{n}({mu}) = {b}")
             if b < 1:
                 return True
             Bk.append(b)
@@ -1871,7 +1871,7 @@ class EllipticCurveCanonicalHeight:
                 except ArithmeticError:
                     v = refine_embedding(v)
                     if verbose:
-                        print("Refining embedding, codomain now {}".format(v.codomain()))
+                        print(f"Refining embedding, codomain now {v.codomain()}")
         return False # Couldn't prove it...
 
     def min_gr(self, tol, n_max, verbose=False):
@@ -1976,28 +1976,26 @@ class EllipticCurveCanonicalHeight:
                 mu *= 0.5
                 n_max += 1
                 if verbose:
-                    print("halving mu to %r and increasing n_max to %r" % (mu, n_max))
+                    print(f"halving mu to {mu!r} and increasing n_max to {n_max!r}")
             # now we have (mu,n_max) which work we can try to increase
             # mu again using this larger n_max:
             mu *= 2
             while test(mu, n_max, False):
                 mu *= 2
                 if verbose:
-                    print("doubling mu to %r" % mu)
+                    print(f"doubling mu to {mu!r}")
             mu *= 0.5
 
         # The true value lies between mu and eps * mu.
         eps = 2.0
         while eps > tol + 1:
             if verbose:
-                print("height bound in [%r, %r] using n_max = %r"
-                      % (mu, mu * eps, n_max))
+                print(f"height bound in [{mu!r}, {mu * eps!r}] using n_max = {n_max!r}")
             eps = math.sqrt(eps)
             if test(mu * eps, n_max, False):
                 mu = mu * eps
         if verbose:
-            print("height bound in [%r, %r] using n_max = %r"
-                  % (mu, mu * eps, n_max))
+            print(f"height bound in [{mu!r}, {mu * eps!r}] using n_max = {n_max!r}")
         return RDF(mu)
 
     def min(self, tol, n_max, verbose=False):

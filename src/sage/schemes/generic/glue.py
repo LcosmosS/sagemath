@@ -48,11 +48,11 @@ class GluedScheme(Scheme):
     def __init__(self, f, g, check=True):
         if check:
             if not isinstance(f, SchemeMorphism):
-                raise TypeError("f (=%s) must be a scheme morphism" % f)
+                raise TypeError(f"f (={f}) must be a scheme morphism")
             if not isinstance(g, SchemeMorphism):
-                raise TypeError("g (=%s) must be a scheme morphism" % g)
+                raise TypeError(f"g (={g}) must be a scheme morphism")
             if f.domain() != g.domain():
-                raise ValueError("f (=%s) and g (=%s) must have the same domain" % (f,g))
+                raise ValueError(f"f (={f}) and g (={g}) must have the same domain")
         self.__f = f
         self.__g = g
 

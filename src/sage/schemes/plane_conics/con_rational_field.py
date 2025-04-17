@@ -381,7 +381,7 @@ class ProjectiveConic_rational_field(ProjectiveConic_number_field):
             par = self._parametrization
         else:
             if not self.is_smooth():
-                raise ValueError("The conic self (=%s) is not smooth, hence does not have a parametrization." % self)
+                raise ValueError(f"The conic self (={self}) is not smooth, hence does not have a parametrization.")
             if point is None:
                 point = self.rational_point()
             point = Sequence(point)

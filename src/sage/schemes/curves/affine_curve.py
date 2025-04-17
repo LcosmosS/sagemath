@@ -205,7 +205,7 @@ class AffineCurve(Curve_generic, AlgebraicScheme_subscheme_affine):
             Affine Curve over Finite Field of size 7 defined by x^2 - z, -x + z
         """
         if not isinstance(A, AffineSpace_generic):
-            raise TypeError("A (={}) must be an affine space".format(A))
+            raise TypeError(f"A (={A}) must be an affine space")
 
         Curve_generic.__init__(self, A, X)
 
@@ -295,7 +295,7 @@ class AffinePlaneCurve(AffineCurve):
             by x^2 + y^2
         """
         if not (isinstance(A, AffineSpace_generic) and A.dimension != 2):
-            raise TypeError("Argument A (= %s) must be an affine plane." % A)
+            raise TypeError(f"Argument A (= {A}) must be an affine plane.")
 
         super().__init__(A, [f])
 
@@ -406,9 +406,9 @@ class AffinePlaneCurve(AffineCurve):
         S = singular
         S.eval('ring s = '+str(p)+','+str(R0.gens())+',lp;')
         S.eval('poly f = '+str(ft) + ';')
-        c = S('coeffs(%s, t)' % ft)
+        c = S(f'coeffs({ft}, t)')
         N = int(c.size())
-        b = ','.join("%s[%s,1]" % (c.name(), i) for i in range(2, N//2-4))
+        b = ','.join(f"{c.name()}[{i},1]" for i in range(2, N//2-4))
         cmd = 'ideal I = ' + b
         S.eval(cmd)
         S.eval('short=0')    # print using *'s and ^'s.
@@ -520,7 +520,7 @@ class AffinePlaneCurve(AffineCurve):
             True
         """
         if not self.intersects_at(C, P):
-            raise TypeError("(=%s) must be a point in the intersection of (=%s) and this curve" % (P, C))
+            raise TypeError(f"(={P}) must be a point in the intersection of (={C}) and this curve")
         if self.is_singular(P) or C.is_singular(P):
             return False
 
@@ -585,7 +585,7 @@ class AffinePlaneCurve(AffineCurve):
         try:
             P = self(P)
         except TypeError:
-            raise TypeError("(=%s) is not a point on (=%s)" % (P, self))
+            raise TypeError(f"(={P}) is not a point on (={self})")
 
         # Apply a linear change of coordinates to self so that P becomes (0,0)
         AA = self.ambient_space()
@@ -752,7 +752,7 @@ class AffinePlaneCurve(AffineCurve):
         """
         r = self.multiplicity(P)
         if r < 2:
-            raise TypeError("(=%s) is not a singular point of (=%s)" % (P, self))
+            raise TypeError(f"(={P}) is not a singular point of (={self})")
 
         T = self.tangents(P, factor=False)[0]
         vars = self.ambient_space().gens()
@@ -870,7 +870,7 @@ class AffineCurve_field(AffineCurve, AlgebraicScheme_subscheme_affine_field):
 
         d = super(Curve_generic, self).dimension()
         if d != 1:
-            raise ValueError("defining equations (={}) define a scheme of dimension {} != 1".format(X, d))
+            raise ValueError(f"defining equations (={X}) define a scheme of dimension {d} != 1")
 
     def projection(self, indices, AS=None):
         r"""
@@ -999,16 +999,16 @@ class AffineCurve_field(AffineCurve, AlgebraicScheme_subscheme_affine_field):
         if self.base_ring() not in Fields():
             raise TypeError("this curve must be defined over a field")
         if len(indices) < 2 or len(indices) >= n:
-            raise ValueError("(=%s) must be a list or tuple of length between 2 and (=%s), inclusive" % (indices, n - 1))
+            raise ValueError(f"(={indices}) must be a list or tuple of length between 2 and (={n - 1}), inclusive")
         if len(set(indices)) < len(indices):
-            raise ValueError("(=%s) must be a list or tuple of distinct indices or variables" % indices)
+            raise ValueError(f"(={indices}) must be a list or tuple of distinct indices or variables")
         if AS is not None:
             if not isinstance(AS, AffineSpace_generic):
-                raise TypeError("(=%s) must be an affine space" % AS)
+                raise TypeError(f"(={AS}) must be an affine space")
             if AS.dimension_relative() != len(indices):
-                raise TypeError("(=%s) must have dimension (=%s)" % (AS, len(indices)))
+                raise TypeError(f"(={AS}) must have dimension (={len(indices)})")
             if AS.base_ring() != AA.base_ring():
-                raise TypeError("(=%s) must be defined over the same base field as this curve" % AS)
+                raise TypeError(f"(={AS}) must be defined over the same base field as this curve")
         indices = list(indices)
         if all(f in AA.gens() for f in indices):
             indices = [AA.gens().index(f) for f in indices]
@@ -1318,7 +1318,7 @@ class AffineCurve_field(AffineCurve, AlgebraicScheme_subscheme_affine_field):
         try:
             self(P)
         except TypeError:
-            raise TypeError("(=%s) must be a point on this curve" % P)
+            raise TypeError(f"(={P}) must be a point on this curve")
         if self.base_ring() not in Fields():
             raise TypeError("the base ring of this curve must be a field")
         if not self.is_irreducible():
@@ -1744,7 +1744,7 @@ class AffineCurve_field(AffineCurve, AlgebraicScheme_subscheme_affine_field):
         Tp = self.tangent_space(p)
 
         if Tp.dimension() > 1:
-            raise ValueError("the curve is not smooth at {}".format(p))
+            raise ValueError(f"the curve is not smooth at {p}")
 
         from sage.schemes.curves.constructor import Curve
 
@@ -2095,10 +2095,10 @@ class AffinePlaneCurve_finite_field(AffinePlaneCurve_field):
             S_enum = self.rational_points(algorithm='enum')
             S_bn = self.rational_points(algorithm='bn')
             if S_enum != S_bn:
-                raise RuntimeError("Bug in rational_points -- different algorithms give different answers for curve %s!" % self)
+                raise RuntimeError(f"Bug in rational_points -- different algorithms give different answers for curve {self}!")
             return S_enum
         else:
-            raise ValueError("No algorithm '%s' known" % algorithm)
+            raise ValueError(f"No algorithm '{algorithm}' known")
 
 
 class IntegralAffineCurve(AffineCurve_field):

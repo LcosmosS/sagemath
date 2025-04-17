@@ -114,7 +114,7 @@ class SpecFunctor(Functor, UniqueRepresentation):
             domain = CommutativeRings()
             codomain = Schemes(AffineScheme(base_ring))
         else:
-            raise TypeError('base (= {}) must be a commutative ring'.format(base_ring))
+            raise TypeError(f'base (= {base_ring}) must be a commutative ring')
         self._base_ring = base_ring
         super().__init__(domain, codomain)
 
@@ -129,7 +129,7 @@ class SpecFunctor(Functor, UniqueRepresentation):
             Spec functor from Category of commutative rings to
              Category of schemes over Rational Field
         """
-        return 'Spec functor from {} to {}'.format(self.domain(), self.codomain())
+        return f'Spec functor from {self.domain()} to {self.codomain()}'
 
     def _latex_(self):
         r"""

@@ -104,7 +104,7 @@ def CyclicCover(r, f, names=None, check_smooth=True):
         Cyclic Cover of P^1 over Integer Ring defined by y^5 = x^9 - x^7 + 2*x^6 - x^3 + x - 2
     """
     if not isinstance(f, Polynomial):
-        raise TypeError("Arguments f (= %s) must be a polynomial" % (f,))
+        raise TypeError(f"Arguments f (= {f}) must be a polynomial")
     P = f.parent()
     f = P(f)
     if check_smooth:

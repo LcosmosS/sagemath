@@ -250,7 +250,7 @@ def is_Q_curve(E, maxp=100, certificate=False, verbose=False):
         d, f = df
         D = d * f**2
         if verbose:
-            print("Yes: E is CM (discriminant {})".format(D))
+            print(f"Yes: E is CM (discriminant {D})")
         if certificate:
             return True, {'CM': D}
         else:
@@ -262,17 +262,17 @@ def is_Q_curve(E, maxp=100, certificate=False, verbose=False):
     jpoly = jE.minpoly()
     if jpoly.degree() < K.degree():
         if verbose:
-            print("switching to smaller base field: j's minpoly is {}".format(jpoly))
+            print(f"switching to smaller base field: j's minpoly is {jpoly}")
         f = pari(jpoly).polredbest().sage({'x': jpoly.parent().gen()})
         K2 = NumberField(f, 'b')
         jE = jpoly.roots(K2)[0][0]
         if verbose:
-            print("New j is {} over {}, with minpoly {}".format(jE, K2, jE.minpoly()))
+            print(f"New j is {jE} over {K2}, with minpoly {jE.minpoly()}")
         # assert jE.minpoly() == jpoly
         E = EllipticCurve(j=jE)
         K = K2
         if verbose:
-            print("New test curve is {}".format(E))
+            print(f"New test curve is {E}")
 
     # Step 3: check primes of bad reduction
 
@@ -287,7 +287,7 @@ def is_Q_curve(E, maxp=100, certificate=False, verbose=False):
         if not consistent:
             if verbose:
                 print(f"No: inconsistency at the {len(Plist)} primes dividing {p}")
-                print("  - potentially multiplicative: {}".format(pot_mult))
+                print(f"  - potentially multiplicative: {pot_mult}")
             if certificate:
                 return False, p
             else:
@@ -296,19 +296,19 @@ def is_Q_curve(E, maxp=100, certificate=False, verbose=False):
     # Step 4 check: primes P of good reduction above p<=B:
 
     if verbose:
-        print("Applying local tests at good primes above p<={}".format(maxp))
+        print(f"Applying local tests at good primes above p<={maxp}")
 
     res4, p = Step4Test(E, B=maxp, oldB=0, verbose=verbose)
     if not res4:
         if verbose:
-            print("No: local test at p={} failed".format(p))
+            print(f"No: local test at p={p} failed")
         if certificate:
             return False, p
         else:
             return False
 
     if verbose:
-        print("...all local tests pass for p<={}".format(maxp))
+        print(f"...all local tests pass for p<={maxp}")
 
     # Step 5: compute the (partial) K-isogeny class of E and test the
     # set of j-invariants in the class:
@@ -347,12 +347,12 @@ def is_Q_curve(E, maxp=100, certificate=False, verbose=False):
 
     xmaxp = 10 * maxp
     if verbose:
-        print("Undecided after first round, so we apply more local tests, up to {}".format(xmaxp))
+        print(f"Undecided after first round, so we apply more local tests, up to {xmaxp}")
 
     res4, p = Step4Test(E, B=xmaxp, oldB=maxp, verbose=verbose)
     if not res4:
         if verbose:
-            print("No: local test at p={} failed".format(p))
+            print(f"No: local test at p={p} failed")
         if certificate:
             return False, p
         else:
@@ -365,7 +365,7 @@ def is_Q_curve(E, maxp=100, certificate=False, verbose=False):
     # -- we can deduce that E is not a Q-curve.
 
     if verbose:
-        print("...all local tests pass for p<={}".format(xmaxp))
+        print(f"...all local tests pass for p<={xmaxp}")
         print("We now compute the complete isogeny class...")
 
     Cfull = E.isogeny_class(minimal_models=False)
@@ -379,7 +379,7 @@ def is_Q_curve(E, maxp=100, certificate=False, verbose=False):
         else:
             return False
     if verbose:
-        print("...and find that the class contains {} curves, not just the {} we computed originally".format(len(jCfull), len(jC)))
+        print(f"...and find that the class contains {len(jCfull)} curves, not just the {len(jC)} we computed originally")
     centrejpols = conjugacy_test(jCfull, verbose=verbose)
     if cert:
         if verbose:
@@ -470,7 +470,7 @@ def Step4Test(E, B, oldB=0, verbose=False):
         if not consistent:
             if verbose:
                 print(f"No: inconsistency at the {len(Plist)} primes dividing {p} ")
-                print("  - ordinary: {}".format(ordinary))
+                print(f"  - ordinary: {ordinary}")
             return False, p
 
         # (b) Skip if all are supersingular:
@@ -482,8 +482,8 @@ def Step4Test(E, B, oldB=0, verbose=False):
         discs = [(Ei.trace_of_frobenius()**2 - 4 * P.norm()).squarefree_part() for P, Ei in zip(Plist, EmodP)]
         if any(d != discs[0] for d in discs[1:]):
             if verbose:
-                print("No: inconsistency at the {} ordinary primes dividing {} ".format(len(Plist), p))
-                print("  - Frobenius discriminants mod squares: {}".format(discs))
+                print(f"No: inconsistency at the {len(Plist)} ordinary primes dividing {p} ")
+                print(f"  - Frobenius discriminants mod squares: {discs}")
             return False, p
     # Now we have failed to prove that E is not a Q-curve
     return True, 0
@@ -543,7 +543,7 @@ def conjugacy_test(jlist, verbose=False):
     jQ = next((j for j in jlist if j in QQ), None)
     if jQ:
         if verbose:
-            print("Yes: an isogenous curve has rational j-invariant {}".format(jQ))
+            print(f"Yes: an isogenous curve has rational j-invariant {jQ}")
         x = polygen(QQ)
         return [x - jQ]
 
@@ -553,7 +553,7 @@ def conjugacy_test(jlist, verbose=False):
     K = jlist[0].parent()
     if K.degree() % 2:
         if verbose:
-            print("Odd-degree case: no rational j-invariant in the class {}".format(jlist))
+            print(f"Odd-degree case: no rational j-invariant in the class {jlist}")
         return []
 
     # If K has no quadratic subfields we can similarly conclude right
@@ -561,7 +561,7 @@ def conjugacy_test(jlist, verbose=False):
 
     if K(1).descend_mod_power(QQ, 2) == [1]:
         if verbose:
-            print("No-quadratic-subfield case: no rational j-invariant in the class {}".format(jlist))
+            print(f"No-quadratic-subfield case: no rational j-invariant in the class {jlist}")
         return []
 
     # compute the minimum polynomials of the j-invariants in the class
@@ -584,8 +584,8 @@ def conjugacy_test(jlist, verbose=False):
     centrepols = list(Set([f for f in pols if f.degree() == minpols.count(f)]))
     if centrepols:
         if verbose:
-            print("Yes: the isogeny class contains all j-invariants with min poly {}".format(centrepols))
+            print(f"Yes: the isogeny class contains all j-invariants with min poly {centrepols}")
         return centrepols
     if verbose:
-        print("No complete conjugacy class of 2-power size found in {}".format(jlist))
+        print(f"No complete conjugacy class of 2-power size found in {jlist}")
     return []

@@ -172,7 +172,7 @@ class SchemeMorphism(Element):
         if codomain is not None:
             parent = Hom(parent, codomain)
         if not isinstance(parent, Homset):
-            raise TypeError("parent (=%s) must be a Homspace" % parent)
+            raise TypeError(f"parent (={parent}) must be a Homspace")
         Element.__init__(self, parent)
         self._codomain = parent.codomain()
 
@@ -270,9 +270,9 @@ class SchemeMorphism(Element):
                     try:
                         x = D(x)
                     except (TypeError, NotImplementedError):
-                        raise TypeError("%s fails to convert into the map's domain %s, but a `pushforward` method is not properly implemented" % (x, self.domain()))
+                        raise TypeError(f"{x} fails to convert into the map's domain {self.domain()}, but a `pushforward` method is not properly implemented")
                 elif self.domain() != x.codomain():
-                    raise TypeError("%s fails to convert into the map's domain %s, but a `pushforward` method is not properly implemented" % (x, self.domain()))
+                    raise TypeError(f"{x} fails to convert into the map's domain {self.domain()}, but a `pushforward` method is not properly implemented")
         else:
             x = converter(x)
         if not args and not kwds:
@@ -333,11 +333,11 @@ class SchemeMorphism(Element):
             NotImplementedError
         """
         if self.is_endomorphism():
-            s = "%s endomorphism of %s" % (self._repr_type(), self.domain())
+            s = f"{self._repr_type()} endomorphism of {self.domain()}"
         else:
-            s = "%s morphism:" % self._repr_type()
-            s += "\n  From: %s" % self.domain()
-            s += "\n  To:   %s" % self._codomain
+            s = f"{self._repr_type()} morphism:"
+            s += f"\n  From: {self.domain()}"
+            s += f"\n  To:   {self._codomain}"
         d = self._repr_defn()
         if d != '':
             s += "\n  Defn: %s" % ('\n        '.join(self._repr_defn().split('\n')))
@@ -399,7 +399,7 @@ class SchemeMorphism(Element):
         if not isinstance(right, SchemeMorphism):
             return coercion_model.bin_op(self, right, operator.mul)
         if right.codomain() != self.domain():
-            raise TypeError("self (=%s) domain must equal right (=%s) codomain" % (self, right))
+            raise TypeError(f"self (={self}) domain must equal right (={right}) codomain")
         if isinstance(self, SchemeMorphism_id):
             return right
         if isinstance(right, SchemeMorphism_id):
@@ -814,7 +814,7 @@ class SchemeMorphism_spec(SchemeMorphism):
         if check:
             from sage.categories.rings import Rings
             if not (isinstance(phi, Map) and phi.category_for().is_subcategory(Rings())):
-                raise TypeError("phi (=%s) must be a ring homomorphism" % phi)
+                raise TypeError(f"phi (={phi}) must be a ring homomorphism")
             if phi.domain() != parent.codomain().coordinate_ring():
                 raise TypeError("phi (=%s) must have domain %s"
                                 % (phi, parent.codomain().coordinate_ring()))
@@ -978,11 +978,11 @@ class SchemeMorphism_polynomial(SchemeMorphism):
         """
         if check:
             if not isinstance(polys, (list, tuple)):
-                raise TypeError("polys (=%s) must be a list or tuple" % polys)
+                raise TypeError(f"polys (={polys}) must be a list or tuple")
             source_ring = parent.domain().ambient_space().coordinate_ring()
             target = parent._codomain.ambient_space()
             if len(polys) != target.ngens():
-                raise ValueError("there must be %s polynomials" % target.ngens())
+                raise ValueError(f"there must be {target.ngens()} polynomials")
             F = []
             for poly in polys:
                 try:
@@ -994,7 +994,7 @@ class SchemeMorphism_polynomial(SchemeMorphism):
                         try:
                             p = source_ring(poly.numerator()) / source_ring(poly.denominator())
                         except (TypeError, AttributeError):
-                            raise TypeError("polys (=%s) must be elements of %s" % (polys, source_ring))
+                            raise TypeError(f"polys (={polys}) must be elements of {source_ring}")
                 F.append(p)
             polys = Sequence(F)
 
@@ -1222,7 +1222,7 @@ class SchemeMorphism_polynomial(SchemeMorphism):
         """
         i = self.domain().ambient_space()._repr_generic_point()
         o = self._codomain.ambient_space()._repr_generic_point(self.defining_polynomials())
-        return "Defined on coordinates by sending %s to\n%s" % (i,o)
+        return f"Defined on coordinates by sending {i} to\n{o}"
 
     def __getitem__(self, i):
         """

@@ -1230,16 +1230,16 @@ class ToricVarietyFactory(SageObject):
         m = len(q)
         # allow case q=[1]? (not allowed presently)
         if m < 2:
-            raise ValueError("more than one weight must be provided (got %s)" % q)
+            raise ValueError(f"more than one weight must be provided (got {q})")
         for i in range(m):
             try:
                 q[i] = ZZ(q[i])
             except TypeError:
-                raise TypeError("the weights (=%s) must be integers" % q)
+                raise TypeError(f"the weights (={q}) must be integers")
             if q[i] <= 0:
-                raise ValueError("the weights (=%s) must be positive integers" % q)
+                raise ValueError(f"the weights (={q}) must be positive integers")
         if not gcd(q) == 1:
-            raise ValueError("the weights (=%s) must be relatively prime" % q)
+            raise ValueError(f"the weights (={q}) must be relatively prime")
 
         # set default values for base_ring and names
         base_ring = QQ
@@ -1253,7 +1253,7 @@ class ToricVarietyFactory(SageObject):
                 names = kw['names']
                 names = normalize_names(names, m, DEFAULT_PREFIX)
             else:
-                raise TypeError("got an unexpected keyword argument %r" % key)
+                raise TypeError(f"got an unexpected keyword argument {key!r}")
 
         L = ToricLattice(m)
         L_sub = L.submodule([L(q)])

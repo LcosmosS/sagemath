@@ -59,9 +59,9 @@ class AmbientSpace(Scheme):
             sage: TestSuite(A).run() # not tested (abstract scheme with no elements?)
         """
         if R not in CommutativeRings():
-            raise TypeError("R (={}) must be a commutative ring".format(R))
+            raise TypeError(f"R (={R}) must be a commutative ring")
         if n < 0:
-            raise ValueError("n (={}) must be nonnegative".format(n))
+            raise ValueError(f"n (={n}) must be nonnegative")
         self._dimension_relative = Integer(n)
         Scheme.__init__(self, R)
 

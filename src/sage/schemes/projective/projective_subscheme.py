@@ -112,7 +112,7 @@ class AlgebraicScheme_subscheme_projective(AlgebraicScheme_subscheme):
         if v is infinity or\
            (isinstance(v, (list, tuple)) and len(v) == 1 and v[0] is infinity):
             if self.ambient_space().dimension_relative() > 1:
-                raise ValueError("%s not well defined in dimension > 1" % v)
+                raise ValueError(f"{v} not well defined in dimension > 1")
             v = [1, 0]
         # todo: update elliptic curve stuff to take point_homset as argument
         from sage.schemes.elliptic_curves.ell_generic import EllipticCurve_generic
@@ -269,7 +269,7 @@ class AlgebraicScheme_subscheme_projective(AlgebraicScheme_subscheme):
         if AA is None:
             AA = PP.affine_patch(i)
         elif AA.dimension_relative() != n:
-            raise ValueError("Affine Space must be of the dimension %s" % (n))
+            raise ValueError(f"Affine Space must be of the dimension {n}")
         phi = AA.projective_embedding(i, PP)
         polys = self.defining_polynomials()
         xi = phi.defining_polynomials()
@@ -881,7 +881,7 @@ class AlgebraicScheme_subscheme_projective(AlgebraicScheme_subscheme):
                 raise TypeError("subscheme must be in ambient space of codomain")
             k = ZZ(k)
             if k <= 0:
-                raise ValueError("k (=%s) must be a positive integer" % (k))
+                raise ValueError(f"k (={k}) must be a positive integer")
             if k > 1 and not f.is_endomorphism():
                 raise TypeError("map must be an endomorphism")
         R = codom.coordinate_ring()
@@ -1091,7 +1091,7 @@ class AlgebraicScheme_subscheme_projective(AlgebraicScheme_subscheme):
         try:
             self.ambient_space()(P)
         except TypeError:
-            raise TypeError("(={}) must be a point in the ambient space of this subscheme and (={})".format(P, X))
+            raise TypeError(f"(={P}) must be a point in the ambient space of this subscheme and (={X})")
         # find an affine chart of the ambient space of this curve that contains P
         n = self.ambient_space().dimension_relative()
         for i in range(n + 1):

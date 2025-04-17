@@ -178,9 +178,9 @@ class pAdicLseries(SageObject):
             raise ValueError("Implementation should be one of 'eclib', 'num' or 'sage'")
         self._implementation = implementation
         if not self._p.is_prime():
-            raise ValueError("p (=%s) must be a prime" % p)
+            raise ValueError(f"p (={p}) must be a prime")
         if E.conductor() % (self._p)**2 == 0:
-            raise NotImplementedError("p (=%s) must be a prime of semi-stable reduction" % p)
+            raise NotImplementedError(f"p (={p}) must be a prime of semi-stable reduction")
 
         try:
             E.label()
@@ -268,7 +268,7 @@ class pAdicLseries(SageObject):
             sage: L
             (factor)*L_3(T)
         """
-        s = "%s-adic L-series of %s" % (self._p, self._E)
+        s = f"{self._p}-adic L-series of {self._E}"
         if not self._normalize == 'L_ratio':
             s += ' (not normalized)'
         return s
@@ -575,7 +575,7 @@ class pAdicLseries(SageObject):
             f = self.series(n)
             v = f.valuation()
             if v < n and v < r:
-                raise RuntimeError("while computing p-adic order of vanishing, got a contradiction: the curve is %s, the curve has rank %s, but the p-adic L-series vanishes to order <= %s" % (E, r, v))
+                raise RuntimeError(f"while computing p-adic order of vanishing, got a contradiction: the curve is {E}, the curve has rank {r}, but the p-adic L-series vanishes to order <= {v}")
             if v == r:
                 self.__ord = v
                 return v
@@ -731,7 +731,7 @@ class pAdicLseries(SageObject):
             if Et.real_components() == 1:
                 qt *= 2
             qt *= qt.parent()(-D).sqrt()
-        verbose('the real approximation is %s' % qt)
+        verbose(f'the real approximation is {qt}')
         # we know from MTT that the result has a denominator 1
         return QQ((8 * qt).round()) / 8
 
@@ -858,11 +858,11 @@ class pAdicLseriesOrdinary(pAdicLseries):
         """
         n = ZZ(n)
         if n < 1:
-            raise ValueError("n (=%s) must be a positive integer" % n)
+            raise ValueError(f"n (={n}) must be a positive integer")
         if self._p == 2 and n == 1:
-            raise ValueError("n (=%s) must be a at least 2 if p is 2" % n)
+            raise ValueError(f"n (={n}) must be a at least 2 if p is 2")
         if prec < 1:
-            raise ValueError("Insufficient precision (%s)" % prec)
+            raise ValueError(f"Insufficient precision ({prec})")
 
         # check if the conditions on quadratic_twist are satisfied
         eta = ZZ(eta) % (self._p - 1) if self._p != 2 else ZZ(eta) % 2
@@ -873,16 +873,16 @@ class pAdicLseriesOrdinary(pAdicLseries):
             if D % 4 == 0:
                 d = D//4
                 if not d.is_squarefree() or d % 4 == 1:
-                    raise ValueError("quadratic_twist (=%s) must be a fundamental discriminant of a quadratic field" % D)
+                    raise ValueError(f"quadratic_twist (={D}) must be a fundamental discriminant of a quadratic field")
             else:
                 if not D.is_squarefree() or D % 4 != 1:
-                    raise ValueError("quadratic_twist (=%s) must be a fundamental discriminant of a quadratic field" % D)
+                    raise ValueError(f"quadratic_twist (={D}) must be a fundamental discriminant of a quadratic field")
             if gcd(D,self._p) != 1:
-                raise ValueError("quadratic twist (=%s) must be coprime to p (=%s) " % (D,self._p))
+                raise ValueError(f"quadratic twist (={D}) must be coprime to p (={self._p}) ")
             if gcd(D, self._E.conductor()) != 1:
                 for ell in prime_divisors(D):
                     if valuation(self._E.conductor(), ell) > valuation(D, ell):
-                        raise ValueError("cannot twist a curve of conductor (=%s) by the quadratic twist (=%s)." % (self._E.conductor(),D))
+                        raise ValueError(f"cannot twist a curve of conductor (={self._E.conductor()}) by the quadratic twist (={D}).")
         p = self._p
         si = 1-2*(eta % 2)
 
@@ -912,13 +912,13 @@ class pAdicLseriesOrdinary(pAdicLseries):
             bounds = self._prec_bounds(n,prec,sign=si)
             padic_prec = max(bounds[1:]) + 5
 
-        verbose("using p-adic precision of %s" % padic_prec)
+        verbose(f"using p-adic precision of {padic_prec}")
 
         if p == 2:
             res_series_prec = min(p**(n-2), prec)
         else:
             res_series_prec = min(p**(n-1), prec)
-        verbose("using series precision of %s" % res_series_prec)
+        verbose(f"using series precision of {res_series_prec}")
 
         ans = self._get_series_from_cache(n, res_series_prec,D,eta)
         if ans is not None:
@@ -943,13 +943,13 @@ class pAdicLseriesOrdinary(pAdicLseries):
             p_power = p**(n-1)
             a_range = p
 
-        verbose("Now iterating over %s summands" % ((p-1)*p_power))
+        verbose(f"Now iterating over {(p - 1) * p_power} summands")
         verbose_level = get_verbose()
         count_verb = 0
         for j in range(p_power):
             s = K(0)
             if verbose_level >= 2 and j/p_power*100 > count_verb + 3:
-                verbose("%.2f percent done" % (float(j)/p_power*100))
+                verbose(f"{float(j) / p_power * 100:.2f} percent done")
                 count_verb += 3
             for a in range(1,a_range):
                 b = teich[a] * gamma_power
@@ -958,7 +958,7 @@ class pAdicLseriesOrdinary(pAdicLseries):
             one_plus_T_factor *= 1+T
             gamma_power *= gamma
 
-        verbose("the series before adjusting the precision is %s" % L)
+        verbose(f"the series before adjusting the precision is {L}")
         # Now create series but with each coefficient truncated
         # so it is proven correct:
         K = Qp(p, padic_prec, print_mode='series')
@@ -1210,11 +1210,11 @@ class pAdicLseriesSupersingular(pAdicLseries):
         """
         n = ZZ(n)
         if n < 1:
-            raise ValueError("n (=%s) must be a positive integer" % n)
+            raise ValueError(f"n (={n}) must be a positive integer")
         if self._p == 2 and n == 1:
-            raise ValueError("n (=%s) must be at least 2 when p=2" % n)
+            raise ValueError(f"n (={n}) must be at least 2 when p=2")
         if prec < 1:
-            raise ValueError("Insufficient precision (%s)" % prec)
+            raise ValueError(f"Insufficient precision ({prec})")
 
         # check if the conditions on quadratic_twist are satisfied
         D = ZZ(quadratic_twist)
@@ -1224,14 +1224,14 @@ class pAdicLseriesSupersingular(pAdicLseries):
             if D % 4 == 0:
                 d = D//4
                 if not d.is_squarefree() or d % 4 == 1:
-                    raise ValueError("quadratic_twist (=%s) must be a fundamental discriminant of a quadratic field" % D)
+                    raise ValueError(f"quadratic_twist (={D}) must be a fundamental discriminant of a quadratic field")
             else:
                 if not D.is_squarefree() or D % 4 != 1:
-                    raise ValueError("quadratic_twist (=%s) must be a fundamental discriminant of a quadratic field" % D)
+                    raise ValueError(f"quadratic_twist (={D}) must be a fundamental discriminant of a quadratic field")
             if gcd(D, self._E.conductor()) != 1:
                 for ell in prime_divisors(D):
                     if valuation(self._E.conductor(), ell) > valuation(D, ell):
-                        raise ValueError("cannot twist a curve of conductor (=%s) by the quadratic twist (=%s)." % (self._E.conductor(), D))
+                        raise ValueError(f"cannot twist a curve of conductor (={self._E.conductor()}) by the quadratic twist (={D}).")
 
         p = self._p
         eta = ZZ(eta) % (p - 1) if p != 2 else ZZ(eta) % 2
@@ -1259,7 +1259,7 @@ class pAdicLseriesSupersingular(pAdicLseries):
             alphaadic_prec = max(bounds[1:]) + 5
 
         padic_prec = alphaadic_prec//2+1
-        verbose("using alpha-adic precision of %s" % padic_prec)
+        verbose(f"using alpha-adic precision of {padic_prec}")
         ans = self._get_series_from_cache(n, prec, quadratic_twist,eta)
         if ans is not None:
             verbose("found series in cache")
@@ -1285,13 +1285,13 @@ class pAdicLseriesSupersingular(pAdicLseries):
             a_range = p
         si = 1-2*(eta % 2)
 
-        verbose("Now iterating over %s summands" % ((p-1)*p_power))
+        verbose(f"Now iterating over {(p - 1) * p_power} summands")
         verbose_level = get_verbose()
         count_verb = 0
         for j in range(p_power):
             s = K(0)
             if verbose_level >= 2 and j/p_power*100 > count_verb + 3:
-                verbose("%.2f percent done" % (float(j)/p_power*100))
+                verbose(f"{float(j) / p_power * 100:.2f} percent done")
                 count_verb += 3
             for a in range(1,a_range):
                 b = teich[a] * gamma_power
@@ -1482,7 +1482,7 @@ class pAdicLseriesSupersingular(pAdicLseries):
         E = self._E
         p = self._p
         if algorithm != "mw" and algorithm != "approx":
-            raise ValueError("Unknown algorithm %s." % algorithm)
+            raise ValueError(f"Unknown algorithm {algorithm}.")
         if algorithm == "approx":
             return self.__phi_bpr(prec=prec)
         if p < 4 and algorithm == "mw":
@@ -1552,7 +1552,7 @@ class pAdicLseriesSupersingular(pAdicLseries):
             print("Warning: Very large value for the precision.")
         if prec == 0:
             prec = floor(log(10000)/log(p))
-            verbose("prec set to %s" % prec)
+            verbose(f"prec set to {prec}")
         eh = E.formal()
         om = eh.differential(prec=p**prec+3)
         verbose("differential computed")
@@ -1574,27 +1574,27 @@ class pAdicLseriesSupersingular(pAdicLseries):
             verbose("valuations : %s" % ([x.valuation(p) for x in eq]))
             v = min(x.valuation(p) for x in eq)
             if v == infinity:
-                verbose("no new information at step k=%s" % k)
+                verbose(f"no new information at step k={k}")
             else:
                 eq = [ZZ(x/p**v) for x in eq]
-                verbose("renormalised eq mod p^%s is now %s" % (k-v,eq))
+                verbose(f"renormalised eq mod p^{k - v} is now {eq}")
                 if eq[0].valuation(p) == 0:
                     l = min(eq[1].valuation(p),k-v)
                     if l == 0:
-                        verbose("not uniquely determined at step k=%s" % k)
+                        verbose(f"not uniquely determined at step k={k}")
                     else:
                         ainv = eq[0].inverse_mod(p**l)
                         delta = delta - eq[2]*ainv*p**dpr
                         dpr = dpr + l
                         delta = delta % p**dpr
-                        verbose("delta_prec increased to %s\n delta is now %s" % (dpr,delta))
+                        verbose(f"delta_prec increased to {dpr}\n delta is now {delta}")
                 elif eq[1].valuation(p) == 0:
                     l = min(eq[0].valuation(p),k-v)
                     ainv = eq[1].inverse_mod(p**l)
                     gamma = gamma - eq[2]*ainv*p**dga
                     dga = dga + l
                     gamma = gamma % p**dga
-                    verbose("gamma_prec increased to %s\n gamma is now %s" % (dga,gamma))
+                    verbose(f"gamma_prec increased to {dga}\n gamma is now {gamma}")
                 else:
                     raise RuntimeError("Bug: no delta or gamma can exist")
 
@@ -1602,7 +1602,7 @@ class pAdicLseriesSupersingular(pAdicLseries):
         R = Qp(p,max(dpr,dga)+1)
         delta = R(delta,absprec=dpr)
         gamma = R(gamma,absprec=dga)
-        verbose("result delta = %s\n      gamma = %s\n check : %s" % (delta,gamma, [Qp(p,k)(delta * cs[k] - gamma * ds[k] - cs[k-1]) for k in range(1,prec+1)] ))
+        verbose(f"result delta = {delta}\n      gamma = {gamma}\n check : {[Qp(p, k)(delta * cs[k] - gamma * ds[k] - cs[k - 1]) for k in range(1, prec + 1)]}")
         a = delta
         c = -gamma
         d = E.ap(p) - a

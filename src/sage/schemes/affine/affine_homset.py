@@ -100,7 +100,7 @@ class SchemeHomset_points_spec(SchemeHomset_generic):
             sage: S._repr_()
             'Set of rational points of Spectrum of Rational Field'
         """
-        return 'Set of rational points of {}'.format(self.codomain())
+        return f'Set of rational points of {self.codomain()}'
 
 
 class SchemeHomset_polynomial_affine_space(SchemeHomset_generic):
@@ -346,19 +346,19 @@ class SchemeHomset_points_affine(SchemeHomset_points):
         prec = kwds.pop('precision', 53)
         if isinstance(R, RationalField) or R == ZZ:
             if not B > 0:
-                raise TypeError("a positive bound B (= %s) must be specified" % B)
+                raise TypeError(f"a positive bound B (= {B}) must be specified")
             from sage.schemes.affine.affine_rational_point import enum_affine_rational_field
             return enum_affine_rational_field(self, B)
         if R in NumberFields():
             if not B > 0:
-                raise TypeError("a positive bound B (= %s) must be specified" % B)
+                raise TypeError(f"a positive bound B (= {B}) must be specified")
             from sage.schemes.affine.affine_rational_point import enum_affine_number_field
             return enum_affine_number_field(self, bound=B, tolerance=tol, precision=prec)
         elif isinstance(R, FiniteField):
             from sage.schemes.affine.affine_rational_point import enum_affine_finite_field
             return enum_affine_finite_field(self)
         else:
-            raise TypeError("unable to enumerate points over %s" % R)
+            raise TypeError(f"unable to enumerate points over {R}")
 
     def numerical_points(self, F=None, **kwds):
         """

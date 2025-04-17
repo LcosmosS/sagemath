@@ -296,15 +296,15 @@ class AlgebraicScheme_subscheme_product_projective(AlgebraicScheme_subscheme_pro
                     (1 : x0 : x1 : x2 , x3 : 1))
         """
         if not isinstance(I, (list, tuple)):
-            raise TypeError('The argument I=%s must be a list or tuple of positive integers' % I)
+            raise TypeError(f'The argument I={I} must be a list or tuple of positive integers')
         PP = self.ambient_space()
         N = PP.dimension_relative_components()
         if len(I) != len(N):
-            raise ValueError('The argument I=%s must have %s entries' % (I,len(N)))
+            raise ValueError(f'The argument I={I} must have {len(N)} entries')
         I = tuple([int(i) for i in I])   # implicit type checking
         for i in range(len(I)):
             if I[i] < 0 or I[i] > N[i]:
-                raise ValueError("Argument i (= %s) must be between 0 and %s." % (I[i], N[i]))
+                raise ValueError(f"Argument i (= {I[i]}) must be between 0 and {N[i]}.")
         #see if we've already created this affine patch
         try:
             if return_embedding:
@@ -390,7 +390,7 @@ class AlgebraicScheme_subscheme_product_projective(AlgebraicScheme_subscheme_pro
         try:
             PP(P)
         except TypeError:
-            raise TypeError("(=%s) must be a point in the ambient space of this subscheme and (=%s)" % (P,X))
+            raise TypeError(f"(={P}) must be a point in the ambient space of this subscheme and (={X})")
         # find an affine chart of the ambient space of this subscheme that contains P
         indices = []
         aff_pt = []
