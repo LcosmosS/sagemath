@@ -238,7 +238,7 @@ class SchemeMorphism_polynomial_projective_space(SchemeMorphism_polynomial):
                 try:
                     polys = [K(f) for f in polys]
                 except TypeError:
-                    raise TypeError("polys (=%s) must be elements of %s" % (polys, source_ring))
+                    raise TypeError(f"polys (={polys}) must be elements of {source_ring}")
 
                 if parent.codomain().is_projective():
                     degs = []
@@ -247,7 +247,7 @@ class SchemeMorphism_polynomial_projective_space(SchemeMorphism_polynomial):
                         num = f.numerator()
                         den = f.denominator()
                         if not num.is_homogeneous() or not den.is_homogeneous():
-                            raise ValueError("polys (={}) must be homogeneous".format(polys))
+                            raise ValueError(f"polys (={polys}) must be homogeneous")
 
                         if not num.is_zero():
                             l *= den
@@ -255,7 +255,7 @@ class SchemeMorphism_polynomial_projective_space(SchemeMorphism_polynomial):
 
                     d = degs[0]
                     if not all(d == deg for deg in degs[1:]):
-                        raise ValueError("polys (={}) must be of the same degree".format(polys))
+                        raise ValueError(f"polys (={polys}) must be of the same degree")
 
                     polys = [(l * f).numerator() for f in polys]
                 elif parent.codomain().is_affine():
@@ -397,7 +397,7 @@ class SchemeMorphism_polynomial_projective_space(SchemeMorphism_polynomial):
                     try:
                         x = self.domain()(x)
                     except (TypeError, NotImplementedError):
-                        raise TypeError("%s fails to convert into the map's domain %s, but a `pushforward` method is not properly implemented" % (x, self.domain()))
+                        raise TypeError(f"{x} fails to convert into the map's domain {self.domain()}, but a `pushforward` method is not properly implemented")
                 # else pass it onto the eval below
             elif isinstance(x, AlgebraicScheme_subscheme_projective):
                 return x._forward_image(self)  # call subscheme eval
@@ -409,7 +409,7 @@ class SchemeMorphism_polynomial_projective_space(SchemeMorphism_polynomial):
                         x = self.domain().subscheme(x)
                         return x._forward_image(self)  # call subscheme eval
                     except (TypeError, NotImplementedError):
-                        raise TypeError("%s fails to convert into the map's domain %s, but a `pushforward` method is not properly implemented" % (x, self.domain()))
+                        raise TypeError(f"{x} fails to convert into the map's domain {self.domain()}, but a `pushforward` method is not properly implemented")
 
         R = x.domain().coordinate_ring()
         if R is self.base_ring():
@@ -947,13 +947,13 @@ class SchemeMorphism_polynomial_projective_space(SchemeMorphism_polynomial):
         ideal = kwds.pop('ideal', None)
         if ideal is not None:
             if not (ideal in ZZ or isinstance(ideal, NumberFieldFractionalIdeal)):
-                raise TypeError('ideal must be an ideal of a number field, not %s' % ideal)
+                raise TypeError(f'ideal must be an ideal of a number field, not {ideal}')
             if isinstance(ideal, NumberFieldFractionalIdeal):
                 if ideal.number_field() != self.base_ring():
                     raise ValueError('ideal must be an ideal of the base ring of this morphism ' +
-                                     ', not an ideal of %s' % ideal.number_field())
+                                     f', not an ideal of {ideal.number_field()}')
                 if not ideal.is_prime():
-                    raise ValueError('ideal was %s, not a prime ideal' % ideal)
+                    raise ValueError(f'ideal was {ideal}, not a prime ideal')
                 for generator in ideal.gens():
                     if generator.valuation(ideal) == 1:
                         uniformizer = generator
@@ -962,9 +962,9 @@ class SchemeMorphism_polynomial_projective_space(SchemeMorphism_polynomial):
                 ideal = ZZ(ideal)
                 if self.base_ring() != QQ:
                     raise ValueError('ideal was an integer, but the base ring of this ' +
-                        'morphism is %s' % self.base_ring())
+                        f'morphism is {self.base_ring()}')
                 if not ideal.is_prime():
-                    raise ValueError('ideal must be a prime, not %s' % ideal)
+                    raise ValueError(f'ideal must be a prime, not {ideal}')
                 uniformizer = ideal
             valuations = []
             for poly in self:
@@ -978,10 +978,10 @@ class SchemeMorphism_polynomial_projective_space(SchemeMorphism_polynomial):
         valuation = kwds.pop('valuation', None)
         if valuation is not None:
             if not isinstance(valuation, pAdicValuation_base):
-                raise TypeError('valuation must be a valuation on a number field, not %s' % valuation)
+                raise TypeError(f'valuation must be a valuation on a number field, not {valuation}')
             if valuation.domain() != self.base_ring():
                 raise ValueError('the domain of valuation must be the base ring of this morphism ' +
-                    'not %s' % valuation.domain())
+                    f'not {valuation.domain()}')
             uniformizer = valuation.uniformizer()
             ramification_index = 1 / valuation(uniformizer)
             valuations = []
@@ -1677,7 +1677,7 @@ class SchemeMorphism_polynomial_projective_space_field(SchemeMorphism_polynomial
         """
         k = ZZ(k)
         if k <= 0:
-            raise ValueError("k (=%s) must be a positive integer" % k)
+            raise ValueError(f"k (={k}) must be a positive integer")
         # first check if subscheme
         from sage.schemes.projective.projective_subscheme import AlgebraicScheme_subscheme_projective
         if isinstance(Q, AlgebraicScheme_subscheme_projective):
@@ -2447,7 +2447,7 @@ class SchemeMorphism_polynomial_projective_subscheme_field(SchemeMorphism_polyno
 
         if not (X.base_ring() in _NumberFields or
                 X.base_ring() in _FiniteFields):
-            raise NotImplementedError("base ring {} is not supported by Singular".format(X.base_ring()))
+            raise NotImplementedError(f"base ring {X.base_ring()} is not supported by Singular")
 
         if not X.is_irreducible():
             raise ValueError("domain is not an irreducible scheme")
@@ -2648,11 +2648,11 @@ class SchemeMorphism_polynomial_projective_subscheme_field(SchemeMorphism_polyno
         n = S.ngens()
         m = T.ngens()
 
-        dummy_names = ['d{}__'.format(i) for i in range(m)]
+        dummy_names = [f'd{i}__' for i in range(m)]
         D = PolynomialRing(k, names=dummy_names)
 
         names = list(S.variable_names()) + dummy_names  # this order of variables is important
-        R = PolynomialRing(k, names=names, order='degrevlex({}),degrevlex({})'.format(m,n))
+        R = PolynomialRing(k, names=names, order=f'degrevlex({m}),degrevlex({n})')
 
         # compute the ideal of the image by elimination
         i = R.ideal(list(X.defining_ideal().gens()) + [self._polys[i] - R.gen(n + i) for i in range(m)])

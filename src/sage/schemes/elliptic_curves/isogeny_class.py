@@ -135,7 +135,7 @@ class IsogenyClass_EC(SageObject):
         for i, E in enumerate(self.curves):
             if C.is_isomorphic(E):
                 return i
-        raise ValueError("%s is not in isogeny class %s" % (C,self))
+        raise ValueError(f"{C} is not in isogeny class {self}")
 
     def __richcmp__(self, other, op):
         """
@@ -227,9 +227,9 @@ class IsogenyClass_EC(SageObject):
              Elliptic Curve defined by y^2 + (i+1)*x*y = x^3 + i*x^2 + 33*x + 91*i over Number Field in i with defining polynomial x^2 + 1 with i = 1*I]
         """
         if self._label:
-            return "Elliptic curve isogeny class %s" % (self._label)
+            return f"Elliptic curve isogeny class {self._label}"
         else:
-            return "Isogeny class of %r" % (self.E)
+            return f"Isogeny class of {self.E!r}"
 
     def __contains__(self, x):
         """
@@ -808,11 +808,11 @@ class IsogenyClass_EC_NumberField(IsogenyClass_EC):
             degs = self._reducible_primes
         if verbose:
             import sys
-            sys.stdout.write(" possible isogeny degrees: %s" % degs)
+            sys.stdout.write(f" possible isogeny degrees: {degs}")
             sys.stdout.flush()
         isogenies = E.isogenies_prime_degree(degs, minimal_models=self._minimal_models)
         if verbose:
-            sys.stdout.write(" -actual isogeny degrees: %s" % Set(phi.degree() for phi in isogenies))
+            sys.stdout.write(f" -actual isogeny degrees: {Set(phi.degree() for phi in isogenies)}")
             sys.stdout.flush()
         # Add all new codomains to the list and collect degrees:
         curves = [E]
@@ -826,7 +826,7 @@ class IsogenyClass_EC_NumberField(IsogenyClass_EC):
                 if T not in tuples:
                     tuples.append(T)
                     if verbose:
-                        sys.stdout.write(" -added tuple %s..." % T[:3])
+                        sys.stdout.write(f" -added tuple {T[:3]}...")
                         sys.stdout.flush()
 
         for phi in isogenies:
@@ -835,14 +835,14 @@ class IsogenyClass_EC_NumberField(IsogenyClass_EC):
             if not any(E2.is_isomorphic(E3) for E3 in curves):
                 curves.append(E2)
                 if verbose:
-                    sys.stdout.write(" -added curve #%s (degree %s)..." % (ncurves,d))
+                    sys.stdout.write(f" -added curve #{ncurves} (degree {d})...")
                     sys.stdout.flush()
                 add_tup([0,ncurves,d,phi])
                 ncurves += 1
                 if d not in degs:
                     degs.append(d)
         if verbose:
-            sys.stdout.write("... relevant degrees: %s..." % degs)
+            sys.stdout.write(f"... relevant degrees: {degs}...")
             sys.stdout.write(" -now completing the isogeny class...")
             sys.stdout.flush()
 
@@ -850,7 +850,7 @@ class IsogenyClass_EC_NumberField(IsogenyClass_EC):
         while i < ncurves:
             E1 = curves[i]
             if verbose:
-                sys.stdout.write(" -processing curve #%s..." % i)
+                sys.stdout.write(f" -processing curve #{i}...")
                 sys.stdout.flush()
 
             isogenies = E1.isogenies_prime_degree(degs, minimal_models=self._minimal_models)
@@ -868,14 +868,14 @@ class IsogenyClass_EC_NumberField(IsogenyClass_EC):
                 else:
                     curves.append(E2)
                     if verbose:
-                        sys.stdout.write(" -added curve #%s..." % ncurves)
+                        sys.stdout.write(f" -added curve #{ncurves}...")
                         sys.stdout.flush()
                     add_tup([i,ncurves,d,phi])
                     ncurves += 1
             i += 1
 
         if verbose:
-            print("... isogeny class has size %s" % ncurves)
+            print(f"... isogeny class has size {ncurves}")
 
         # key function for sorting
         if E.has_rational_cm():
@@ -888,7 +888,7 @@ class IsogenyClass_EC_NumberField(IsogenyClass_EC):
         perm = {ind: self.curves.index(Ei)
                 for ind, Ei in enumerate(curves)}
         if verbose:
-            print("Sorting permutation = %s" % perm)
+            print(f"Sorting permutation = {perm}")
 
         mat = MatrixSpace(ZZ, ncurves)(0)
         self._maps = [[0] * ncurves for _ in range(ncurves)]
@@ -898,7 +898,7 @@ class IsogenyClass_EC_NumberField(IsogenyClass_EC):
                 self._maps[perm[i]][perm[j]] = phi
         self._mat = fill_isogeny_matrix(mat)
         if verbose:
-            print("Matrix = %s" % self._mat)
+            print(f"Matrix = {self._mat}")
 
         if not E.has_rational_cm():
             self._qfmat = None
@@ -965,8 +965,8 @@ class IsogenyClass_EC_NumberField(IsogenyClass_EC):
         self._mat = mat
         self._qfmat = qfmat
         if verbose:
-            print("new matrix = %s" % mat)
-            print("matrix of forms = %s" % qfmat)
+            print(f"new matrix = {mat}")
+            print(f"matrix of forms = {qfmat}")
 
     def _compute_matrix(self):
         """
@@ -1085,11 +1085,11 @@ class IsogenyClass_EC_Rational(IsogenyClass_EC_NumberField):
             try:
                 label = self.E.cremona_label(space=False)
             except RuntimeError:
-                raise RuntimeError("unable to find %s in the database" % self.E)
+                raise RuntimeError(f"unable to find {self.E} in the database")
             db = sage.databases.cremona.CremonaDatabase()
             curves = db.isogeny_class(label)
             if not curves:
-                raise RuntimeError("unable to find %s in the database" % self.E)
+                raise RuntimeError(f"unable to find {self.E} in the database")
             # All curves will have the same conductor and isogeny class,
             # and there are most 8 of them, so lexicographic sorting is okay.
             self.curves = tuple(sorted(curves,
@@ -1127,7 +1127,7 @@ class IsogenyClass_EC_Rational(IsogenyClass_EC_NumberField):
                 self._mat[i,j] = l
                 self._maps[i][j] = phi
         else:
-            raise ValueError("unknown algorithm '%s'" % algorithm)
+            raise ValueError(f"unknown algorithm '{algorithm}'")
 
 
 def isogeny_degrees_cm(E, verbose=False):
@@ -1216,7 +1216,7 @@ def isogeny_degrees_cm(E, verbose=False):
     d = E.cm_discriminant()
 
     if verbose:
-        print("CM case, discriminant = %s" % d)
+        print(f"CM case, discriminant = {d}")
 
     from sage.libs.pari import pari
     from sage.sets.set import Set
@@ -1250,7 +1250,7 @@ def isogeny_degrees_cm(E, verbose=False):
 
     L = Set([ZZ(2), ZZ(3)]) if d == -3 else Set([ZZ(2)])
     if verbose:
-        print("initial primes: %s" % L)
+        print(f"initial primes: {L}")
 
     # Step 1: "vertical" primes l such that the isogenous curve
     # has CM by an order whose index is l or 1/l times the index
@@ -1268,7 +1268,7 @@ def isogeny_degrees_cm(E, verbose=False):
         L1 = Set(ram_l)
         L += L1
         if verbose:
-            print("ramified primes: %s" % L1)
+            print(f"ramified primes: {L1}")
 
     else:
 
@@ -1277,7 +1277,7 @@ def isogeny_degrees_cm(E, verbose=False):
         L1 = Set([l for l in ram_l if d.valuation(l) > 1])
         L += L1
         if verbose:
-            print("upward primes: %s" % L1)
+            print(f"upward primes: {L1}")
 
         # "Downward" ramified primes; index multiplied by l, class
         # number multiplied by l, so l must divide n/2h:
@@ -1285,7 +1285,7 @@ def isogeny_degrees_cm(E, verbose=False):
         L1 = Set([l for l in ram_l if l.divides(n_over_2h)])
         L += L1
         if verbose:
-            print("downward ramified primes: %s" % L1)
+            print(f"downward ramified primes: {L1}")
 
     # (b) Downward split primes; the suborder has class number (l-1)*h, so
     # l-1 must divide n/2h:
@@ -1294,7 +1294,7 @@ def isogeny_degrees_cm(E, verbose=False):
               if (lm1+1).is_prime() and kronecker_symbol(d,lm1+1) == +1])
     L += L1
     if verbose:
-        print("downward split primes: %s" % L1)
+        print(f"downward split primes: {L1}")
 
     # (c) Downward inert primes; the suborder has class number (l+1)*h, so
     # l+1 must divide n/2h:
@@ -1303,7 +1303,7 @@ def isogeny_degrees_cm(E, verbose=False):
               if (lp1-1).is_prime() and kronecker_symbol(d,lp1-1) == -1])
     L += L1
     if verbose:
-        print("downward inert primes: %s" % L1)
+        print(f"downward inert primes: {L1}")
 
     # Horizontal primes (rational CM only): same order, degrees are
     # all integers represented by some binary quadratic form of
@@ -1315,19 +1315,19 @@ def isogeny_degrees_cm(E, verbose=False):
 
         L1 = [Q.small_prime_value() for Q in Qs]
         if verbose:
-            print("primes generating the class group: %s" % L1)
+            print(f"primes generating the class group: {L1}")
         L += Set(L1)
 
     # Return sorted list
 
     if verbose:
-        print("Set of primes before filtering: %s" % L)
+        print(f"Set of primes before filtering: {L}")
 
     # This filter will quickly eliminate most false entries in the set
     from .gal_reps_number_field import Frobenius_filter
     L = Frobenius_filter(E, sorted(L))
     if verbose:
-        print("List of primes after filtering: %s" % L)
+        print(f"List of primes after filtering: {L}")
     return L
 
 
@@ -1480,7 +1480,7 @@ def possible_isogeny_degrees(E, algorithm='Billerey', max_l=None,
     # cached.
 
     if verbose:
-        print("Non-CM case, using {} algorithm".format(algorithm))
+        print(f"Non-CM case, using {algorithm} algorithm")
 
     # First we obtain a finite set of primes containing the reducible
     # ones Each of these algorithms includes application of the

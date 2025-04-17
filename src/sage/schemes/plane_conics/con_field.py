@@ -530,10 +530,10 @@ class ProjectiveConic_field(ProjectivePlaneCurve_field):
             except (TypeError, NameError):
                 pass
 
-            raise NotImplementedError("No correct conversion implemented for converting the Magma point %s on %s to a correct Sage point on self (=%s)" % (M_pt, M, self))
+            raise NotImplementedError(f"No correct conversion implemented for converting the Magma point {M_pt} on {M} to a correct Sage point on self (={self})")
 
         if algorithm != 'default':
-            raise ValueError("Unknown algorithm: %s" % algorithm)
+            raise ValueError(f"Unknown algorithm: {algorithm}")
 
         if isinstance(B, sage.rings.abc.ComplexField):
             if point:
@@ -803,7 +803,7 @@ class ProjectiveConic_field(ProjectivePlaneCurve_field):
         kmn = magma(self.base_ring())._ref()
         coeffs = self.coefficients()
         magma_coeffs = [coeffs[i]._magma_init_(magma) for i in [0, 3, 5, 1, 4, 2]]
-        return 'Conic([%s|%s])' % (kmn,','.join(magma_coeffs))
+        return f"Conic([{kmn}|{','.join(magma_coeffs)}])"
 
     def matrix(self):
         r"""
@@ -939,7 +939,7 @@ class ProjectiveConic_field(ProjectivePlaneCurve_field):
             par = self._parametrization
         else:
             if not self.is_smooth():
-                raise ValueError("The conic self (=%s) is not smooth, hence does not have a parametrization." % self)
+                raise ValueError(f"The conic self (={self}) is not smooth, hence does not have a parametrization.")
             if point is None:
                 point = self.rational_point()
             point = Sequence(point)

@@ -610,9 +610,9 @@ class EllipticCurve_finite_field(EllipticCurve_field):
             N = self.cardinality_pari()
             N2 = self.cardinality_bsgs()
             if N != N2:
-                raise AssertionError("cardinality with pari=%s but with bsgs=%s" % (N, N2))
+                raise AssertionError(f"cardinality with pari={N} but with bsgs={N2}")
         else:
-            raise ValueError("algorithm {!r} is not known".format(algorithm))
+            raise ValueError(f"algorithm {algorithm!r} is not known")
 
         self._order = N
         return N
@@ -1653,7 +1653,7 @@ class EllipticCurve_finite_field(EllipticCurve_field):
             5
         """
         if self.is_supersingular():
-            raise ValueError("{} is not ordinary".format(self))
+            raise ValueError(f"{self} is not ordinary")
         if e == 0:
             return 0
         j = self.j_invariant()
@@ -1732,9 +1732,9 @@ class EllipticCurve_finite_field(EllipticCurve_field):
         """
         F = self.base_field()
         if not F.is_finite():
-            raise ValueError("Base field {} must be finite".format(F))
+            raise ValueError(f"Base field {F} must be finite")
         if self.is_supersingular():
-            raise ValueError("Elliptic curve ({}) must be ordinary".format(self))
+            raise ValueError(f"Elliptic curve ({self}) must be ordinary")
         D1 = self.frobenius_discriminant()
         D0 = D1.squarefree_part()
         if D0 % 4 != 1:
@@ -1742,11 +1742,11 @@ class EllipticCurve_finite_field(EllipticCurve_field):
         v = ZZ(D1//D0).isqrt()
         h0 = D0.class_number()
         if h % h0:
-            raise ValueError("Incorrect class number {}".format(h))
+            raise ValueError(f"Incorrect class number {h}")
         from sage.schemes.elliptic_curves.cm import OrderClassNumber
         cs = [v//f for f in v.divisors() if OrderClassNumber(D0,h0,f) == h] # cofactors c=v/f compatible with h(f**2D0)=h
         if not cs:
-            raise ValueError("Incorrect class number {}".format(h))
+            raise ValueError(f"Incorrect class number {h}")
         if len(cs) == 1:
             return (v//cs[0])**2 * D0
 
@@ -1755,10 +1755,10 @@ class EllipticCurve_finite_field(EllipticCurve_field):
             e = self.height_above_floor(ell,v.valuation(ell))
             cs = [c for c in cs if c.valuation(ell) == e]
             if not cs:
-                raise ValueError("Incorrect class number {}".format(h))
+                raise ValueError(f"Incorrect class number {h}")
             if len(cs) == 1:
                 return (v//cs[0])**2 * D0
-        raise ValueError("Incorrect class number {}".format(h))
+        raise ValueError(f"Incorrect class number {h}")
 
     def twists(self):
         r"""
@@ -2404,9 +2404,9 @@ def supersingular_j_polynomial(p, use_cache=True):
     try:
         p = ZZ(p)
     except TypeError:
-        raise ValueError("p (=%s) should be a prime number" % p)
+        raise ValueError(f"p (={p}) should be a prime number")
     if not p.is_prime():
-        raise ValueError("p (=%s) should be a prime number" % p)
+        raise ValueError(f"p (={p}) should be a prime number")
 
     J = polygen(GF(p),'j')
     if p < 13:
@@ -2480,7 +2480,7 @@ def is_j_supersingular(j, proof=True):
         [2, 3, 59, 89]
     """
     if not (isinstance(j, Element) and isinstance(j.parent(), FiniteField)):
-        raise ValueError("%s must be an element of a finite field" % j)
+        raise ValueError(f"{j} must be an element of a finite field")
 
     F = j.parent()
     p = F.characteristic()

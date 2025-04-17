@@ -529,7 +529,7 @@ class AlgebraicScheme(scheme.Scheme):
             sage: S._repr_()
             'Subscheme of Projective Space of dimension 3 over Integer Ring'
         """
-        return "Subscheme of %s" % self.__A
+        return f"Subscheme of {self.__A}"
 
     def _homset(self, *args, **kwds):
         """
@@ -818,11 +818,11 @@ class AlgebraicScheme_quasi(AlgebraicScheme):
         coords = list(v)
         for f in self.__X.defining_polynomials():
             if f(coords) != 0:
-                raise TypeError("Coordinates %s do not define a point on %s" % (v,self))
+                raise TypeError(f"Coordinates {v} do not define a point on {self}")
         for f in self.__Y.defining_polynomials():
             if f(coords) != 0:
                 return True
-        raise TypeError("Coordinates %s do not define a point on %s" % (v,self))
+        raise TypeError(f"Coordinates {v} do not define a point on {self}")
 
     def rational_points(self, **kwds):
         """
@@ -866,9 +866,9 @@ class AlgebraicScheme_quasi(AlgebraicScheme):
 
         if bound == 0:
             if isinstance(F, RationalField):
-                raise TypeError("A positive bound (= %s) must be specified." % bound)
+                raise TypeError(f"A positive bound (= {bound}) must be specified.")
             if not isinstance(F, FiniteField):
-                raise TypeError("Argument F (= %s) must be a finite field." % F)
+                raise TypeError(f"Argument F (= {F}) must be a finite field.")
         pts = []
         for P in self.ambient_space().rational_points(F):
             try:
@@ -979,11 +979,11 @@ class AlgebraicScheme_subscheme(AlgebraicScheme):
             if f(coords) != 0:
                 # it must be "!=0" instead of "if f(v)", e.g.,
                 # because of p-adic base rings.
-                raise TypeError("Coordinates %s do not define a point on %s" % (coords, self))
+                raise TypeError(f"Coordinates {coords} do not define a point on {self}")
         try:
             return self.ambient_space()._check_satisfies_equations(coords)
         except TypeError:
-            raise TypeError("Coordinates %s do not define a point on %s" % (coords, self))
+            raise TypeError(f"Coordinates {coords} do not define a point on {self}")
 
     def base_extend(self, R):
         """
@@ -1448,10 +1448,10 @@ class AlgebraicScheme_subscheme(AlgebraicScheme):
             True
         """
         if not isinstance(other, AlgebraicScheme_subscheme):
-            raise TypeError("other (=%s) must be a closed algebraic subscheme of an ambient space" % other)
+            raise TypeError(f"other (={other}) must be a closed algebraic subscheme of an ambient space")
         A = self.ambient_space()
         if other.ambient_space() != A:
-            raise ValueError("other (=%s) must be in the same ambient space as self" % other)
+            raise ValueError(f"other (={other}) must be in the same ambient space as self")
         return A.subscheme(self.defining_ideal().intersection(other.defining_ideal()))
 
     def __pow__(self, m):
@@ -1636,10 +1636,10 @@ class AlgebraicScheme_subscheme(AlgebraicScheme):
               y
         """
         if not isinstance(other, AlgebraicScheme_subscheme):
-            raise TypeError("other (=%s) must be a closed algebraic subscheme of an ambient space" % other)
+            raise TypeError(f"other (={other}) must be a closed algebraic subscheme of an ambient space")
         A = self.ambient_space()
         if other.ambient_space() != A:
-            raise ValueError("other (=%s) must be in the same ambient space as self" % other)
+            raise ValueError(f"other (={other}) must be in the same ambient space as self")
         return A.subscheme(self.defining_ideal() + other.defining_ideal())
 
     def complement(self, other=None):
@@ -1695,9 +1695,9 @@ class AlgebraicScheme_subscheme(AlgebraicScheme):
             if other == A:
                 other = A.subscheme([])
             else:
-                raise TypeError("Argument other (=%s) must be a closed algebraic subscheme of an ambient space" % other)
+                raise TypeError(f"Argument other (={other}) must be a closed algebraic subscheme of an ambient space")
         if other.ambient_space() != A:
-            raise ValueError("other (=%s) must be in the same ambient space as self" % other)
+            raise ValueError(f"other (={other}) must be in the same ambient space as self")
         return AlgebraicScheme_quasi(other, self)
 
     def rational_points(self, **kwds):
@@ -1820,7 +1820,7 @@ class AlgebraicScheme_subscheme(AlgebraicScheme):
             try:
                 return X.points(**kwds) # checks for proper bound done in points functions
             except TypeError:
-                raise TypeError("Unable to enumerate points over %s." % F)
+                raise TypeError(f"Unable to enumerate points over {F}.")
         elif (self.base_ring() in NumberFields() or self.base_ring() == ZZ)\
           and hasattr(F, 'precision'):
             #we are numerically approximating number field points
@@ -1829,7 +1829,7 @@ class AlgebraicScheme_subscheme(AlgebraicScheme):
             X = self.base_extend(F)(F)
             return X.points()
         except TypeError:
-            raise TypeError("Unable to enumerate points over %s." % F)
+            raise TypeError(f"Unable to enumerate points over {F}.")
 
     def change_ring(self, R):
         r"""

@@ -128,7 +128,7 @@ class KodairaSymbol_class(SageObject):
                 nu = n - 4
                 self._n = nu
                 self._roman = 1
-                self._str = 'I%s' % nu
+                self._str = f'I{nu}'
                 self._latex = 'I_{%s}' % nu
             elif n == -1:
                 self._roman = 1
@@ -151,7 +151,7 @@ class KodairaSymbol_class(SageObject):
                 nu = -n - 4
                 self._roman = 1
                 self._n = nu
-                self._str = 'I%s*' % nu
+                self._str = f'I{nu}*'
                 self._latex = 'I_{%s}^{*}' % nu
             self._starred = (n < 0)
             self._pari = n

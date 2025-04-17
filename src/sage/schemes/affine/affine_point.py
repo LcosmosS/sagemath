@@ -80,9 +80,9 @@ class SchemeMorphism_point_affine(SchemeMorphism_point):
             # Verify that there are the right number of coords
             d = self.codomain().ambient_space().ngens()
             if len(v) != d:
-                raise TypeError("argument v (=%s) must have %s coordinates" % (v, d))
+                raise TypeError(f"argument v (={v}) must have {d} coordinates")
             if not isinstance(v, (list, tuple)):
-                raise TypeError("argument v (= %s) must be a scheme point, list, or tuple" % str(v))
+                raise TypeError(f"argument v (= {str(v)}) must be a scheme point, list, or tuple")
             # Make sure the coordinates all lie in the appropriate ring
             v = Sequence(v, X.value_ring())
             # Verify that the point satisfies the equations of X.

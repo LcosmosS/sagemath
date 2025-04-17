@@ -186,7 +186,7 @@ def make_integral(a, P, e):
     for b in (P**e).residues():
         if (a-b).valuation(P) >= e:
             return b
-    raise ArithmeticError("Cannot lift %s to O_K mod (%s)^%s" % (a, P, e))
+    raise ArithmeticError(f"Cannot lift {a} to O_K mod ({P})^{e}")
 
 
 def sqrt_mod_4(x, P):
@@ -296,11 +296,11 @@ def test_b2_local(c4, c6, P, b2, debug=False):
     E = c4c6_model(c4,c6).rst_transform(b2/12,0,0)
     if not (c4,c6) == E.c_invariants():
         if debug:
-            print("test_b2_local: wrong c-invariants at P=%s" % P)
+            print(f"test_b2_local: wrong c-invariants at P={P}")
         return False
     if not E.is_local_integral_model(P):
         if debug:
-            print("test_b2_local: not integral at %s" % P)
+            print(f"test_b2_local: not integral at {P}")
         return False
     return E
 
@@ -464,11 +464,11 @@ def test_a1a3_local(c4, c6, P, a1, a3, debug=False):
     E = c4c6_model(c4,c6).rst_transform(a1**2/12,a1/2,a3/2)
     if not (c4,c6) == E.c_invariants():
         if debug:
-            print("test_a1a3_local: wrong c-invariants at P=%s" % P)
+            print(f"test_a1a3_local: wrong c-invariants at P={P}")
         return False
     if not E.is_local_integral_model(P):
         if debug:
-            print("test_a1a3_local: not integral at %s" % P)
+            print(f"test_a1a3_local: not integral at {P}")
         return False
     return E
 
@@ -560,7 +560,7 @@ def test_rst_global(c4, c6, r, s, t, debug=False):
             K = E.base_field()
             for P in K.primes_above(2)+K.primes_above(3):
                 if not E.is_local_integral_model(P):
-                    print(" -- not integral at P=%s" % P)
+                    print(f" -- not integral at P={P}")
         return False
     return E
 
@@ -818,10 +818,10 @@ def check_Kraus_global(c4, c6, assume_nonsingular=False, debug=False):
     dat = [check_Kraus_local_3(c4,c6,P,True) for P in Plist3]
     if not all(d[0] for d in dat):
         if debug:
-            print("Local Kraus condition for (c4,c6)=(%s,%s) fails at some prime dividing 3" % (c4,c6))
+            print(f"Local Kraus condition for (c4,c6)=({c4},{c6}) fails at some prime dividing 3")
         return False
     if debug:
-        print("Local Kraus conditions for (c4,c6)=(%s,%s) pass at all primes dividing 3" % (c4,c6))
+        print(f"Local Kraus conditions for (c4,c6)=({c4},{c6}) pass at all primes dividing 3")
 
     # OK at all primes dividing 3; now use CRT to combine the b2
     # values to get a single residue class for b2 mod 3:
@@ -834,7 +834,7 @@ def check_Kraus_global(c4, c6, assume_nonsingular=False, debug=False):
     if debug:
         E = test_b2_global(c4,c6,b2)
         if E:
-            print("Using b2=%s gives a model integral at 3:\n%s" % (b2,E.ainvs()))
+            print(f"Using b2={b2} gives a model integral at 3:\n{E.ainvs()}")
         else:
             raise RuntimeError("Error in check_Kraus_global at some prime dividing 3")
 
@@ -846,10 +846,10 @@ def check_Kraus_global(c4, c6, assume_nonsingular=False, debug=False):
     dat = [check_Kraus_local_2(c4, c6, P, None, True) for P in Plist2]
     if not all(d[0] for d in dat):
         if debug:
-            print("Local Kraus condition for (c4,c6)=(%s,%s) fails at some prime dividing 2" % (c4, c6))
+            print(f"Local Kraus condition for (c4,c6)=({c4},{c6}) fails at some prime dividing 2")
         return False
     if debug:
-        print("Local Kraus conditions for (c4,c6)=(%s,%s) pass at all primes dividing 2" % (c4,c6))
+        print(f"Local Kraus conditions for (c4,c6)=({c4},{c6}) pass at all primes dividing 2")
 
     # OK at all primes dividing 2; now use CRT to combine the a1
     # values to get the residue classes of a1 mod 2:
@@ -870,7 +870,7 @@ def check_Kraus_global(c4, c6, assume_nonsingular=False, debug=False):
     if debug:
         E = test_a1a3_global(c4,c6,a1,a3,debug)
         if E:
-            print("Using (a1,a3)=(%s,%s) gives a model integral at 2:\n%s" % (a1,a3,E.ainvs()))
+            print(f"Using (a1,a3)=({a1},{a3}) gives a model integral at 2:\n{E.ainvs()}")
         else:
             raise RuntimeError("Error in check_Kraus_global at some prime dividing 2")
 
@@ -889,7 +889,7 @@ def check_Kraus_global(c4, c6, assume_nonsingular=False, debug=False):
     # multiplying a1 by 3 if necessary.  We did this above.
 
     if debug:
-        print("(a1, b2, a3) = (%s, %s, %s)" % (a1,b2,a3))
+        print(f"(a1, b2, a3) = ({a1}, {b2}, {a3})")
     assert a1.is_integral()
     assert a3.is_integral()
     assert b2.is_integral()
@@ -897,7 +897,7 @@ def check_Kraus_global(c4, c6, assume_nonsingular=False, debug=False):
     r = b2/3 - s**2
     t = s*(b2-a1**2)/3 + a3/2
     if debug:
-        print("Using (r, s, t)=(%s, %s, %s) should give a global integral model..." % (r,s,t))
+        print(f"Using (r, s, t)=({r}, {s}, {t}) should give a global integral model...")
 
     # Final computation of the curve E:
     E = test_rst_global(c4,c6,r,s,t,debug)
@@ -905,10 +905,10 @@ def check_Kraus_global(c4, c6, assume_nonsingular=False, debug=False):
         if debug:
             print("Error in check_Kraus_global with combining mod-2 and mod-3 transforms")
             E = c4c6_model(c4,c6).rst_transform(r,s,t)
-            print("Transformed model is %a" % (E.ainvs(),))
+            print(f"Transformed model is {E.ainvs()!a}")
             for P in Plist2+Plist3:
                 if not E.is_local_integral_model(P):
-                    print("Not integral at P=%s" % P)
+                    print(f"Not integral at P={P}")
         raise RuntimeError("Error in check_Kraus_global combining transforms at 2 and 3")
 
     # Success!
@@ -992,7 +992,7 @@ def semi_global_minimal_model(E, debug=False):
         P = E.base_field().ideal(1)
     else:
         if debug:
-            print("No global minimal model, obstruction class = %s of order %s" % (c, c.order()))
+            print(f"No global minimal model, obstruction class = {c} of order {c.order()}")
         bound = E.base_field().minkowski_bound().round() * 5
         have_prime = False
         while not have_prime:
@@ -1002,7 +1002,7 @@ def semi_global_minimal_model(E, debug=False):
             except RuntimeError:
                 bound *= 2
         if debug:
-            print("Using prime {} of norm {} in that class".format(P, P.norm()))
+            print(f"Using prime {P} of norm {P.norm()} in that class")
         I = I / P
     u = I.gens_reduced()[0]
     rc4 = c4 / u**4

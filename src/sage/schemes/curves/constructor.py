@@ -285,17 +285,17 @@ def Curve(F, A=None):
                 A = AffineSpace(1, P.base_ring(), names=P.variable_names())
                 A._coordinate_ring = P
             else:
-                raise TypeError("number of variables of F (={}) must be 2 or 3".format(F))
+                raise TypeError(f"number of variables of F (={F}) must be 2 or 3")
             F = [F]
         else:
-            raise TypeError("F (={}) must be a multivariate polynomial".format(F))
+            raise TypeError(f"F (={F}) must be a multivariate polynomial")
     else:
         if not isinstance(A, AmbientSpace):
             raise TypeError("ambient space must be either an affine or projective space")
         if not isinstance(F, (list, tuple)):
             F = [F]
         if not all(f.parent() == A.coordinate_ring() for f in F):
-            raise TypeError("need a list of polynomials of the coordinate ring of {}".format(A))
+            raise TypeError(f"need a list of polynomials of the coordinate ring of {A}")
 
     n = A.dimension_relative()
     if n < 1:
@@ -364,7 +364,7 @@ def Curve(F, A=None):
 
         F = F[0]
         if not F.is_homogeneous():
-            raise TypeError("{} is not a homogeneous polynomial".format(F))
+            raise TypeError(f"{F} is not a homogeneous polynomial")
 
         if isinstance(k, FiniteField):
             if _is_irreducible_and_reduced(F):

@@ -191,14 +191,12 @@ class PlaneCurveArrangementElement(Element):
             Arrangement of 5 curves in Projective Space of dimension 2 over Rational Field
         """
         if not self:
-            return 'Empty curve arrangement in {}'.format(self.parent().ambient_space())
+            return f'Empty curve arrangement in {self.parent().ambient_space()}'
         elif len(self) < 5:
             curves = ', '.join(h.defining_polynomial()._repr_()
                                for h in self._curves)
-            return 'Arrangement ({}) in {}'.format(curves,
-                                                   self.parent().ambient_space())
-        return 'Arrangement of {} curves in {}'.format(len(self),
-                                                       self.parent().ambient_space())
+            return f'Arrangement ({curves}) in {self.parent().ambient_space()}'
+        return f'Arrangement of {len(self)} curves in {self.parent().ambient_space()}'
 
     def _richcmp_(self, other, op) -> bool:
         """
@@ -1096,7 +1094,7 @@ class PlaneCurveArrangements(UniqueRepresentation, Parent):
             sage: L.<x, y> = AffinePlaneCurveArrangements(QQ);  L
             Curve arrangements in Affine Space of dimension 2 over Rational Field
         """
-        return 'Curve arrangements in {}'.format(self.ambient_space())
+        return f'Curve arrangements in {self.ambient_space()}'
 
     def _element_constructor_(self, *args, **kwds):
         """

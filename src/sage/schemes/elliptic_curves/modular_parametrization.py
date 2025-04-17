@@ -108,7 +108,7 @@ class ModularParameterization:
             sage: phi.__repr__()
             'Modular parameterization from the upper half plane to Elliptic Curve defined by y^2 + y = x^3 - x over Rational Field'
         """
-        return "Modular parameterization from the upper half plane to %s" % self._E
+        return f"Modular parameterization from the upper half plane to {self._E}"
 
     def __eq__(self, other):
         r"""
@@ -190,7 +190,7 @@ class ModularParameterization:
         if isinstance(z, heegner.HeegnerPointOnX0N):
             return z.map_to_curve(self.curve())
         # Map to the CC of CC/PeriodLattice.
-        tm = verbose("Evaluating modular parameterization to precision %s bits" % prec)
+        tm = verbose(f"Evaluating modular parameterization to precision {prec} bits")
         w = self.map_to_complex_numbers(z, prec=prec)
         # Map to E via Weierstrass P
         z = self._E.elliptic_exponential(w)

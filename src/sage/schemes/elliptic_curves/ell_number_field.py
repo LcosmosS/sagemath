@@ -675,7 +675,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
             if all(a.is_integral() for a in ai):
                 break
         for z in ai:
-            assert z.is_integral(), "bug in global_integral_model: %s" % list(ai)
+            assert z.is_integral(), f"bug in global_integral_model: {list(ai)}"
         return EllipticCurve(list(ai))
 
     integral_model = global_integral_model
@@ -1899,7 +1899,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
                 E, P = semi_global_minimal_model(self)
             return E._scale_by_units()._reduce_model()
 
-        raise ValueError("%s has no global minimal model!  For a semi-global minimal model use semi_global=True" % self)
+        raise ValueError(f"{self} has no global minimal model!  For a semi-global minimal model use semi_global=True")
 
     def reduction(self, place):
         r"""
@@ -2279,7 +2279,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
         if lower == upper:
             return lower
         else:
-            raise ValueError('There is insufficient data to determine the rank - 2-descent gave lower bound %s and upper bound %s' % (lower, upper))
+            raise ValueError(f'There is insufficient data to determine the rank - 2-descent gave lower bound {lower} and upper bound {upper}')
 
     def gens(self, **kwds):
         r"""
@@ -2492,7 +2492,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
         """
         try:
             if embedding.domain() is not self.base_field():
-                raise ValueError("invalid embedding specified: should have domain {}".format(self.base_field()))
+                raise ValueError(f"invalid embedding specified: should have domain {self.base_field()}")
             if not isinstance(embedding.codomain(), sage.rings.abc.RealField):
                 raise ValueError("invalid embedding specified: should be real")
         except AttributeError:
@@ -3007,14 +3007,14 @@ class EllipticCurve_number_field(EllipticCurve_field):
             try:
                 l = ZZ(l)
             except TypeError:
-                raise ValueError("%s is not a prime integer" % l)
+                raise ValueError(f"{l} is not a prime integer")
             try:
                 if l.is_prime(proof=False):
                     return isogenies_prime_degree(self, l, minimal_models=minimal_models)
                 else:
-                    raise ValueError("%s is not prime." % l)
+                    raise ValueError(f"{l} is not prime.")
             except AttributeError:
-                raise ValueError("%s is not prime." % l)
+                raise ValueError(f"{l} is not prime.")
 
         if l is None:
             from .isogeny_class import possible_isogeny_degrees
@@ -3209,7 +3209,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
 
         return any(E2.is_isomorphic(E3) for E3 in E1.isogeny_class().curves)
 
-        raise NotImplementedError("Curves appear to be isogenous (same conductor, isogenous modulo all primes of norm up to %s), but no isogeny has been constructed." % (10*maxnorm))
+        raise NotImplementedError(f"Curves appear to be isogenous (same conductor, isogenous modulo all primes of norm up to {10 * maxnorm}), but no isogeny has been constructed.")
 
     def isogeny_degree(self, other):
         """
@@ -3999,7 +3999,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
                     print("Computing lower height bound..")
                 lower_ht_bound = self.height_function().min(.1, 5) ** n
                 if verbose:
-                    print("..done: %s" % lower_ht_bound)
+                    print(f"..done: {lower_ht_bound}")
             index_bound = (reg/lower_ht_bound).sqrt()
             if index_bound < 2:
                 if verbose:
@@ -4007,7 +4007,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
                 return Plist, index, RealField()(1)
             else:
                 if verbose:
-                    print("p-saturating for primes p < {}".format(index_bound.ceil()))
+                    print(f"p-saturating for primes p < {index_bound.ceil()}")
             prime_list = prime_range(index_bound.ceil())
         else:
             if one_prime:
@@ -4028,11 +4028,11 @@ class EllipticCurve_number_field(EllipticCurve_field):
             if full_saturation and (p > index_bound):
                 break
             if verbose:
-                print("Saturating at p=%s" % p)
+                print(f"Saturating at p={p}")
             newPlist, expo = saturator.full_p_saturation(Plist, p)
             if expo:
                 if verbose:
-                    print(" --gaining index %s^%s" % (p, expo))
+                    print(f" --gaining index {p}^{expo}")
                 pe = p**expo
                 index *= pe
                 if full_saturation:
@@ -4041,7 +4041,7 @@ class EllipticCurve_number_field(EllipticCurve_field):
                 Plist = newPlist
             else:
                 if verbose:
-                    print(" --already %s-saturated" % p)
+                    print(f" --already {p}-saturated")
 
         return Plist, index, sat_reg
 

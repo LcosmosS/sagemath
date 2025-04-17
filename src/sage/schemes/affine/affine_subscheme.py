@@ -207,7 +207,7 @@ class AlgebraicScheme_subscheme_affine(AlgebraicScheme_subscheme):
                 i = n
         i = int(i)
         if i < 0 or i > n:
-            raise ValueError("Argument i (=%s) must be between 0 and %s, inclusive" % (i, n))
+            raise ValueError(f"Argument i (={i}) must be between 0 and {n}, inclusive")
         try:
             phi = self.__projective_embedding[i]
             # assume that if you've passed in a new ambient projective space
@@ -221,7 +221,7 @@ class AlgebraicScheme_subscheme_affine(AlgebraicScheme_subscheme):
         if PP is None:
             PP = AA.projective_embedding(i).codomain()
         elif PP.dimension_relative() != n:
-            raise ValueError("Projective Space must be of dimension %s" % (n))
+            raise ValueError(f"Projective Space must be of dimension {n}")
         PR = PP.coordinate_ring()
         # Groebner basis w.r.t. a graded monomial order computed here to ensure
         # after homogenization, the basis elements will generate the defining
@@ -399,14 +399,14 @@ class AlgebraicScheme_subscheme_affine(AlgebraicScheme_subscheme):
         """
         AA = self.ambient_space()
         if AA != X.ambient_space():
-            raise TypeError("this subscheme and (=%s) must be defined in the same ambient space" % X)
+            raise TypeError(f"this subscheme and (={X}) must be defined in the same ambient space")
         W = self.intersection(X)
         try:
             W._check_satisfies_equations(P)
         except TypeError:
-            raise TypeError("(=%s) must be a point in the intersection of this subscheme and (=%s)" % (P, X))
+            raise TypeError(f"(={P}) must be a point in the intersection of this subscheme and (={X})")
         if AA.dimension() != self.dimension() + X.dimension() or W.dimension() != 0:
-            raise TypeError("the intersection of this subscheme and (=%s) must be proper and finite" % X)
+            raise TypeError(f"the intersection of this subscheme and (={X}) must be proper and finite")
         I = self.defining_ideal()
         J = X.defining_ideal()
         # move P to the origin and localize
@@ -486,7 +486,7 @@ class AlgebraicScheme_subscheme_affine(AlgebraicScheme_subscheme):
         try:
             P = self(P)
         except TypeError:
-            raise TypeError("(=%s) is not a point on (=%s)" % (P, self))
+            raise TypeError(f"(={P}) is not a point on (={self})")
 
         from sage.interfaces.singular import singular
 

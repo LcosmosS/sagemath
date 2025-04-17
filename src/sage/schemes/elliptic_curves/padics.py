@@ -66,7 +66,7 @@ def __check_padic_hypotheses(self, p):
     """
     p = Integer(p)
     if not p.is_prime():
-        raise ValueError("p = (%s) must be prime" % p)
+        raise ValueError(f"p = ({p}) must be prime")
     if p == 2:
         raise ValueError("p must be odd")
     if self.conductor() % p == 0 or self.ap(p) % p == 0:
@@ -316,7 +316,7 @@ def padic_regulator(self, p, prec=20, height=None, check_hypotheses=True):
     p = Integer(p)  # this is assumed in code below
     if check_hypotheses:
         if not p.is_prime():
-            raise ValueError("p = (%s) must be prime" % p)
+            raise ValueError(f"p = ({p}) must be prime")
         if p == 2:
             raise ValueError("p must be odd")   # todo
         if self.conductor() % (p**2) == 0:
@@ -787,7 +787,7 @@ def padic_height(self, p, prec=20, sigma=None, check_hypotheses=True):
     """
     if check_hypotheses:
         if not p.is_prime():
-            raise ValueError("p = (%s) must be prime" % p)
+            raise ValueError(f"p = ({p}) must be prime")
         if p == 2:
             raise ValueError("p must be odd")   # todo
         if self.conductor() % (p**2) == 0:
@@ -795,7 +795,7 @@ def padic_height(self, p, prec=20, sigma=None, check_hypotheses=True):
 
     prec = int(prec)
     if prec < 1:
-        raise ValueError("prec (=%s) must be at least 1" % prec)
+        raise ValueError(f"prec (={prec}) must be at least 1")
 
     if self.conductor() % p == 0:
         Eq = self.tate_curve(p)
@@ -938,7 +938,7 @@ def padic_height_via_multiply(self, p, prec=20, E2=None, check_hypotheses=True):
     """
     if check_hypotheses:
         if not p.is_prime():
-            raise ValueError("p = (%s) must be prime" % p)
+            raise ValueError(f"p = ({p}) must be prime")
         if p == 2:
             raise ValueError("p must be odd")   # todo
         if self.conductor() % p == 0:
@@ -948,7 +948,7 @@ def padic_height_via_multiply(self, p, prec=20, E2=None, check_hypotheses=True):
 
     prec = int(prec)
     if prec < 1:
-        raise ValueError("prec (=%s) must be at least 1" % prec)
+        raise ValueError(f"prec (={prec}) must be at least 1")
 
     # For notation and definitions, [Har2009]_
 
@@ -1122,13 +1122,13 @@ def padic_sigma(self, p, N=20, E2=None, check=False, check_hypotheses=True):
     # the precision loss estimates (below) very carefully; I think it
     # may become necessary to compute E2 to an even higher precision.
     if p < 5:
-        raise NotImplementedError("p (=%s) must be at least 5" % p)
+        raise NotImplementedError(f"p (={p}) must be at least 5")
 
     N = int(N)
 
     # a few special cases for small N
     if N < 1:
-        raise ValueError("N (=%s) must be at least 1" % N)
+        raise ValueError(f"N (={N}) must be at least 1")
 
     if N == 1:
         # return simply t + O(t^2)
@@ -1301,17 +1301,17 @@ def padic_sigma_truncated(self, p, N=20, lamb=0, E2=None, check_hypotheses=True)
     # the precision loss estimates (below) very carefully; I think it
     # may become necessary to compute E2 to an even higher precision.
     if p < 5:
-        raise NotImplementedError("p (=%s) must be at least 5" % p)
+        raise NotImplementedError(f"p (={p}) must be at least 5")
 
     N = int(N)
     lamb = int(lamb)
 
     if lamb < 0:
-        raise ValueError("lamb (=%s) must be at least 0" % lamb)
+        raise ValueError(f"lamb (={lamb}) must be at least 0")
 
     # a few special cases for small N
     if N <= 1:
-        raise ValueError("N (=%s) must be at least 2" % N)
+        raise ValueError(f"N (={N}) must be at least 2")
 
     if N == 2:
         # return t + a_1/2 t^2 + O(t^3)
@@ -1622,9 +1622,9 @@ def matrix_of_frobenius(self, p, prec=20, check=False, check_hypotheses=True, al
     prec = int(prec)
 
     if p < 3:
-        raise NotImplementedError("p (=%s) must be at least 3" % p)
+        raise NotImplementedError(f"p (={p}) must be at least 3")
     if prec < 1:
-        raise ValueError("prec (=%s) must be at least 1" % prec)
+        raise ValueError(f"prec (={prec}) must be at least 1")
 
     if check_hypotheses:
         p = __check_padic_hypotheses(self, p)
@@ -1635,7 +1635,7 @@ def matrix_of_frobenius(self, p, prec=20, check=False, check_hypotheses=True, al
         raise ValueError("sqrtp algorithm is only available when p > 6*prec")
 
     if algorithm not in ["standard", "sqrtp"]:
-        raise ValueError("unknown algorithm '%s'" % algorithm)
+        raise ValueError(f"unknown algorithm '{algorithm}'")
 
     # for p = 3, we create the corresponding hyperelliptic curve
     # and call matrix of frobenius on it

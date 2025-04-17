@@ -365,8 +365,8 @@ class RingClassField(SageObject):
         """
         c = self.__c
         if c == 1:
-            return "Hilbert class field of QQ[sqrt(%s)]" % self.__D
-        return "Ring class field extension of QQ[sqrt(%s)] of conductor %s" % (self.__D, self.__c)
+            return f"Hilbert class field of QQ[sqrt({self.__D})]"
+        return f"Ring class field extension of QQ[sqrt({self.__D})] of conductor {self.__c}"
 
     @cached_method
     def degree_over_K(self):
@@ -748,10 +748,10 @@ class GaloisGroup(SageObject):
             'Galois group of Ring class field extension of QQ[sqrt(-7)] of conductor 5'
         """
         if self.base_field() != QQ:
-            s = " over %s" % self.base_field()
+            s = f" over {self.base_field()}"
         else:
             s = ''
-        return "Galois group of %s%s" % (self.field(), s)
+        return f"Galois group of {self.field()}{s}"
 
     def field(self):
         """
@@ -1386,7 +1386,7 @@ class GaloisAutomorphismComplexConjugation(GaloisAutomorphism):
             sage: conj._repr_()
             'Complex conjugation automorphism of Ring class field extension of QQ[sqrt(-7)] of conductor 5'
         """
-        return "Complex conjugation automorphism of %s" % self.domain()
+        return f"Complex conjugation automorphism of {self.domain()}"
 
 #     def __mul__(self, right):
 #         """
@@ -1612,7 +1612,7 @@ class GaloisAutomorphismQuadraticForm(GaloisAutomorphism):
             sage: s._repr_()
             'Class field automorphism defined by x^2 + 45*y^2'
         """
-        return "Class field automorphism defined by %s" % self.__quadratic_form
+        return f"Class field automorphism defined by {self.__quadratic_form}"
 
     def __mul__(self, right):
         """
@@ -2049,7 +2049,7 @@ class HeegnerPoints_level(HeegnerPoints):
             sage: heegner_points(389)._repr_()
             'Set of all Heegner points on X_0(389)'
         """
-        return "Set of all Heegner points on X_0(%s)" % self.level()
+        return f"Set of all Heegner points on X_0({self.level()})"
 
     def reduce_mod(self, ell):
         r"""
@@ -2154,7 +2154,7 @@ class HeegnerPoints_level_disc(HeegnerPoints):
         HeegnerPoints.__init__(self, N)
         D = ZZ(D)
         if not satisfies_weak_heegner_hypothesis(N,D):
-            raise ValueError("D (=%s) must satisfy the weak Heegner hypothesis for N (=%s)" % (D,N))
+            raise ValueError(f"D (={D}) must satisfy the weak Heegner hypothesis for N (={N})")
         self.__D = D
 
     def __eq__(self, other):
@@ -2719,9 +2719,9 @@ class HeegnerPointOnX0N(HeegnerPoint):
             D = ZZ(D)
             c = ZZ(c)
             if c.gcd(N) != 1:
-                raise ValueError("conductor c (=%s) must be coprime to N (=%s)" % (c, N))
+                raise ValueError(f"conductor c (={c}) must be coprime to N (={N})")
             if not satisfies_weak_heegner_hypothesis(N, D):
-                raise ValueError("N (=%s) and D (=%s) must satisfy the Heegner hypothesis" % (N, D))
+                raise ValueError(f"N (={N}) and D (={D}) must satisfy the Heegner hypothesis")
             if f is not None:
                 if isinstance(f, tuple):
                     if len(f) != 3:
@@ -2741,7 +2741,7 @@ class HeegnerPointOnX0N(HeegnerPoint):
                     raise TypeError("f must be a 3-tuple, quadratic form, or element of the upper half plane")
                 A, B, C = f
                 if B*B - 4*A*C != D*c*c:
-                    raise ValueError("f (=%s) must have discriminant %s" % (f, D*c*c))
+                    raise ValueError(f"f (={f}) must have discriminant {D * c * c}")
         HeegnerPoint.__init__(self, N, D, c)
         if f is None:
             # We know that N|A, so A = N is optimal.
@@ -2797,11 +2797,11 @@ class HeegnerPointOnX0N(HeegnerPoint):
             'Heegner point 5/74*sqrt(-7) - 11/74 of discriminant -7 and conductor 5 on X_0(37)'
         """
         c = self.conductor()
-        s = " and conductor %s" % c if c != 1 else ""
+        s = f" and conductor {c}" if c != 1 else ""
         N = self.level()
         D = self.discriminant()
-        tau = repr(self.tau()).replace('sqrt_minus_%s' % (-D),'sqrt(%s)' % D)
-        return "Heegner point %s of discriminant %s%s on X_0(%s)" % (tau, D, s, N)
+        tau = repr(self.tau()).replace('sqrt_minus_%s' % (-D),f'sqrt({D})')
+        return f"Heegner point {tau} of discriminant {D}{s} on X_0({N})"
 
     def atkin_lehner_act(self, Q=None):
         r"""
@@ -3114,9 +3114,9 @@ class HeegnerPointOnEllipticCurve(HeegnerPoint):
             sage: P._repr_()
             'Heegner point of discriminant -7 and conductor 97 on elliptic curve of conductor 389'
         """
-        s = " and conductor %s" % self.conductor() if self.conductor() != 1 else ""
+        s = f" and conductor {self.conductor()}" if self.conductor() != 1 else ""
         N = self.__E.conductor()
-        return "Heegner point of discriminant %s%s on elliptic curve of conductor %s" % (self.discriminant(), s, N)
+        return f"Heegner point of discriminant {self.discriminant()}{s} on elliptic curve of conductor {N}"
 
     def heegner_point_on_X0N(self):
         r"""
@@ -4522,7 +4522,7 @@ class KolyvaginCohomologyClass(SageObject):
             n = gcd([(p+1).gcd(E.ap(p)) for p in c.prime_divisors()])
 
         if not kolyvagin_point.satisfies_kolyvagin_hypothesis(n):
-            raise ValueError("Kolyvagin point does not satisfy Kolyvagin hypothesis for %s" % n)
+            raise ValueError(f"Kolyvagin point does not satisfy Kolyvagin hypothesis for {n}")
         self.__kolyvagin_point = kolyvagin_point
         self.__n = n
 
@@ -4718,8 +4718,7 @@ class HeegnerQuatAlg(SageObject):
             sage: heegner_points(11).reduce_mod(13)._repr_()
             'Heegner points on X_0(11) over F_13'
         """
-        return "Heegner points on X_0(%s) over F_%s" % (
-            self.__level, self.__ell)
+        return f"Heegner points on X_0({self.__level}) over F_{self.__ell}"
 
     def level(self):
         """
@@ -5061,12 +5060,12 @@ class HeegnerQuatAlg(SageObject):
         """
         p = ZZ(p)
         if not p.is_prime():
-            raise ValueError("p (=%s) must be prime" % p)
+            raise ValueError(f"p (={p}) must be prime")
         if p == 2:
             raise ValueError("p must be odd")
         Q = self.quaternion_algebra()
         if Q.discriminant() % p == 0:
-            raise ValueError("p (=%s) must be an unramified prime" % p)
+            raise ValueError(f"p (={p}) must be an unramified prime")
         i, j, k = Q.gens()
         F = GF(p)
         i2 = F(i*i)
@@ -5527,7 +5526,7 @@ class HeegnerQuatAlg(SageObject):
             raise ValueError("conductor of E must equal level of self")
         p = ZZ(p)
         if not p.is_prime():
-            raise ValueError("p (=%s) must be prime" % p)
+            raise ValueError(f"p (={p}) must be prime")
         bad = self.__level * self.__ell
 
         V = None
@@ -5535,7 +5534,7 @@ class HeegnerQuatAlg(SageObject):
         B = self.brandt_module()
         F = GF(p)
         while q <= bound and (V is None or V.dimension() > 2):
-            verbose("q = %s" % q)
+            verbose(f"q = {q}")
             if bad % q != 0:
                 T = B._compute_hecke_matrix_directly(q).change_ring(F).transpose()
                 if V is None:
@@ -6049,7 +6048,7 @@ class HeegnerQuatAlgEmbedding(SageObject):
             'Embedding sending 2*sqrt(-7) to -5*i + k'
         """
         a = '%ssqrt(%s)' % ('%s*' % self.__c if self.__c > 1 else '', self.__D)
-        return "Embedding sending %s to %s" % (a, self.__beta)
+        return f"Embedding sending {a} to {self.__beta}"
 
     def conjugate(self):
         """
@@ -6140,7 +6139,7 @@ def class_number(D):
         ValueError: D (=-5) must be a fundamental discriminant
     """
     if not D.is_fundamental_discriminant():
-        raise ValueError("D (=%s) must be a fundamental discriminant" % D)
+        raise ValueError(f"D (={D}) must be a fundamental discriminant")
     return D.class_number()
 
 
@@ -6563,13 +6562,13 @@ def heegner_point_height(self, D, prec=2, check_rank=True):
     """
 
     if not self.satisfies_heegner_hypothesis(D):
-        raise ArithmeticError("Discriminant (=%s) must be a fundamental discriminant that satisfies the Heegner hypothesis." % D)
+        raise ArithmeticError(f"Discriminant (={D}) must be a fundamental discriminant that satisfies the Heegner hypothesis.")
 
     if check_rank and self.rank() >= 2:
         return ZZ(0)
 
     if D == -3 or D == -4:
-        raise ArithmeticError("Discriminant (=%s) must not be -3 or -4." % D)
+        raise ArithmeticError(f"Discriminant (={D}) must not be -3 or -4.")
     eps = self.root_number()
     L1_vanishes = self.lseries().L1_vanishes()
 
@@ -6719,7 +6718,7 @@ def heegner_index(self, D, min_p=2, prec=5, descent_second_limit=12,
         True
     """
     if not self.satisfies_heegner_hypothesis(D):
-        raise ArithmeticError("Discriminant (=%s) must be a fundamental discriminant that satisfies the Heegner hypothesis." % D)
+        raise ArithmeticError(f"Discriminant (={D}) must be a fundamental discriminant that satisfies the Heegner hypothesis.")
 
     if check_rank and self.rank() >= 2:
         return infinity
@@ -6734,7 +6733,7 @@ def heegner_index(self, D, min_p=2, prec=5, descent_second_limit=12,
     # Heegner point on the twist.
 
     ht = h0/2
-    verbose('Height of heegner point = %s' % ht, tm)
+    verbose(f'Height of heegner point = {ht}', tm)
 
     if self.root_number() == 1:
         F = self.quadratic_twist(D)
@@ -6742,11 +6741,11 @@ def heegner_index(self, D, min_p=2, prec=5, descent_second_limit=12,
         F = self
     # Now rank(F) > 0
     h = ht.upper()
-    verbose("Heegner height bound = %s" % h)
+    verbose(f"Heegner height bound = {h}")
     B = F.CPS_height_bound()
-    verbose("CPS bound = %s" % B)
+    verbose(f"CPS bound = {B}")
     c = h/(min_p**2) + B
-    verbose("Search would have to be up to height = %s" % c)
+    verbose(f"Search would have to be up to height = {c}")
 
     from .ell_rational_field import _MAX_HEIGHT
 
@@ -6888,9 +6887,9 @@ def heegner_index_bound(self, D=0, prec=5, max_height=None):
         return 0, D, False
     F = self.quadratic_twist(D)
     h = ht.upper()
-    verbose("Heegner height bound = %s" % h)
+    verbose(f"Heegner height bound = {h}")
     B = F.CPS_height_bound()
-    verbose("CPS bound = %s" % B)
+    verbose(f"CPS bound = {B}")
     if self.two_torsion_rank() == 0:
         H = h
     else:
@@ -6904,13 +6903,13 @@ def heegner_index_bound(self, D=0, prec=5, max_height=None):
         if p > 100:
             break
         p = next_prime(p)
-    verbose("Using p = %s" % p)
+    verbose(f"Using p = {p}")
 
     if c > max_height:
-        verbose("No information by searching only up to max_height (=%s)." % c)
+        verbose(f"No information by searching only up to max_height (={c}).")
         return -1, D, False
 
-    verbose("Searching up to height = %s" % c)
+    verbose(f"Searching up to height = {c}")
     eps = 10e-5
 
     def _bound(P):
@@ -6925,15 +6924,15 @@ def heegner_index_bound(self, D=0, prec=5, max_height=None):
         IR = RealIntervalField(20)  # todo: 20?
         h = IR(reg-eps,reg+eps)
         ind2 = ht/(h/2)
-        verbose("index squared = %s" % ind2)
+        verbose(f"index squared = {ind2}")
         ind = ind2.sqrt()
-        verbose("index = %s" % ind)
+        verbose(f"index = {ind}")
         # Compute upper bound on square root of index.
         if ind.absolute_diameter() < 1:
             t, i = ind.is_int()
             if t:   # unique integer in interval, so we've found exact index squared.
                 return prime_divisors(i), D, i
-        raise RuntimeError("Unable to compute bound for e=%s, D=%s (try increasing precision)" % (self, D))
+        raise RuntimeError(f"Unable to compute bound for e={self}, D={D} (try increasing precision)")
 
     # First try a quick search, in case we get lucky and find
     # a generator.
@@ -6987,7 +6986,7 @@ def _heegner_index_in_EK(self, D):
     """
     # check conditions, then use cache if possible.
     if not self.satisfies_heegner_hypothesis(D):
-        raise ValueError("D (=%s) must satisfy the Heegner hypothesis" % D)
+        raise ValueError(f"D (={D}) must satisfy the Heegner hypothesis")
     try:
         return self.__heegner_index_in_EK[D]
     except AttributeError:
@@ -7135,7 +7134,7 @@ def heegner_sha_an(self, D, prec=53):
     """
     # check conditions, then return from cache if possible.
     if not self.satisfies_heegner_hypothesis(D):
-        raise ValueError("D (=%s) must satisfy the Heegner hypothesis" % D)
+        raise ValueError(f"D (={D}) must satisfy the Heegner hypothesis")
     try:
         return self.__heegner_sha_an[(D, prec)]
     except AttributeError:

@@ -267,7 +267,7 @@ class EllipticCurveSaturator(SageObject):
 
         verbose = self._verbose
         if verbose:
-            print(" --starting full %s-saturation" % p)
+            print(f" --starting full {p}-saturation")
 
         n = len(Plist)  # number of points supplied & to be returned
         Plist = Plist + [T for T in self._torsion_gens if p.divides(T.order())]
@@ -275,7 +275,7 @@ class EllipticCurveSaturator(SageObject):
         extra_torsion = nx-n
         if extra_torsion:
             if verbose:
-                print("Adding {} torsion generators before {}-saturation".format(extra_torsion,p))
+                print(f"Adding {extra_torsion} torsion generators before {p}-saturation")
 
         res = self.p_saturation(Plist, p)
         while res: # res is either False or (i, newP)
@@ -286,14 +286,14 @@ class EllipticCurveSaturator(SageObject):
         if extra_torsion:
             # remove the torsion points
             if verbose:
-                print("Removing the torsion generators after %s-saturation" % p)
+                print(f"Removing the torsion generators after {p}-saturation")
             Plist = Plist[:n]
 
         if verbose:
             if exponent:
-                print("Points were not %s-saturated, exponent was %s" % (p,exponent))
+                print(f"Points were not {p}-saturated, exponent was {exponent}")
             else:
-                print("Points were %s-saturated" % p)
+                print(f"Points were {p}-saturated")
 
         return (Plist, exponent)
 
@@ -445,7 +445,7 @@ class EllipticCurveSaturator(SageObject):
                 pts = P.division_points(p)
                 if pts:
                     if verbose:
-                        print("  points not saturated at {}, increasing index by {}".format(p,p))
+                        print(f"  points not saturated at {p}, increasing index by {p}")
                         # w will certainly have a coordinate equal to 1
                     return (w.index(1), pts[0])
             # we only get here if no linear combination is divisible by p,
@@ -503,10 +503,10 @@ class EllipticCurveSaturator(SageObject):
                 if not p.divides(nq):
                     continue
                 if verbose:
-                    print("E has %s-torsion over %s, projecting points" % (p,GF(q)))
+                    print(f"E has {p}-torsion over {GF(q)}, projecting points")
                 projPlist = [Eq([reduce_mod_q(c, amodq) for c in pt]) for pt in Plist]
                 if verbose:
-                    print(" --> %s" % projPlist)
+                    print(f" --> {projPlist}")
                 try:
                     vecs = p_projections(Eq, projPlist, p)
                 except ValueError:
@@ -515,10 +515,10 @@ class EllipticCurveSaturator(SageObject):
                     A = matrix(A.rows()+[v])
                     newrank = A.rank()
                     if verbose:
-                        print(" --rank is now %s" % newrank)
+                        print(f" --rank is now {newrank}")
                     if newrank == n:
                         if verbose:
-                            print("Reached full rank: points were %s-saturated" % p)
+                            print(f"Reached full rank: points were {p}-saturated")
                         return False
                     if newrank == rankA:
                         count += 1
@@ -529,11 +529,11 @@ class EllipticCurveSaturator(SageObject):
                             # find the points in the kernel and call the no-sieve version
                             vecs = A.right_kernel().basis()
                             if verbose:
-                                print("kernel vectors: %s" % vecs)
+                                print(f"kernel vectors: {vecs}")
                             Rlist = [sum([int(vi)*Pi for vi,Pi in zip(v,Plist)],E(0))
                                      for v in vecs]
                             if verbose:
-                                print("points generating kernel: %s" % Rlist)
+                                print(f"points generating kernel: {Rlist}")
 
                             # If the nullity of A were 1 (the usual
                             # case) we take any nonzero vector in its
@@ -553,7 +553,7 @@ class EllipticCurveSaturator(SageObject):
                                     # replace any for which the
                                     # coefficient of v is nonzero
                                     if verbose:
-                                        print("-- points were not {}-saturated, gaining index {}".format(p,p))
+                                        print(f"-- points were not {p}-saturated, gaining index {p}")
                                     j = next(i for i,x in enumerate(v) if x)
                                     return (j, pt)
                                 else: # R is not a p-multiple so the
@@ -575,13 +575,13 @@ class EllipticCurveSaturator(SageObject):
                                 # in Plist with R, where v[j] is
                                 # nonzero.
                                 if verbose:
-                                    print("-- points were not {}-saturated, gaining index {}".format(p,p))
+                                    print(f"-- points were not {p}-saturated, gaining index {p}")
                                 j = next(i for i,x in enumerate(v) if x)
                                 return (j, R)
                             else:
                                 # points really were saturated
                                 if verbose:
-                                    print("-- points were %s-saturated" % p)
+                                    print(f"-- points were {p}-saturated")
                                 return False
                     else: # rank went up but is <n; carry on using more Qs
                         rankA = newrank
@@ -645,16 +645,16 @@ def p_projections(Eq, Plist, p, debug=False):
         [(2, 0), (3, 2), (5, 0), (7, 1)]
     """
     if debug:
-        print("In p_projections(Eq,Plist,p) with Eq = {}, Plist = {}, p = {}".format(Eq,Plist,p))
+        print(f"In p_projections(Eq,Plist,p) with Eq = {Eq}, Plist = {Plist}, p = {p}")
     n = Eq.cardinality()
     m = n.prime_to_m_part(p)      # prime-to-p part of order
     if debug:
-        print("m={}, n={}".format(m,n))
+        print(f"m={m}, n={n}")
     if m == n: # p-primary part trivial, nothing to do
         return []
     G = Eq.abelian_group()
     if debug:
-        print("gens = {}".format(G.gens()))
+        print(f"gens = {G.gens()}")
 
     # project onto p-primary part
 
@@ -662,8 +662,8 @@ def p_projections(Eq, Plist, p, debug=False):
     gens = [m*g.element() for g in G.gens()]
     gens = [g for g in gens if g]
     if debug:
-        print("gens for {}-primary part of G: {}".format(p, gens))
-        print("{}*points: {}".format(m,pts))
+        print(f"gens for {p}-primary part of G: {gens}")
+        print(f"{m}*points: {pts}")
     from sage.groups.generic import discrete_log as dlog
     from sage.modules.free_module_element import vector
     Fp = GF(p)
@@ -674,11 +674,11 @@ def p_projections(Eq, Plist, p, debug=False):
         g = gens[0]
         pp = g.order()
         if debug:
-            print("Cyclic case, taking dlogs to base {} of order {}".format(g,pp))
+            print(f"Cyclic case, taking dlogs to base {g} of order {pp}")
         # logs are well-defined mod pp, hence mod p
         v = [dlog(pt, g, ord=pp, operation='+') for pt in pts]
         if debug:
-            print("dlogs: {}".format(v))
+            print(f"dlogs: {v}")
         return [vector(Fp, v)]
 
     # We make no assumption about which generator order divides the
@@ -688,7 +688,7 @@ def p_projections(Eq, Plist, p, debug=False):
     p1, p2 = min(orders), max(orders)
     g1, g2 = gens
     if debug:
-        print("Non-cyclic case, orders = {}, p1={}, p2={}, g1={}, g2={}".format(orders,p1,p2,g1,g2))
+        print(f"Non-cyclic case, orders = {orders}, p1={p1}, p2={p2}, g1={g1}, g2={g2}")
 
     # Now the p-primary part of the reduction is non-cyclic of
     # exponent p2, and we use the Weil pairing, whose values are p1'th
@@ -697,8 +697,8 @@ def p_projections(Eq, Plist, p, debug=False):
 
     zeta = g1.weil_pairing(g2, p2)  # a primitive p1'th root of unity
     if debug:
-        print("wp of gens = {} with order {}".format(zeta, zeta.multiplicative_order()))
-        assert zeta.multiplicative_order() == p1, "Weil pairing error during saturation: p={}, G={}, Plist={}".format(p, G, Plist)
+        print(f"wp of gens = {zeta} with order {zeta.multiplicative_order()}")
+        assert zeta.multiplicative_order() == p1, f"Weil pairing error during saturation: p={p}, G={G}, Plist={Plist}"
 
     # logs are well-defined mod p1, hence mod p
 

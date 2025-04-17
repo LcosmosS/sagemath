@@ -275,7 +275,7 @@ def ProjectiveSpace(n, R=None, names=None):
             return ProjectiveSpace_field(n, R, names)
     elif R in _CommRings:
         return ProjectiveSpace_ring(n, R, names)
-    raise TypeError("R (=%s) must be a commutative ring" % R)
+    raise TypeError(f"R (={R}) must be a commutative ring")
 
 
 class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
@@ -409,14 +409,14 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
             TypeError: the components of v=[1/2, 0, 1] must be elements of Integer Ring
         """
         if not isinstance(v, (list, tuple)):
-            raise TypeError('the argument v=%s must be a list or tuple' % v)
+            raise TypeError(f'the argument v={v} must be a list or tuple')
         n = self.ngens()
         if not len(v) == n:
-            raise TypeError('the list v=%s must have %s components' % (v, n))
+            raise TypeError(f'the list v={v} must have {n} components')
         R = self.base_ring()
         for coord in v:
             if coord not in R:
-                raise TypeError('the components of v=%s must be elements of %s' % (v, R))
+                raise TypeError(f'the components of v={v} must be elements of {R}')
         zero = [R(0)] * n
         if v == zero:
             raise TypeError('the zero vector is not a point in projective space')
@@ -486,10 +486,10 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
             TypeError: the argument polynomials=x*y - z must be a list or tuple
         """
         if not isinstance(polynomials, (list, tuple)):
-            raise TypeError('the argument polynomials=%s must be a list or tuple' % polynomials)
+            raise TypeError(f'the argument polynomials={polynomials} must be a list or tuple')
         for f in polynomials:
             if not f.is_homogeneous():
-                raise TypeError("%s is not a homogeneous polynomial" % f)
+                raise TypeError(f"{f} is not a homogeneous polynomial")
         return polynomials
 
     def __pow__(self, m):
@@ -581,7 +581,7 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
             psi = right.ambient_space().coordinate_ring().hom(list(CR.gens()[n:]), CR)
             return AS.subscheme([phi(t) for t in self.defining_polynomials()] + [psi(t) for t in right.defining_polynomials()])
         else:
-            raise TypeError('%s must be a projective space, product of projective spaces, or subscheme' % right)
+            raise TypeError(f'{right} must be a projective space, product of projective spaces, or subscheme')
 
     def _latex_(self):
         r"""
@@ -688,9 +688,9 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
             LinearSystem for linear systems of hypersurfaces.
         """
         if not isinstance(d, (int, Integer)):
-            raise TypeError('the argument d=%s must be an integer' % d)
+            raise TypeError(f'the argument d={d} must be an integer')
         if d < 0:
-            raise ValueError('the integer d=%s must be nonnegative' % d)
+            raise ValueError(f'the integer d={d} must be nonnegative')
         if not isinstance(pt, (list, tuple,
                                SchemeMorphism_point_projective_ring)):
             raise TypeError('the argument pt=%s must be a list, tuple, or '
@@ -698,20 +698,18 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
         pt, R = prepare(pt, None)
         n = self.dimension_relative()
         if not len(pt) == n + 1:
-            raise TypeError('the sequence pt=%s must have %s '
-                            'components' % (pt, n + 1))
+            raise TypeError(f'the sequence pt={pt} must have {n + 1} components')
         if not R.has_coerce_map_from(self.base_ring()):
             raise TypeError('unable to find a common ring for all elements')
         try:
             i = pt.index(1)
         except Exception:
-            raise TypeError('at least one component of pt=%s must be equal '
-                            'to 1' % pt)
+            raise TypeError(f'at least one component of pt={pt} must be equal to 1')
         pt = pt[:i] + pt[i + 1:]
         if not isinstance(m, (int, Integer)):
-            raise TypeError('the argument m=%s must be an integer' % m)
+            raise TypeError(f'the argument m={m} must be an integer')
         if m < 0:
-            raise ValueError('the integer m=%s must be nonnegative' % m)
+            raise ValueError(f'the integer m={m} must be nonnegative')
         # the components of partials correspond to partial derivatives
         # of order at most m-1 with respect to n variables
         partials = IntegerVectors(m - 1, n + 1).list()
@@ -818,7 +816,7 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
         if v is infinity or (isinstance(v, (list, tuple)) and
                              len(v) == 1 and v[0] is infinity):
             if self.dimension_relative() > 1:
-                raise ValueError("%s not well defined in dimension > 1" % v)
+                raise ValueError(f"{v} not well defined in dimension > 1")
             v = [1, 0]
 
         return self.point_homset()(v, check=check)
@@ -852,7 +850,7 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
             sage: ProjectiveSpace(3, Zp(5), 'y')._repr_()                               # needs sage.rings.padics
             'Projective Space of dimension 3 over 5-adic Ring with capped relative precision 20'
         """
-        return "Projective Space of dimension %s over %s" % (self.dimension_relative(), self.base_ring())
+        return f"Projective Space of dimension {self.dimension_relative()} over {self.base_ring()}"
 
     def _repr_generic_point(self, v=None):
         """
@@ -872,7 +870,7 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
         """
         if v is None:
             v = self.gens()
-        return '(%s)' % (" : ".join(repr(f) for f in v))
+        return f"({' : '.join(repr(f) for f in v)})"
 
     def _latex_generic_point(self, v=None):
         """
@@ -892,7 +890,7 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
         """
         if v is None:
             v = self.gens()
-        return '\\left(%s\\right)' % (" : ".join(str(latex(f)) for f in v))
+        return f"\\left({' : '.join(str(latex(f)) for f in v)}\\right)"
 
     def change_ring(self, R):
         r"""
@@ -1263,7 +1261,7 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
         i = int(i)   # implicit type checking
         n = self.dimension_relative()
         if i < 0 or i > n:
-            raise ValueError("argument i (= %s) must be between 0 and %s" % (i, n))
+            raise ValueError(f"argument i (= {i}) must be between 0 and {n}")
         try:
             A = self.__affine_patches[i]
             # assume that if you've passed in a new affine space you
@@ -1283,7 +1281,7 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
                              ambient_projective_space=self,
                              default_embedding_index=i)
         elif AA.dimension_relative() != n:
-            raise ValueError("affine space must be of the dimension %s" % (n))
+            raise ValueError(f"affine space must be of the dimension {n}")
         self.__affine_patches[i] = AA
         return AA
 
@@ -1522,16 +1520,16 @@ class ProjectiveSpace_ring(UniqueRepresentation, AmbientSpace):
         """
         d = ZZ(d)
         if d <= 0:
-            raise ValueError("(=%s) must be a positive integer" % d)
+            raise ValueError(f"(={d}) must be a positive integer")
         N = self.dimension()
         # construct codomain space if not given
         if CS is None:
             CS = ProjectiveSpace(self.base_ring(), binomial(N + d, d) - 1)
         else:
             if not isinstance(CS, ProjectiveSpace_ring):
-                raise TypeError("(=%s) must be a projective space" % CS)
+                raise TypeError(f"(={CS}) must be a projective space")
             if CS.dimension() != binomial(N + d, d) - 1:
-                raise TypeError("(=%s) has the wrong dimension to serve as the codomain space" % CS)
+                raise TypeError(f"(={CS}) has the wrong dimension to serve as the codomain space")
 
         R = self.coordinate_ring().change_ring(order=order)
         monomials = sorted([R({tuple(v): 1}) for v in WeightedIntegerVectors(d, [1] * (N + 1))])
@@ -2358,7 +2356,7 @@ class ProjectiveSpace_finite_field(ProjectiveSpace_field):
         if F is None:
             return list(self)
         elif not isinstance(F, FiniteField):
-            raise TypeError("second argument (= %s) must be a finite field" % F)
+            raise TypeError(f"second argument (= {F}) must be a finite field")
         return list(self.base_extend(F))
 
     def rational_points_dictionary(self):

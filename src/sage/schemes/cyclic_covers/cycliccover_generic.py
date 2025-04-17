@@ -148,7 +148,7 @@ class CyclicCover_generic(AffinePlaneCurve):
         x, y = self.ambient_space().gens()
         r = self._r
         f = self._f
-        return "Cyclic Cover of P^1 over %s defined by %s = %s" % (R, y**r, f(x))
+        return f"Cyclic Cover of P^1 over {R} defined by {y ** r} = {f(x)}"
 
     def __eq__(self, other):
         """

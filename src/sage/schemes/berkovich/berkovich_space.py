@@ -455,7 +455,7 @@ class Berkovich_Cp_Affine(Berkovich_Cp):
                     raise ValueError('ideal was not an ideal of a number field')
                 if ideal.number_field() != base:
                     raise ValueError('passed number field ' +
-                        '%s but ideal was an ideal of %s' % (base, ideal.number_field()))
+                        f'{base} but ideal was an ideal of {ideal.number_field()}')
                 prime = ideal.smallest_integer()
             else:
                 if ideal not in QQ:
@@ -659,7 +659,7 @@ class Berkovich_Cp_Projective(Berkovich_Cp):
                         raise ValueError('ideal was not a number field ideal')
                     if ideal.number_field() != base.base_ring():
                         raise ValueError('passed number field ' +
-                            '%s but ideal was an ideal of %s' % (base.base_ring(), ideal.number_field()))
+                            f'{base.base_ring()} but ideal was an ideal of {ideal.number_field()}')
                     prime = ideal.smallest_integer()
                 else:
                     if ideal not in QQ:

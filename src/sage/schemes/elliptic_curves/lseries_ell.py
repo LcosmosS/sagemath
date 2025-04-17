@@ -96,7 +96,7 @@ class Lseries_ell(SageObject):
             sage: L._repr_()
             'Complex L-series of the Elliptic Curve defined by y^2 + y = x^3 - x over Rational Field'
         """
-        return "Complex L-series of the %s" % self.__E
+        return f"Complex L-series of the {self.__E}"
 
     def dokchitser(self, prec=53,
                    max_imaginary_part=0,
@@ -168,7 +168,7 @@ class Lseries_ell(SageObject):
         if algorithm == 'pari':
             from sage.lfunctions.pari import LFunction, lfun_elliptic_curve
             L = LFunction(lfun_elliptic_curve(self.__E), prec=prec)
-            L.rename('PARI L-function associated to %s' % self.__E)
+            L.rename(f'PARI L-function associated to {self.__E}')
             return L
 
         if algorithm == 'gp':
@@ -186,12 +186,12 @@ class Lseries_ell(SageObject):
                            eps=self.__E.root_number(),
                            poles=[],
                            prec=prec)
-            s = 'e = ellinit(%s);' % list(self.__E.minimal_model().a_invariants())
+            s = f'e = ellinit({list(self.__E.minimal_model().a_invariants())});'
             s += 'a(k) = ellak(e, k);'
             L.init_coeffs('a(k)', 1, pari_precode=s,
                           max_imaginary_part=max_imaginary_part,
                           max_asymp_coeffs=max_asymp_coeffs)
-            L.rename('Dokchitser L-function associated to %s' % self.__E)
+            L.rename(f'Dokchitser L-function associated to {self.__E}')
             self.__dokchitser[key] = L
             return L
 
@@ -908,7 +908,7 @@ class Lseries_ell(SageObject):
                 quo = QQ((n, C))
                 return quo / self.__E.real_components()
             k += sqrtN
-            verbose("Increasing precision to %s terms." % k)
+            verbose(f"Increasing precision to {k} terms.")
 
     def zero_sums(self, N=None):
         r"""

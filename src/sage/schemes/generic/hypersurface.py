@@ -102,9 +102,9 @@ class ProjectiveHypersurface(AlgebraicScheme_subscheme_projective):
             True
         """
         if not isinstance(poly, MPolynomial):
-            raise TypeError("Defining polynomial (=%s) must be a multivariate polynomial." % poly)
+            raise TypeError(f"Defining polynomial (={poly}) must be a multivariate polynomial.")
         if not poly.is_homogeneous():
-            raise TypeError("Defining polynomial (=%s) must be homogeneous." % poly)
+            raise TypeError(f"Defining polynomial (={poly}) must be homogeneous.")
         if ambient is None:
             R = poly.parent()
             from sage.schemes.projective.projective_space import ProjectiveSpace
@@ -192,7 +192,7 @@ class AffineHypersurface(AlgebraicScheme_subscheme_affine):
             True
         """
         if not isinstance(poly, MPolynomial):
-            raise TypeError("Defining polynomial (= %s) must be a multivariate polynomial" % poly)
+            raise TypeError(f"Defining polynomial (= {poly}) must be a multivariate polynomial")
         if ambient is None:
             R = poly.parent()
             from sage.schemes.affine.affine_space import AffineSpace

@@ -118,7 +118,7 @@ class ProductProjectiveSpaces_morphism_ring(SchemeMorphism_polynomial):
                 for m in range(len(splitpolys)):
                     d = dom._degree(splitpolys[m][0])
                     if not all(d == dom._degree(f) for f in splitpolys[m]):
-                        raise TypeError("polys (=%s) must be multi-homogeneous of the same degrees (by component)" % polys)
+                        raise TypeError(f"polys (={polys}) must be multi-homogeneous of the same degrees (by component)")
             else:
                 #we are mapping into some other kind of space
                 target._validate(polys)
@@ -228,9 +228,9 @@ class ProductProjectiveSpaces_morphism_ring(SchemeMorphism_polynomial):
                 try:
                     P = self.domain()(P)
                 except (TypeError, NotImplementedError):
-                    raise TypeError("%s fails to convert into the map's domain %s, but a `pushforward` method is not properly implemented" % (P, self.domain()))
+                    raise TypeError(f"{P} fails to convert into the map's domain {self.domain()}, but a `pushforward` method is not properly implemented")
             elif self.domain() != P.codomain():
-                raise TypeError("%s fails to convert into the map's domain %s, but a `pushforward` method is not properly implemented" % (P, self.domain()))
+                raise TypeError(f"{P} fails to convert into the map's domain {self.domain()}, but a `pushforward` method is not properly implemented")
 
         A = self.codomain()
         Q = list(P)

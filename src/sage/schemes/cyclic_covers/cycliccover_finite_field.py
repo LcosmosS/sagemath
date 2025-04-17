@@ -669,8 +669,7 @@ class CyclicCover_finite_field(cycliccover_generic.CyclicCover_generic):
             return G
         if self._verbose > 2:
             print(
-                "_reduce_vector_horizontal_BSGS(self, %s, %s, %s)"
-                % (vector(self._Qq, G), e, s)
+                f"_reduce_vector_horizontal_BSGS(self, {vector(self._Qq, G)}, {e}, {s})"
             )
         assert (e + 1) % self._p == 0
         (m0, m1), (M0, M1) = self._horizontal_matrix_reduction(s)
@@ -703,7 +702,7 @@ class CyclicCover_finite_field(cycliccover_generic.CyclicCover_generic):
                 "done _reduce_vector_horizontal_BSGS(self, %s, %s, %s)"
                 % (vector(self._Qq, G), e, s)
             )
-            print("return %s\n" % (vector(self._Qq, vect),))
+            print(f"return {vector(self._Qq, vect)}\n")
         return vect
 
     def _initialize_fat_horizontal(self, s, L):
@@ -818,7 +817,7 @@ class CyclicCover_finite_field(cycliccover_generic.CyclicCover_generic):
                 "done _reduce_vector_horizontal_plain(self, %s, %s, %s, %s)"
                 % (vector(self._Qq, G), e, s, k)
             )
-            print("return %s\n" % (vector(self._Qq, vect),))
+            print(f"return {vector(self._Qq, vect)}\n")
         return vect
 
     def _reduce_vector_vertical(self, G, s0, s, k=1):
@@ -882,7 +881,7 @@ class CyclicCover_finite_field(cycliccover_generic.CyclicCover_generic):
                     "done _reduce_vector_vertical(self,  %s, %s, %s)"
                     % (vector(self._Qq, G), s, k)
                 )
-                print("return %s\n" % (vector(self._Qq, vect),))
+                print(f"return {vector(self._Qq, vect)}\n")
 
             return vect
 

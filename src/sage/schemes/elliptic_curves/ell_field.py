@@ -769,7 +769,7 @@ class EllipticCurve_field(ell_generic.EllipticCurve_generic, ProjectivePlaneCurv
                 if f.codomain() != L:
                     raise ValueError("embedding has wrong codomain")
             except AttributeError:
-                raise ValueError("invalid embedding: {}".format(f))
+                raise ValueError(f"invalid embedding: {f}")
             try:
                 jK = f.preimage(j)
             except Exception:
@@ -787,7 +787,7 @@ class EllipticCurve_field(ell_generic.EllipticCurve_generic, ProjectivePlaneCurv
                 dlist = t.descend_mod_power(K,6)
                 # list of d in K such that t/d is in L*^6
             except AttributeError:
-                raise NotImplementedError("Not implemented over %s" % L)
+                raise NotImplementedError(f"Not implemented over {L}")
             Elist = [EllipticCurve([0,0,0,0,d]) for d in dlist]
         elif jK == 1728:
             t = -27*self.c4()
@@ -795,7 +795,7 @@ class EllipticCurve_field(ell_generic.EllipticCurve_generic, ProjectivePlaneCurv
                 dlist = t.descend_mod_power(K,4)
                 # list of d in K such that t/d is in L*^4
             except AttributeError:
-                raise NotImplementedError("Not implemented over %s" % L)
+                raise NotImplementedError(f"Not implemented over {L}")
             Elist = [EllipticCurve([0,0,0,d,0]) for d in dlist]
         else:
             c4, c6 = self.c_invariants()
@@ -804,7 +804,7 @@ class EllipticCurve_field(ell_generic.EllipticCurve_generic, ProjectivePlaneCurv
                 dlist = t.descend_mod_power(K,2)
                 # list of d in K such that t/d is in L*^2
             except AttributeError:
-                raise NotImplementedError("Not implemented over %s" % L)
+                raise NotImplementedError(f"Not implemented over {L}")
             c = -27*jK/(jK-1728) # =-27c4^3/c6^2
             a4list = [c*d**2 for d in dlist]
             a6list = [2*a4*d for a4,d in zip(a4list,dlist)]
@@ -1069,7 +1069,7 @@ class EllipticCurve_field(ell_generic.EllipticCurve_generic, ProjectivePlaneCurv
         if n <= 0:
             raise ValueError("n must be a positive integer")
 
-        verbose("Adjoining X-coordinates of %s-torsion points" % n)
+        verbose(f"Adjoining X-coordinates of {n}-torsion points")
 
         F = self.base_ring()
         f = self.division_polynomial(n).radical()
@@ -1101,7 +1101,7 @@ class EllipticCurve_field(ell_generic.EllipticCurve_generic, ProjectivePlaneCurv
         else:
             raise NotImplementedError('only number fields and finite fields are currently supported')
 
-        verbose("Adjoining Y-coordinates of %s-torsion points" % n)
+        verbose(f"Adjoining Y-coordinates of {n}-torsion points")
 
         # THEOREM
         # (Cremona, https://github.com/sagemath/sage/issues/11905#comment:21)
@@ -1488,7 +1488,7 @@ class EllipticCurve_field(ell_generic.EllipticCurve_generic, ProjectivePlaneCurv
         try:
             return EllipticCurveIsogeny(self, kernel, codomain, degree, model, check=check)
         except AttributeError as e:
-            raise RuntimeError("Unable to construct isogeny: %s" % e)
+            raise RuntimeError(f"Unable to construct isogeny: {e}")
 
     def isogeny_codomain(self, kernel):
         r"""

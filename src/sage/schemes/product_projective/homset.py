@@ -204,7 +204,7 @@ class SchemeHomset_points_product_projective_spaces_field(SchemeHomset_points_pr
         points = []
         if isinstance(R, RationalField):
             if not B > 0:
-                raise TypeError("a positive bound B (= %s) must be specified" % B)
+                raise TypeError(f"a positive bound B (= {B}) must be specified")
             alg = kwds.pop('algorithm', None)
             if alg is None:
                 # sieve should only be called for subschemes and if the bound is not very small
@@ -225,11 +225,11 @@ class SchemeHomset_points_product_projective_spaces_field(SchemeHomset_points_pr
                 raise ValueError("algorithm must be 'sieve' or 'enumerate'")
         elif R in NumberFields():
             if not B > 0:
-                raise TypeError("a positive bound B (= %s) must be specified" % B)
+                raise TypeError(f"a positive bound B (= {B}) must be specified")
             from sage.schemes.product_projective.rational_point import enum_product_projective_number_field
             return enum_product_projective_number_field(self, bound=B)
         elif isinstance(R, FiniteField):
             from sage.schemes.product_projective.rational_point import enum_product_projective_finite_field
             return enum_product_projective_finite_field(self)
         else:
-            raise TypeError("unable to enumerate points over %s" % R)
+            raise TypeError(f"unable to enumerate points over {R}")

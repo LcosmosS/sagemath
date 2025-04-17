@@ -356,8 +356,7 @@ def ToricDivisor(toric_variety, arg=None, ring=None, check=True, reduce=True):
     except (AssertionError, TypeError):
         n_rays = toric_variety.fan().nrays()
         assert len(arg) == n_rays, \
-            'Argument list {} is not of the required length {}!' \
-            .format(arg, n_rays)
+            f'Argument list {arg} is not of the required length {n_rays}!'
         arg = list(zip(arg, toric_variety.gens()))
         reduce = False
 
@@ -1958,7 +1957,7 @@ class ToricRationalDivisorClassGroup(FreeModule_ambient_field, UniqueRepresentat
             sage: ToricRationalDivisorClassGroup(P2)._repr_()
             'The toric rational divisor class group of a 2-d CPR-Fano toric variety covered by 3 affine patches'
         """
-        return 'The toric rational divisor class group of a %s' % self._variety
+        return f'The toric rational divisor class group of a {self._variety}'
 
     def _latex_(self):
         r"""
@@ -2060,7 +2059,7 @@ class ToricRationalDivisorClassGroup_basis_lattice(FreeModule_ambient_pid):
             Basis lattice of The toric rational divisor class group of a
             2-d CPR-Fano toric variety covered by 4 affine patches
         """
-        return "Basis lattice of {}".format(self._group)
+        return f"Basis lattice of {self._group}"
 
     def _latex_(self):
         r"""

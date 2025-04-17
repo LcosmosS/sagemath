@@ -274,10 +274,10 @@ class AffineSpace_generic(AmbientSpace, AffineScheme):
         """
         if F is None:
             if not isinstance(self.base_ring(), FiniteField):
-                raise TypeError("base ring (= %s) must be a finite field" % self.base_ring())
+                raise TypeError(f"base ring (= {self.base_ring()}) must be a finite field")
             return list(self)
         elif not isinstance(F, FiniteField):
-            raise TypeError("second argument (= %s) must be a finite field" % F)
+            raise TypeError(f"second argument (= {F}) must be a finite field")
         return list(self.base_extend(F))
 
     def __eq__(self, right):
@@ -440,7 +440,7 @@ class AffineSpace_generic(AmbientSpace, AffineScheme):
             sage: AffineSpace(3, Zp(5), 'y')._repr_()                                   # needs sage.rings.padics
             'Affine Space of dimension 3 over 5-adic Ring with capped relative precision 20'
         """
-        return "Affine Space of dimension %s over %s" % (self.dimension_relative(), self.base_ring())
+        return f"Affine Space of dimension {self.dimension_relative()} over {self.base_ring()}"
 
     def _repr_generic_point(self, polys=None):
         """
@@ -460,7 +460,7 @@ class AffineSpace_generic(AmbientSpace, AffineScheme):
         """
         if polys is None:
             polys = self.gens()
-        return '(%s)' % (", ".join(str(f) for f in polys))
+        return f"({', '.join(str(f) for f in polys)})"
 
     def _latex_generic_point(self, v=None):
         """
@@ -480,7 +480,7 @@ class AffineSpace_generic(AmbientSpace, AffineScheme):
         """
         if v is None:
             v = self.gens()
-        return '\\left(%s\\right)' % (", ".join(str(latex(f)) for f in v))
+        return f"\\left({', '.join(str(latex(f)) for f in v)}\\right)"
 
     def _check_satisfies_equations(self, v):
         """
@@ -510,14 +510,14 @@ class AffineSpace_generic(AmbientSpace, AffineScheme):
             TypeError: the argument v=5 must be a list or tuple
         """
         if not isinstance(v, (list, tuple)):
-            raise TypeError('the argument v=%s must be a list or tuple' % v)
+            raise TypeError(f'the argument v={v} must be a list or tuple')
         n = self.ngens()
         if not len(v) == n:
-            raise TypeError('the list v=%s must have %s components' % (v, n))
+            raise TypeError(f'the list v={v} must have {n} components')
         R = self.base_ring()
         from sage.structure.sequence import Sequence
         if not Sequence(v).universe() == R:
-            raise TypeError('the components of v=%s must be elements of %s' % (v, R))
+            raise TypeError(f'the components of v={v} must be elements of {R}')
         return True
 
     def __pow__(self, m):
@@ -611,7 +611,7 @@ class AffineSpace_generic(AmbientSpace, AffineScheme):
             return AS.subscheme([phi(t) for t in self.defining_polynomials()] +
                                 [psi(t) for t in right.defining_polynomials()])
 
-        raise TypeError('%s must be an affine space or affine subscheme' % right)
+        raise TypeError(f'{right} must be an affine space or affine subscheme')
 
     def change_ring(self, R):
         r"""
@@ -774,12 +774,12 @@ class AffineSpace_generic(AmbientSpace, AffineScheme):
                 from sage.schemes.projective.projective_space import ProjectiveSpace
                 PP = ProjectiveSpace(n, self.base_ring())
         elif PP.dimension_relative() != n:
-            raise ValueError("projective Space must be of dimension %s" % (n))
+            raise ValueError(f"projective Space must be of dimension {n}")
 
         R = self.coordinate_ring()
         v = list(R.gens())
         if i < 0 or i > n:
-            raise ValueError("argument i (=%s) must be between 0 and %s, inclusive" % (i, n))
+            raise ValueError(f"argument i (={i}) must be between 0 and {n}, inclusive")
         v.insert(i, R(1))
         phi = self.hom(v, PP)
         self.__projective_embedding[i] = phi

@@ -69,10 +69,9 @@ class Curve_generic(AlgebraicScheme_subscheme):
             Projective Plane Curve over Rational Field defined by x - y
         """
         if self.defining_ideal().is_zero() and self.ambient_space().dimension() == 1:
-            return "{} Line over {}".format(self._repr_type(), self.base_ring())
+            return f"{self._repr_type()} Line over {self.base_ring()}"
         polys = ', '.join(str(x) for x in self.defining_polynomials())
-        return "{} Curve over {} defined by {}".format(self._repr_type(),
-                                                       self.base_ring(), polys)
+        return f"{self._repr_type()} Curve over {self.base_ring()} defined by {polys}"
 
     def _repr_type(self) -> str:
         r"""
@@ -347,7 +346,7 @@ class Curve_generic(AlgebraicScheme_subscheme):
                 raise TypeError("curve must be defined over a field")
             F = self.base_ring()
         elif F not in Fields():
-            raise TypeError("(=%s) must be a field" % F)
+            raise TypeError(f"(={F}) must be a field")
         X = self.singular_subscheme()
         return [self.point(p, check=False) for p in X.rational_points(F=F)]
 
@@ -422,13 +421,13 @@ class Curve_generic(AlgebraicScheme_subscheme):
             False
         """
         if C.ambient_space() != self.ambient_space():
-            raise TypeError("(=%s) must be a curve in the same ambient space as (=%s)" % (C, self))
+            raise TypeError(f"(={C}) must be a curve in the same ambient space as (={self})")
         if not isinstance(C, Curve_generic):
-            raise TypeError("(=%s) must be a curve" % C)
+            raise TypeError(f"(={C}) must be a curve")
         try:
             P = self.ambient_space()(P)
         except TypeError:
-            raise TypeError("(=%s) must be a point in the ambient space of this curve" % P)
+            raise TypeError(f"(={P}) must be a point in the ambient space of this curve")
         try:
             P = self(P)
             P = C(P)
@@ -486,9 +485,9 @@ class Curve_generic(AlgebraicScheme_subscheme):
             (=Rational Field) must be a finite field
         """
         if C.ambient_space() != self.ambient_space():
-            raise TypeError("(=%s) must be a curve in the same ambient space as (=%s)" % (C, self))
+            raise TypeError(f"(={C}) must be a curve in the same ambient space as (={self})")
         if not isinstance(C, Curve_generic):
-            raise TypeError("(=%s) must be a curve" % C)
+            raise TypeError(f"(={C}) must be a curve")
         X = self.intersection(C)
         if F is None:
             F = self.base_ring()

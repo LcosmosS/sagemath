@@ -1184,7 +1184,7 @@ class RiemannSurface:
             # If we run 100 iterations without a result, terminate.
             else:
                 raise ConvergenceError(
-                    "Newton iteration fails to converge after %s iterations" % j
+                    f"Newton iteration fails to converge after {j} iterations"
                 )
         return neww
 
@@ -3371,7 +3371,7 @@ class RiemannSurface:
                     ]
                     if suitable_vertices == []:
                         raise ValueError(
-                            "There is no satisfactory choice of V for zP={}".format(zP)
+                            f"There is no satisfactory choice of V for zP={zP}"
                         )
                     V_index = suitable_vertex_indices[
                         find_closest_element(zP, suitable_vertices)
@@ -3513,11 +3513,11 @@ class RiemannSurface:
         for i in range(n):
             v, p = divisor[i]
             if verbose:
-                print("starting computation for p = {}".format(p))
+                print(f"starting computation for p = {p}")
             ans += v * self._aj_based(p)
             if verbose:
                 print(
-                    "Done, {}% complete".format(numerical_approx(100 * (i + 1) / n, 11))
+                    f"Done, {numerical_approx(100 * (i + 1) / n, 11)}% complete"
                 )
         return ans
 
@@ -3589,7 +3589,7 @@ class RiemannSurface:
             True
         """
         if not len(vector) == self.genus:
-            raise ValueError("Input vector needs to be of length {}".format(self.genus))
+            raise ValueError(f"Input vector needs to be of length {self.genus}")
 
         VR = VectorSpace(self._RR, 2 * self.genus)
         VC = VectorSpace(self._CC, self.genus)
@@ -3612,7 +3612,7 @@ class RiemannSurface:
                 r = b // 4
             S = 2**b
             if H * S > 2**(self._prec - 4):
-                raise ValueError("insufficient precision for b=%s" % b)
+                raise ValueError(f"insufficient precision for b={b}")
 
             def C2Z(v):
                 vR = [(S * z.real_part()).round() for z in v]
@@ -3891,9 +3891,7 @@ class RiemannSurface:
                     dl.extend([(v * m * n, (r, y)) for y, n in ys])
         if not sum([v[0] for v in dl]) == divisor.degree():
             raise ValueError(
-                "numerical instability, list of wrong degree, returning list {}".format(
-                    dl
-                )
+                f"numerical instability, list of wrong degree, returning list {dl}"
             )
         return dl
 
@@ -3955,7 +3953,7 @@ def integer_matrix_relations(M1, M2, b=None, r=None):
         r = b // 4
     S = 2**b
     if H * S > 2**(prec - 4):
-        raise ValueError("insufficient precision for b=%s" % b)
+        raise ValueError(f"insufficient precision for b={b}")
     g1 = M1.ncols()
     g2 = M2.ncols()
     CC = (
@@ -3963,7 +3961,7 @@ def integer_matrix_relations(M1, M2, b=None, r=None):
         if (M1.base_ring().precision() <= M2.base_ring().precision())
         else M2.base_ring()
     )
-    V = ["%s%s" % (n, i) for n in ["a", "b", "c", "d"] for i in range(1, 1 + g1 * g2)]
+    V = [f"{n}{i}" for n in ["a", "b", "c", "d"] for i in range(1, 1 + g1 * g2)]
     R = PolynomialRing(CC, V)
     vars = R.gens()
     A = Matrix(R, g1, g2, vars[: g1 * g2])

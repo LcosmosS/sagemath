@@ -510,7 +510,7 @@ class SchemeMorphism_polynomial_toric_variety(SchemeMorphism_polynomial, Morphis
             # different if the target uses weighted coordinates)
             for p in self.defining_polynomials():
                 if not self.domain().ambient_space().is_homogeneous(p):
-                    raise ValueError("%s is not homogeneous" % p)
+                    raise ValueError(f"{p} is not homogeneous")
 
     def as_fan_morphism(self):
         """
@@ -1694,7 +1694,7 @@ class SchemeMorphism_fan_fiber_component_toric_variety(SchemeMorphism):
             sage: fc.embedding_morphism()._repr_defn()
             'Defined by embedding a fiber component corresponding to 1-d cone of Rational polyhedral fan in 2-d lattice N.'
         """
-        return 'Defined by embedding a fiber component corresponding to {}.'.format(self.defining_cone())
+        return f'Defined by embedding a fiber component corresponding to {self.defining_cone()}.'
 
     def as_polynomial_map(self):
         """

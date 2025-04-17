@@ -413,7 +413,7 @@ class EllipticCurveFactory(UniqueFactory):
                 try:
                     j = R(j)
                 except (ZeroDivisionError, ValueError, TypeError):
-                    raise ValueError("First parameter must be a ring containing %s" % j)
+                    raise ValueError(f"First parameter must be a ring containing {j}")
             elif x is not None:
                 raise ValueError("First parameter (if present) must be a ring when j is specified")
             x = coefficients_from_j(j, minimal_twist)
@@ -1139,7 +1139,7 @@ def EllipticCurve_from_cubic(F, P=None, morphism=True):
         try:
             CP = C(P)
         except (TypeError, ValueError):
-            raise TypeError('{} does not define a point on a projective curve over {} defined by {}'.format(P,K,F))
+            raise TypeError(f'{P} does not define a point on a projective curve over {K} defined by {F}')
 
     x, y, z = R.gens()
 
@@ -1364,18 +1364,18 @@ def chord_and_tangent(F, P):
     if not isinstance(R, MPolynomialRing_base):
         raise TypeError('equation must be a polynomial')
     if R.ngens() != 3:
-        raise TypeError('{} is not a polynomial in three variables'.format(F))
+        raise TypeError(f'{F} is not a polynomial in three variables')
     if not F.is_homogeneous():
-        raise TypeError('{} is not a homogeneous polynomial'.format(F))
+        raise TypeError(f'{F} is not a homogeneous polynomial')
     x, y, z = R.gens()
     if len(P) != 3:
-        raise TypeError('{} is not a projective point'.format(P))
+        raise TypeError(f'{P} is not a projective point')
     K = R.base_ring()
     try:
         C = Curve(F)
         P = C(P)
     except (TypeError, ValueError):
-        raise TypeError('{} does not define a point on a projective curve over {} defined by {}'.format(P,K,F))
+        raise TypeError(f'{P} does not define a point on a projective curve over {K} defined by {F}')
 
     L = Curve(tangent_at_smooth_point(C,P))
     Qlist = [Q for Q in C.intersection(L).rational_points() if Q != P]

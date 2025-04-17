@@ -859,7 +859,7 @@ def _semistable_reducible_primes(E, verbose=False):
         [2, 5, 53, 1117]
     """
     if verbose:
-        print("In _semistable_reducible_primes with E={}".format(E.ainvs()))
+        print(f"In _semistable_reducible_primes with E={E.ainvs()}")
     K = E.base_field()
     d = K.degree()
 
@@ -898,11 +898,11 @@ def _semistable_reducible_primes(E, verbose=False):
     ypol = y.charpoly() if d > 1 else Zx([-y,1])
 
     if verbose:
-        print("Finished precomp, x={} (p={}), y={} (p={})".format(x,px,y,py))
+        print(f"Finished precomp, x={x} (p={px}), y={y} (p={py})")
 
     for w in range(1 + d // 2):
         if verbose:
-            print("w = {}".format(w))
+            print(f"w = {w}")
         gx = xpol.symmetric_power(w).adams_operator_on_roots(12).resultant(fx12pol)
         gy = ypol.symmetric_power(w).adams_operator_on_roots(12).resultant(fy12pol)
         if verbose:
@@ -914,10 +914,10 @@ def _semistable_reducible_primes(E, verbose=False):
         if gxyn:
             xprimes = gxyn.prime_factors()
             if verbose:
-                print("adding prime factors {} of {} to {}".format(xprimes, gxyn, sorted(bad_primes)))
+                print(f"adding prime factors {xprimes} of {gxyn} to {sorted(bad_primes)}")
             bad_primes.update(xprimes)
             if verbose:
-                print("...done, bad_primes now {}".format(sorted(bad_primes)))
+                print(f"...done, bad_primes now {sorted(bad_primes)}")
             continue
         else:
             if verbose:
@@ -946,7 +946,7 @@ def _semistable_reducible_primes(E, verbose=False):
         try:
             roota = rootsa[0]
         except IndexError:
-            raise RuntimeError("error in _semistable_reducible_primes: K={} does not contain sqrt({})".format(K,a))
+            raise RuntimeError(f"error in _semistable_reducible_primes: K={K} does not contain sqrt({a})")
         K_rel = K.relativize(roota, ['name1','name2'])
         iso = K_rel.structure()[1] # an isomorphism from K to K_rel
 
@@ -964,11 +964,11 @@ def _semistable_reducible_primes(E, verbose=False):
                 P = next(deg_one_primes)
 
             if verbose:
-                print("trying P = {}...".format(P))
+                print(f"trying P = {P}...")
             EmodP = E.reduction(P)
             fpol = EmodP.frobenius_polynomial()
             if verbose:
-                print("...good reduction, frobenius poly = {}".format(fpol))
+                print(f"...good reduction, frobenius poly = {fpol}")
             x = iso(P.gens_reduced()[0]).relative_norm()
             xpol = x.charpoly().adams_operator_on_roots(12)
             div2 = Integer(xpol.resultant(fpol.adams_operator_on_roots(12)) // x.norm()**12)
@@ -976,7 +976,7 @@ def _semistable_reducible_primes(E, verbose=False):
                 div = div2.isqrt()
                 assert div2 == div**2
                 if verbose:
-                    print("...div = {}".format(div))
+                    print(f"...div = {div}")
             else:
                 if verbose:
                     print("...div = 0, continuing")
@@ -992,10 +992,10 @@ def _semistable_reducible_primes(E, verbose=False):
 
         xprimes = div.prime_factors()
         if verbose:
-            print("...adding prime factors {} of {} to {}...".format(xprimes,div, sorted(bad_primes)))
+            print(f"...adding prime factors {xprimes} of {div} to {sorted(bad_primes)}...")
         bad_primes.update(xprimes)
         if verbose:
-            print("...done, bad_primes now {}".format(sorted(bad_primes)))
+            print(f"...done, bad_primes now {sorted(bad_primes)}")
 
     L = sorted(bad_primes)
     return L
@@ -1337,7 +1337,7 @@ def Billerey_B_bound(E, max_l=200, num_l=8, small_prime_bound=0, debug=False):
         1
     """
     if debug:
-        print("Computing B-bound for {} with max_l={}, num_l={}".format(E.ainvs(),max_l,num_l) + " (ignoring primes under {})".format(small_prime_bound) if small_prime_bound else "")
+        print(f"Computing B-bound for {E.ainvs()} with max_l={max_l}, num_l={num_l}" + f" (ignoring primes under {small_prime_bound})" if small_prime_bound else "")
     B = ZZ.zero()
     ells = []
     K = E.base_field()
@@ -1359,26 +1359,26 @@ def Billerey_B_bound(E, max_l=200, num_l=8, small_prime_bound=0, debug=False):
         except StopIteration:
             break
         if debug:
-            print("..trying l={}".format(l))
+            print(f"..trying l={l}")
         b = Billerey_B_l(E,l,B)
         if b:
             if debug:
-                print("..ok, B_l = {}".format(b))
+                print(f"..ok, B_l = {b}")
             if B:
                 B = B.gcd(b)
             else:
                 B = remove_primes(b)
             ells.append(l)
             if debug:
-                print("..so far, B = {} using l in {}".format(B,ells))
+                print(f"..so far, B = {B} using l in {ells}")
         else:
             if debug:
-                print("..B_l=0 for l={}".format(l))
+                print(f"..B_l=0 for l={l}")
 
     if B:
         res = [p for p,e in B.factor()]
         if debug:
-            print("..returning {}".format(res))
+            print(f"..returning {res}")
         return res
     # or we failed to find any nonzero values...
     if debug:
@@ -1447,7 +1447,7 @@ def Billerey_R_bound(E, max_l=200, num_l=8, small_prime_bound=None, debug=False)
         1
     """
     if debug:
-        print("Computing R-bound for {} with max_l={}, num_l={}".format(E.ainvs(),max_l,num_l) + " (ignoring primes under {})".format(small_prime_bound) if small_prime_bound else "")
+        print(f"Computing R-bound for {E.ainvs()} with max_l={max_l}, num_l={num_l}" + f" (ignoring primes under {small_prime_bound})" if small_prime_bound else "")
     B = ZZ.zero()
     ells = []
     K = E.base_field()
@@ -1470,23 +1470,23 @@ def Billerey_R_bound(E, max_l=200, num_l=8, small_prime_bound=None, debug=False)
             break
         q = K.prime_above(l)
         if debug:
-            print("..trying q={} above l={}".format(q,l))
+            print(f"..trying q={q} above l={l}")
         b = Billerey_R_q(E,q,B)
         if b:
             if debug:
-                print("..ok, R_q = {}, type={}".format(b,type(b)))
+                print(f"..ok, R_q = {b}, type={type(b)}")
             if B:
                 B = B.gcd(b)
             else:
                 B = remove_primes(b)
             ells.append(l)
             if debug:
-                print("..so far, B = {} using l in {}".format(B,ells))
+                print(f"..so far, B = {B} using l in {ells}")
 
     if B:
         res = B.support()
         if debug:
-            print("..returning {}".format(res))
+            print(f"..returning {res}")
         return res
     # or we failed to find any nonzero values...
     if debug:
@@ -1564,7 +1564,7 @@ def reducible_primes_Billerey(E, num_l=None, max_l=None, verbose=False):
     """
     #verbose=True
     if verbose:
-        print("E = {}, finding reducible primes using Billerey's algorithm".format(E.ainvs()))
+        print(f"E = {E.ainvs()}, finding reducible primes using Billerey's algorithm")
 
     # Set parameters to default values if not given:
     if max_l is None:
@@ -1585,17 +1585,17 @@ def reducible_primes_Billerey(E, num_l=None, max_l=None, verbose=False):
     # small primes; these can be tested using the naive algorithm.
 
     if verbose:
-        print("First doing naive test of primes up to {}...".format(max_l))
+        print(f"First doing naive test of primes up to {max_l}...")
 
     max_small_prime = 200
     OK_small_primes = reducible_primes_naive(E1, max_l=max_small_prime, num_P=200, verbose=verbose)
     if verbose:
-        print("Naive test of primes up to {} returns {}.".format(max_small_prime, OK_small_primes))
+        print(f"Naive test of primes up to {max_small_prime} returns {OK_small_primes}.")
 
     B1 = Billerey_B_bound(E1, max_l, num_l, max_small_prime, verbose)
     if B1 == [0]:
         if verbose:
-            print("...  B_bound ineffective using max_l={}, moving on to R-bound".format(max_l))
+            print(f"...  B_bound ineffective using max_l={max_l}, moving on to R-bound")
 
         B1 = Billerey_R_bound(E1,max_l, num_l, max_small_prime, verbose)
         if B1 == [0]:
@@ -1603,18 +1603,18 @@ def reducible_primes_Billerey(E, num_l=None, max_l=None, verbose=False):
                 print("... R_bound ineffective using max_l={}",format(max_l))
             return [0]
         if verbose:
-            print("... R_bound = {}".format(B1))
+            print(f"... R_bound = {B1}")
     else:
         if verbose:
-            print("... B_bound = {}".format(B1))
+            print(f"... B_bound = {B1}")
     B = sorted(set(B0 + B1 + OK_small_primes))
     if verbose:
-        print("... combined bound = {}".format(B))
+        print(f"... combined bound = {B}")
 
     num_p = 100
     B = Frobenius_filter(E1, B, num_p)
     if verbose:
-        print("... after Frobenius filter = {}".format(B))
+        print(f"... after Frobenius filter = {B}")
     return B
 
 
@@ -1660,9 +1660,9 @@ def reducible_primes_naive(E, max_l=None, num_P=None, verbose=False):
     if num_P is None:
         num_P = 100
     if verbose:
-        print("E = {}, finding reducible primes up to {} using Frobenius filter with {} primes".format(E.ainvs(), max_l, num_P))
+        print(f"E = {E.ainvs()}, finding reducible primes up to {max_l} using Frobenius filter with {num_P} primes")
 
     B = Frobenius_filter(E, primes(max_l), num_P)
     if verbose:
-        print("... returning {}".format(B))
+        print(f"... returning {B}")
     return B

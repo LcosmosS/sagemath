@@ -352,8 +352,8 @@ class PeriodLattice_ell(PeriodLattice):
         """
         K = self.E.base_field()
         if K in (QQ, AA, QQbar) or isinstance(self.embedding, IdentityMorphism):
-            return "Period lattice associated to %s" % (self.E)
-        return "Period lattice associated to %s with respect to the embedding %s" % (self.E, self.embedding)
+            return f"Period lattice associated to {self.E}"
+        return f"Period lattice associated to {self.E} with respect to the embedding {self.embedding}"
 
     def __call__(self, P, prec=None):
         r"""
@@ -1296,7 +1296,7 @@ class PeriodLattice_ell(PeriodLattice):
                     C = ComplexField()
                     z = C(z)
                 except TypeError:
-                    raise TypeError("%s is not a complex number" % z)
+                    raise TypeError(f"{z} is not a complex number")
         prec = C.precision()
         from sage.matrix.constructor import Matrix
         from sage.modules.free_module_element import vector
@@ -1359,7 +1359,7 @@ class PeriodLattice_ell(PeriodLattice):
                 C = ComplexField()
                 z = C(z)
             except TypeError:
-                raise TypeError("%s is not a complex number" % z)
+                raise TypeError(f"{z} is not a complex number")
         prec = C.precision()
         if self.real_flag:
             w1, w2 = self.basis(prec)  # w1 real
@@ -2017,7 +2017,7 @@ class PeriodLattice_ell(PeriodLattice):
                     z = C(z)
                     z_is_real = z.is_real()
                 except TypeError:
-                    raise TypeError("%s is not a complex number" % z)
+                    raise TypeError(f"{z} is not a complex number")
         prec = C.precision()
 
         # test for the point at infinity:

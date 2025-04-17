@@ -579,7 +579,7 @@ def prove_BSD(E, verbosity=0, two_desc='mwrank', proof=None, secs_hi=5,
     BSD.gens = [BSD.curve.point(x, check=True) for x in gens]
 
     if BSD.rank != BSD.curve.analytic_rank():
-        raise RuntimeError("It seems that the rank conjecture does not hold for this curve (%s)! This may be a counterexample to BSD, but is more likely a bug." % BSD.curve)
+        raise RuntimeError(f"It seems that the rank conjecture does not hold for this curve ({BSD.curve})! This may be a counterexample to BSD, but is more likely a bug.")
 
     # reduce set of remaining primes to a finite set
     kolyvagin_primes = []
@@ -862,7 +862,7 @@ def prove_BSD(E, verbosity=0, two_desc='mwrank', proof=None, secs_hi=5,
             if galrep.is_reducible(p):
                 primes_to_remove.append(p)
                 if verbosity > 0:
-                    print('True for p=%s by Mazur' % p)
+                    print(f'True for p={p} by Mazur')
         for p in primes_to_remove:
             BSD.primes.remove(p)
             if p in BSD.proof:

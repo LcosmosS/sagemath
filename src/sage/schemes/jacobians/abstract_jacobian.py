@@ -133,11 +133,11 @@ class Jacobian_generic(Scheme):
             defined by x + y + z) must be defined over a field.
         """
         if not isinstance(C, Scheme):
-            raise TypeError("Argument (=%s) must be a scheme." % C)
+            raise TypeError(f"Argument (={C}) must be a scheme.")
         if C.base_ring() not in _Fields:
-            raise TypeError("C (=%s) must be defined over a field." % C)
+            raise TypeError(f"C (={C}) must be defined over a field.")
         if C.dimension() != 1:
-            raise ValueError("C (=%s) must have dimension 1." % C)
+            raise ValueError(f"C (={C}) must have dimension 1.")
         self.__curve = C
         Scheme.__init__(self, C.base_scheme(), category=Jacobians(C.base_ring()).or_subcategory(category))
 
@@ -180,7 +180,7 @@ class Jacobian_generic(Scheme):
             sage: J._repr_()
             'Jacobian of Projective Plane Curve over Rational Field defined by x^3 + y^3 + z^3'
         """
-        return "Jacobian of %s" % self.__curve
+        return f"Jacobian of {self.__curve}"
 
     def _point(self):
         """

@@ -241,7 +241,7 @@ class Divisor_generic(FormalSum):
         # straight - as the test above demonstrates, it results in the first
         # generator being in front of the second one
         terms.sort(key=lambda x: x[1], reverse=True)
-        return repr_lincomb([("V(%s)" % v, c) for c,v in terms])
+        return repr_lincomb([(f"V({v})", c) for c,v in terms])
 
     def scheme(self):
         """
@@ -339,7 +339,7 @@ class Divisor_curve(Divisor_generic):
                 raise TypeError("Argument v (= %s) must consist of multiplicities and points on a scheme.")
         else:
             if not isinstance(parent, DivisorGroup_curve):
-                raise TypeError("parent (of type %s) must be a DivisorGroup_curve" % type(parent))
+                raise TypeError(f"parent (of type {type(parent)}) must be a DivisorGroup_curve")
             C = parent.scheme()
 
         if len(v) < 1:

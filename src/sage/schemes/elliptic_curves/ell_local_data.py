@@ -307,7 +307,7 @@ class EllipticCurveLocalData(SageObject):
         red_type = "good"
         if self._reduction_type is not None:
             red_type = ["bad non-split multiplicative","bad additive","bad split multiplicative"][1+self._reduction_type]
-        return "Local data at %s:\nReduction type: %s\nLocal minimal model: %s\nMinimal discriminant valuation: %s\nConductor exponent: %s\nKodaira Symbol: %s\nTamagawa Number: %s" % (self._prime,red_type,self.minimal_model(),self._val_disc,self._fp,self._KS,self._cp)
+        return f"Local data at {self._prime}:\nReduction type: {red_type}\nLocal minimal model: {self.minimal_model()}\nMinimal discriminant valuation: {self._val_disc}\nConductor exponent: {self._fp}\nKodaira Symbol: {self._KS}\nTamagawa Number: {self._cp}"
 
     def minimal_model(self, reduce=True):
         """
@@ -749,7 +749,7 @@ class EllipticCurveLocalData(SageObject):
         P = self._prime
         K = E.base_ring()
         OK = K.maximal_order()
-        t = verbose("Running Tate's algorithm with P = %s" % P, level=1)
+        t = verbose(f"Running Tate's algorithm with P = {P}", level=1)
         F = OK.residue_field(P)
         p = F.characteristic()
 
@@ -770,10 +770,10 @@ class EllipticCurveLocalData(SageObject):
 
         if (K is QQ) or principal_flag:
             pi = P.gens_reduced()[0]
-            verbose("P is principal, generator pi = %s" % pi, t, 1)
+            verbose(f"P is principal, generator pi = {pi}", t, 1)
         else:
             pi = K.uniformizer(P, 'positive')
-            verbose("uniformizer pi = %s" % pi, t, 1)
+            verbose(f"uniformizer pi = {pi}", t, 1)
         pi2 = pi * pi
         pi3 = pi * pi2
         pi4 = pi * pi3
@@ -842,7 +842,7 @@ class EllipticCurveLocalData(SageObject):
             for i in range(7):
                 if A[i] != 0:
                     A[i] *= pie**i
-            verbose("P-integral model is %s, with valuations %s" % ([A[i] for i in indices], [pval(A[i]) for i in indices]), t, 1)
+            verbose(f"P-integral model is {[A[i] for i in indices]}, with valuations {[pval(A[i]) for i in indices]}", t, 1)
 
         split = None # only relevant for multiplicative reduction
 
@@ -884,14 +884,14 @@ class EllipticCurveLocalData(SageObject):
                 t = -halfmodp * (a1 * r + a3)
             r = preduce(r)
             t = preduce(t)
-            verbose("Before first transform C = %s" % C)
+            verbose(f"Before first transform C = {C}")
             verbose("[a1,a2,a3,a4,a6] = %s" % ([a1, a2, a3, a4, a6]))
             C = C.rst_transform(r, 0, t)
             (a1, a2, a3, a4, a6) = C.a_invariants()
             (b2, b4, b6, b8) = C.b_invariants()
             if min([pval(a) for a in (a1, a2, a3, a4, a6) if a != 0]) < 0:
                 raise RuntimeError("Non-integral model after first transform!")
-            verbose("After first transform %s\n, [a1,a2,a3,a4,a6] = %s\n, valuations = %s" % ([r, 0, t], [a1, a2, a3, a4, a6], [pval(a1), pval(a2), pval(a3), pval(a4), pval(a6)]), t, 2)
+            verbose(f"After first transform {[r, 0, t]}\n, [a1,a2,a3,a4,a6] = {[a1, a2, a3, a4, a6]}\n, valuations = {[pval(a1), pval(a2), pval(a3), pval(a4), pval(a6)]}", t, 2)
             if pval(a3) == 0:
                 raise RuntimeError("p does not divide a3 after first transform!")
             if pval(a4) == 0:
@@ -912,7 +912,7 @@ class EllipticCurveLocalData(SageObject):
                     cp = 2
                 else:
                     cp = 1
-                KS = KodairaSymbol("I%s" % val_disc)
+                KS = KodairaSymbol(f"I{val_disc}")
                 fp = 1
                 break #return
 
@@ -955,7 +955,7 @@ class EllipticCurveLocalData(SageObject):
             C = C.rst_transform(0, s, t)
             (a1, a2, a3, a4, a6) = C.a_invariants()
 
-            verbose("After second transform %s\n[a1, a2, a3, a4, a6] = %s\nValuations: %s" % ([0, s, t], [a1,a2,a3,a4,a6],[pval(a1),pval(a2),pval(a3),pval(a4),pval(a6)]), t, 2)
+            verbose(f"After second transform {[0, s, t]}\n[a1, a2, a3, a4, a6] = {[a1, a2, a3, a4, a6]}\nValuations: {[pval(a1), pval(a2), pval(a3), pval(a4), pval(a6)]}", t, 2)
             if pval(a1) == 0:
                 raise RuntimeError("p does not divide a1 after second transform!")
             if pval(a2) == 0:
@@ -986,7 +986,7 @@ class EllipticCurveLocalData(SageObject):
                     sw = 2
             else:
                 sw = 1
-            verbose("Analyzing roots of cubic T^3 + %s*T^2 + %s*T + %s, case %s" % (b, c, d, sw), t, 1)
+            verbose(f"Analyzing roots of cubic T^3 + {b}*T^2 + {c}*T + {d}, case {sw}", t, 1)
             if sw == 1:
                 ## Three distinct roots - Type I*0
                 verbose("Distinct roots", t, 1)
@@ -1055,7 +1055,7 @@ class EllipticCurveLocalData(SageObject):
                         else:
                             cp = 2
                         break
-                KS = KodairaSymbol("I%s*" % (ix+iy-5))
+                KS = KodairaSymbol(f"I{ix + iy - 5}*")
                 fp = val_disc - ix - iy + 1
                 break #return
             else: # sw == 3
@@ -1072,7 +1072,7 @@ class EllipticCurveLocalData(SageObject):
                 C = C.rst_transform(r, 0, 0)
                 (a1, a2, a3, a4, a6) = C.a_invariants()
 
-                verbose("After third transform %s\n[a1,a2,a3,a4,a6] = %s\nValuations: %s" % ([r,0,0],[a1,a2,a3,a4,a6],[pval(ai) for ai in [a1,a2,a3,a4,a6]]), t, 2)
+                verbose(f"After third transform {[r, 0, 0]}\n[a1,a2,a3,a4,a6] = {[a1, a2, a3, a4, a6]}\nValuations: {[pval(ai) for ai in [a1, a2, a3, a4, a6]]}", t, 2)
                 if min(pval(ai) for ai in [a1,a2,a3,a4,a6]) < 0:
                     raise RuntimeError("Non-integral model after third transform!")
                 if pval(a2) < 2 or pval(a4) < 3 or pval(a6) < 4:
@@ -1181,19 +1181,19 @@ def check_prime(K, P):
             if P.is_prime():
                 return P
             else:
-                raise TypeError("The element %s is not prime" % (P,))
+                raise TypeError(f"The element {P} is not prime")
         elif P in QQ:
-            raise TypeError("The element %s is not prime" % (P,))
+            raise TypeError(f"The element {P} is not prime")
         elif isinstance(P, Ideal_generic) and P.base_ring() is ZZ:
             if P.is_prime():
                 return P.gen()
             else:
-                raise TypeError("The ideal %s is not a prime ideal of %s" % (P, ZZ))
+                raise TypeError(f"The ideal {P} is not a prime ideal of {ZZ}")
         else:
-            raise TypeError("%s is neither an element of QQ or an ideal of %s" % (P, ZZ))
+            raise TypeError(f"{P} is neither an element of QQ or an ideal of {ZZ}")
 
     if not isinstance(K, NumberField):
-        raise TypeError("%s is not a number field" % (K,))
+        raise TypeError(f"{K} is not a number field")
 
     if isinstance(P, NumberFieldFractionalIdeal) or P in K:
         # if P is an ideal, making sure it is a fractional ideal of K
@@ -1201,6 +1201,6 @@ def check_prime(K, P):
         if P.is_prime():
             return P
         else:
-            raise TypeError("The ideal %s is not a prime ideal of %s" % (P, K))
+            raise TypeError(f"The ideal {P} is not a prime ideal of {K}")
 
-    raise TypeError("%s is not a valid prime of %s" % (P, K))
+    raise TypeError(f"{P} is not a valid prime of {K}")

@@ -249,32 +249,32 @@ class EllipticCurve_generic(WithEqualityById, plane_curve.ProjectivePlaneCurve):
         elif a[0] == '1':
             s += " + x*y"
         elif b[0]:
-            s += " + %s*x*y" % a[0]
+            s += f" + {a[0]}*x*y"
         if a[2] == "-1":
             s += " - y"
         elif a[2] == '1':
             s += " + y"
         elif b[2]:
-            s += " + %s*y" % a[2]
+            s += f" + {a[2]}*y"
         s += " = x^3"
         if a[1] == "-1":
             s += " - x^2"
         elif a[1] == '1':
             s += " + x^2"
         elif b[1]:
-            s += " + %s*x^2" % a[1]
+            s += f" + {a[1]}*x^2"
         if a[3] == "-1":
             s += " - x"
         elif a[3] == '1':
             s += " + x"
         elif b[3]:
-            s += " + %s*x" % a[3]
+            s += f" + {a[3]}*x"
         if a[4] == '-1':
             s += " - 1"
         elif a[4] == '1':
             s += " + 1"
         elif b[4]:
-            s += " + %s" % a[4]
+            s += f" + {a[4]}"
         return s.replace("+ -","- ")
 
     def _repr_(self):
@@ -297,7 +297,7 @@ class EllipticCurve_generic(WithEqualityById, plane_curve.ProjectivePlaneCurve):
         """
         s = "Elliptic Curve defined by "
         s += self._equation_string()
-        s += " over %s" % self.base_ring()
+        s += f" over {self.base_ring()}"
         return s
 
     def _latex_(self):
@@ -347,8 +347,7 @@ class EllipticCurve_generic(WithEqualityById, plane_curve.ProjectivePlaneCurve):
             sage: E._pari_init_()
             'ellinit([0/1,0/1,0/1,1/1,1/1])'
         """
-        return 'ellinit([%s])' % (','.join(x._pari_init_()
-                                           for x in self.ainvs()))
+        return f"ellinit([{','.join(x._pari_init_() for x in self.ainvs())}])"
 
     def _magma_init_(self, magma):
         """
@@ -938,7 +937,7 @@ class EllipticCurve_generic(WithEqualityById, plane_curve.ProjectivePlaneCurve):
                 L = E.base_ring()
                 x = L(x)
             else:
-                raise TypeError("Unable to construct a point with x in {} over {}".format(L,K))
+                raise TypeError(f"Unable to construct a point with x in {L} over {K}")
 
         # Now E is defined over L, possibly an extension of K, and x is in L
 
@@ -975,7 +974,7 @@ class EllipticCurve_generic(WithEqualityById, plane_curve.ProjectivePlaneCurve):
             if all:
                 return []
             else:
-                raise ValueError("No point with x-coordinate {} on {}".format(x, self))
+                raise ValueError(f"No point with x-coordinate {x} on {self}")
 
         # Now make the extension needed to contain the y-coordinates:
 
@@ -2994,13 +2993,13 @@ class EllipticCurve_generic(WithEqualityById, plane_curve.ProjectivePlaneCurve):
 
         # any curve of the form y^2 = x^3 +.. is singular in characteristic 2
         if K.characteristic() == 2:
-            raise ValueError("short_weierstrass_model(): no short model for %s (characteristic is %s)" % (self, K.characteristic()))
+            raise ValueError(f"short_weierstrass_model(): no short model for {self} (characteristic is {K.characteristic()})")
 
         # in characteristic 3 we can complete the square but we can only complete the cube if b2 is 0
         if K.characteristic() == 3:
             b2, b4, b6,_ = self.b_invariants()
             if complete_cube and b2 != 0:
-                raise ValueError("short_weierstrass_model(): no short model for %s (characteristic is %s)" % (self,K.characteristic()))
+                raise ValueError(f"short_weierstrass_model(): no short model for {self} (characteristic is {K.characteristic()})")
             else:
                 return constructor.EllipticCurve([0,b2,0,8*b4,16*b6])
 
@@ -3320,7 +3319,7 @@ class EllipticCurve_generic(WithEqualityById, plane_curve.ProjectivePlaneCurve):
         RR = RealField()
         K = self.base_ring()
         if not RR.has_coerce_map_from(K):
-            raise NotImplementedError("plotting of curves over %s is not implemented yet" % K)
+            raise NotImplementedError(f"plotting of curves over {K} is not implemented yet")
         if components not in ['both', 'bounded', 'unbounded']:
             raise ValueError("component must be one of 'both', 'bounded' or 'unbounded'")
 
@@ -3525,7 +3524,7 @@ class EllipticCurve_generic(WithEqualityById, plane_curve.ProjectivePlaneCurve):
         """
         p = Integer(p)
         if not p.is_prime():
-            raise ValueError("p (=%s) should be prime" % p)
+            raise ValueError(f"p (={p}) should be prime")
 
         if m is None:
             from sage.rings.infinity import Infinity
